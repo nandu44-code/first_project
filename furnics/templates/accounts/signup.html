@@ -1,0 +1,160 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/accounts/signup.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container d-flex justify-content-center">
+	<div class="row signup-container ">
+			<div class="signup-form">
+				<h2 class="text-center mb-4 text-success">Signup to Furnics.4U</h2>
+				<form method="POST">
+					{% csrf_token %}
+					{% if messages %}
+					<div class="text-danger d-flex justify-content-center mt-2">
+						{% for message in messages%}
+						{{message}}
+						{%endfor%}
+					</div>
+					{% endif %}
+	
+					<div class="form-group">
+						<label for="username"></label>
+						<input type="text" class="form-control" id="username" name="username" placeholder="What's your name?"
+							required>
+					</div>
+					<div class="form-group">
+						<label for="email"></label>
+						<input type="email" class="form-control" id="email" name="email" placeholder="what's your email?" required>
+					</div>
+					<div class="form-group">
+						<label for="number"></label>
+						<input type="tel" class="form-control" id="phone_no" name="phone_no" placeholder="what's your Phone number?"
+							required>
+					</div>
+					<div class="form-group">
+						<label for="password"></label>
+	
+						<input type="password" class="form-control" id="password" name="password" placeholder="Password"
+							required>
+	
+					</div>
+					<div class="form-group">
+						<label for="password"></label>
+	
+						<input type="password" class="form-control" id="confirmpassword" name="confirmpassword"
+							placeholder="confirm">
+	
+					</div>
+					<div class="d-flex justify-content-center">
+						<button type="submit" class="btn btn-primary btn-block signup_button mt-3">verify otp</button>
+					</div>
+	
+				</form>
+				<div class="d-flex justify-content-center">
+					<p class="mt-4 ">already an user? <a href="{% url 'user_login'%}">click here to login</a></p>
+				</div>
+				<div>
+	
+					<div class="d-flex justify-content-center">
+						<p class="mt=5">OR</p>
+					</div>
+					<div class="d-flex justify-content-center">
+						<a href="" class="btn btn-md">sign up with google</a>
+					</div>
+	
+				</div>
+			</div>
+
+		
+	</div>
+</div>
+
+
+{% endblock %}
+
+
+<!-- block is for validating the data user submiting and checking if that meets the standard we are expecting -->
+{% block script%}
+
+<script>
+	const isValidUsername = (username) => {
+		const regex = /^[a-zA-Z0-9\s]{5,30}$/;
+		return regex.test(username);
+	};
+
+	const isValidEmail = (email) => {
+		const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+		return regex.test(email);
+	};
+
+	const isValidPhoneNumber = (phoneNumber) => {
+		const regex = /^[0-9()+\-.\s]{5,15}$/;
+		return regex.test(phoneNumber);
+	};
+
+	const isValidPassword = (password) => {
+		const regex = /^.{8,}$/;
+		return regex.test(password);
+	};
+
+	const validateSignup = (username, email, phoneNumber, password, confirmPassword) => {
+		const isUsernameValid = isValidUsername(username);
+		const isEmailValid = isValidEmail(email);
+		const isPhoneNumberValid = isValidPhoneNumber(phoneNumber);
+		const isPasswordValid = isValidPassword(password);
+
+		if (!isUsernameValid) {
+			document.getElementById("username").setCustomValidity("Invalid username");
+		} else {
+			document.getElementById("username").setCustomValidity("");
+		}
+
+		if (!isEmailValid) {
+			document.getElementById("email").setCustomValidity("Invalid email address");
+		} else {
+			document.getElementById("email").setCustomValidity("");
+		}
+
+		if (!isPhoneNumberValid) {
+			document.getElementById("phone_no").setCustomValidity("Invalid phone number");
+		} else {
+			document.getElementById("phone_no").setCustomValidity("");
+		}
+
+		if (!isPasswordValid) {
+			document.getElementById("password").setCustomValidity("Password must be at least 8 characters");
+		} else {
+			document.getElementById("password").setCustomValidity("");
+		}
+
+		if (password !== confirmPassword) {
+			document.getElementById("confirmpassword").setCustomValidity("Passwords do not match");
+		} else {
+			document.getElementById("confirmpassword").setCustomValidity("");
+		}
+
+		return isUsernameValid && isEmailValid && isPhoneNumberValid && isPasswordValid && (password === confirmPassword);
+	};
+
+	document.getElementById("signup").addEventListener("submit", function (event) {
+		const username = document.getElementById("username").value;
+		const email = document.getElementById("email").value;
+		const phoneNumber = document.getElementById("phone_no").value;
+		const password = document.getElementById("password").value;
+		const confirmPassword = document.getElementById("confirmpassword").value;
+
+		const isValid = validateSignup(username, email, phoneNumber, password, confirmPassword);
+
+		if (!isValid) {
+			event.preventDefault(); // Prevent form submission if validation fails
+		}
+	});
+
+</script>
+
+
+{% endblock %}
