@@ -14,7 +14,8 @@ def product_view(request):
             'category' : categories,
             'sub_category' : sub_categories,
         }
-    return render(request,'dashboard/products.html',context)
+    
+        return render(request,'dashboard/products.html',context)
 def add_product(request):
     if request.method=='POST':
         product_name          =  request.POST['product_name']
@@ -53,20 +54,28 @@ def add_product(request):
 
 
 def edit_product(request,product_id):
-    product=Product.objects.get(pk=product_id)
-    if request.method=='POST':
-        product_name=request.POST['product_name']
+    product=Product.objects.get(pk = product_id)
+    product_image=product.images
+    if request.method == 'POST':
+        product_name = request.POST['product_name']
         product.product_name = request.POST['product_name']
         product.stock = request.POST['stock']
         product.price = request.POST['price']
         product.description = request.POST['product_description']
-        product.image = request.FILES.get('product_img', None)
+        product_images = request.FILES.get('product_img', None)
         product.image1 = request.FILES.get('product_img1', None)
         product.image2 = request.FILES.get('product_img2', None)
         product.image3 = request.FILES.get('product_img3',None)
         sub_category_id = request.POST.get('subcategory_name')
         sub_category_instance=Sub_Category.objects.get(pk=sub_category_id)
         product.category=sub_category_instance.category
+        # checking whether choses an image to replace. if it is not chosen replacing the older image 
+        if product_images is None:
+
+            product.images = product_image
+        # if chosen another image that image is saving 
+        else:
+            product.images = product_images   
 
         if Product.objects.filter(product_name=product_name).exclude(pk=product_id).exists():
 

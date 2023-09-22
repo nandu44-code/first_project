@@ -1,0 +1,91 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+<!-- Start Header/Navigation -->
+{% block bootstraplink %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<!-- Start Hero Section -->
+<!-- <div class="hero">
+				<div class="container">
+					<div class="row justify-content-between">
+						<div class="col-lg-5">
+							<div class="intro-excerpt">
+								<h1>Shop</h1>
+				
+							</div>
+						</div>
+						<div class="col-lg-7">
+							
+						</div>
+					</div>
+				</div>
+			</div> -->
+<!-- End Hero Section -->
+<div class="d-flex justify-content-center mt-5">
+	<h2> Shop By Categories</h2>
+</div>
+<div class="d-flex justify-content-evenly mt-5">
+	{% for categories in category %}
+	<div>
+		<a href="{% url 'sub_category_page' category_id=categories.id %}">
+			<div>
+				<img src="/media/{{categories.category_image}}"    style=" height: 71%;
+				width: 200px;">
+				<p>{{categories.category_name}}</p>
+			</div>
+		</a>
+
+	</div>
+	{% endfor %}
+</div>
+<div class="d-flex justify-content-center">
+	<a href="">
+	<P>Know more about our categories </P>
+</a>
+</div>
+
+<div class="untree_co-section product-section before-footer-section">
+	<div class="container">
+		<div class="row">
+
+			<!-- Start Column 1 -->
+			{% for products in product %}
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="{% url 'product_details' product_id=products.id%}">
+					<img src="/media/{{products.images}}" class="img-fluid product-thumbnail">
+					<h3 class="product-title">{{products.product_name}}</h3>
+					<strong class="product-price">Rs.{{products.price}}</strong>
+					<div class="d-flex justify-content-center"> 
+						<span class="icon-cross">
+						
+							<!-- <img src="{% static 'images/cross.svg'%}" class="img-fluid"> -->
+							<img src="{% static 'images/icons8-love-16.png' %}" class="img-fluid">
+							
+							
+						</span>
+						<div class="d-flex justify-content-center mt-3">
+							<button class="btn btn-sm button-addtocart">Add To Cart</button>
+						</div>
+						<div class="d-flex justify-content-center mt-3">
+							<button class="btn btn-primary btn-sm">Buy Now</button>
+						</div>
+					
+					</div>
+					
+				</a>
+				
+			</div>
+            {% endfor%}
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

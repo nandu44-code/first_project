@@ -32,7 +32,7 @@
 					</div>
 					<div class="form-group">
 						<label for="number"></label>
-						<input type="tel" class="form-control" id="phone_no" name="phone_no" placeholder="what's your Phone number?"
+						<input type="tel" class="form-control" id="phoneNumber" name="phone_no" placeholder="what's your Phone number?"
 							required>
 					</div>
 					<div class="form-group">
@@ -50,12 +50,12 @@
 	
 					</div>
 					<div class="d-flex justify-content-center">
-						<button type="submit" class="btn btn-primary btn-block signup_button mt-3">verify otp</button>
+						<button type="submit" class="btn btn-primary btn-block signup_button mt-3">Verify otp</button>
 					</div>
 	
 				</form>
-				<div class="d-flex justify-content-center">
-					<p class="mt-4 ">already an user? <a href="{% url 'user_login'%}">click here to login</a></p>
+				<div class="d-flex justify-content-center">	
+					<p class="mt-4 ">Already an user? <a href="{% url 'user_login'%}">Click here to login</a></p>
 				</div>
 				<div>
 	
@@ -78,7 +78,7 @@
 
 
 <!-- block is for validating the data user submiting and checking if that meets the standard we are expecting -->
-{% block script%}
+{% block script %}
 
 <script>
 	const isValidUsername = (username) => {
@@ -89,7 +89,7 @@
 	const isValidEmail = (email) => {
 		const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 		return regex.test(email);
-	};
+	}; 
 
 	const isValidPhoneNumber = (phoneNumber) => {
 		const regex = /^[0-9()+\-.\s]{5,15}$/;
@@ -101,7 +101,7 @@
 		return regex.test(password);
 	};
 
-	const validateSignup = (username, email, phoneNumber, password, confirmPassword) => {
+	const validateSignup = (username, email, phoneNumber, password) => {
 		const isUsernameValid = isValidUsername(username);
 		const isEmailValid = isValidEmail(email);
 		const isPhoneNumberValid = isValidPhoneNumber(phoneNumber);
@@ -117,7 +117,7 @@
 			document.getElementById("email").setCustomValidity("Invalid email address");
 		} else {
 			document.getElementById("email").setCustomValidity("");
-		}
+		} 
 
 		if (!isPhoneNumberValid) {
 			document.getElementById("phone_no").setCustomValidity("Invalid phone number");
@@ -131,13 +131,8 @@
 			document.getElementById("password").setCustomValidity("");
 		}
 
-		if (password !== confirmPassword) {
-			document.getElementById("confirmpassword").setCustomValidity("Passwords do not match");
-		} else {
-			document.getElementById("confirmpassword").setCustomValidity("");
-		}
-
-		return isUsernameValid && isEmailValid && isPhoneNumberValid && isPasswordValid && (password === confirmPassword);
+		
+		return isUsernameValid && isEmailValid && isPhoneNumberValid && isPasswordValid;
 	};
 
 	document.getElementById("signup").addEventListener("submit", function (event) {
@@ -145,9 +140,9 @@
 		const email = document.getElementById("email").value;
 		const phoneNumber = document.getElementById("phone_no").value;
 		const password = document.getElementById("password").value;
-		const confirmPassword = document.getElementById("confirmpassword").value;
+		
 
-		const isValid = validateSignup(username, email, phoneNumber, password, confirmPassword);
+		const isValid = validateSignup(username, email, phoneNumber, password);
 
 		if (!isValid) {
 			event.preventDefault(); // Prevent form submission if validation fails

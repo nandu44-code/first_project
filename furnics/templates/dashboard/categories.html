@@ -87,7 +87,7 @@ b
                         </div>
                         <div class="form-group">
                             <label for="cat_img">Category Image:</label>
-                            <input type="file" class="form-control-file" id="category_img" name="cat_img">
+                            <input type="file" class="form-control-file" id="category_img" name="category_img">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -126,7 +126,7 @@ b
                 <tr class="table-rows">
                     <td>{{category.category_name }}</td>
                     <td>{{category.description }}</td>
-                    <td><img src="/media/{{category.category_image}}" width="20%"></td>
+                    <td><img src="/media/{{ category.category_image }}" width="20%"></td>
                     <td>
                         <button class="btn btn-info toggle-btn" data-toggle="modal"
                             data-target="#editCategoryModal-{{forloop.counter}}">Edit</button>
@@ -142,11 +142,6 @@ b
                                 <button class="btn btn-success toggle-btn">Activate</button>
                             </a>
                         {% endif %}
-                            
-                        
-                        <!-- <button class="btn btn-success toggle-btn"></button> -->
-
-
                     </td>
                 </tr>
                 {% endfor %}

@@ -9,16 +9,16 @@ from categories.models import Category,Sub_Category
 def admin_login(request):
     if 'adminemail' in request.session:
         return redirect('admin_home')
+
     if request.method=="POST":
         email=request.POST.get('email')
         password=request.POST.get('password')
 
         user=authenticate(request,email=email,password=password)
-        if user is not None:
-            if user.is_superuser:
-                login(request,user)
-                request.session['adminemail']=email
-                return redirect('admin_home')
+        if user is not None and user.is_superuser:
+            login(request,user)
+            request.session['adminemail']=email
+            return redirect('admin_home')
         else:
             messages.error(request,"invalid credentials try again!!!")
 
@@ -44,7 +44,7 @@ def adminlogout(request):
 
 # view function for going to users page
 def users(request):
-    user=CustomUser.objects.filter(is_superuser=False)
+    user=CustomUser.objects.filter(is_superuser=False).order_by('id')
     
     context={
         'users':user
@@ -61,7 +61,7 @@ def block_user(request,user_id):
         user.is_active=False
         user.save()
 
-        users=CustomUser.objects.filter(is_superuser=False)
+        users=CustomUser.objects.filter(is_superuser=False).order_by('id')
     
         context={
                 'users':users
@@ -71,7 +71,7 @@ def block_user(request,user_id):
     else:
         user.is_active=True
         user.save()
-        users=CustomUser.objects.filter(is_superuser=False)
+        users=CustomUser.objects.filter(is_superuser=False).order_by('id')
     
         context={
                 'users':users
@@ -83,7 +83,7 @@ def block_user(request,user_id):
 
 def categories(request):
 
-    category=Category.objects.all()
+    category=Category.objects.all().order_by('id')
     context={
         'categories':category
     }
@@ -96,7 +96,7 @@ def add_categories(request):
     if request.method=="POST":
         category_name=request.POST.get('categoryName')
         category_desc=request.POST.get('categoryDescription')
-        category_image = request.FILES.get('cat_img')
+        category_image = request.FILES.get('category_img')
         
         if Category.objects.filter(category_name=category_name).exists():
             messages.error(request,"Entered Category is already taken!!")
@@ -110,20 +110,25 @@ def add_categories(request):
 
 def edit_categories(request,category_id):
     category = Category.objects.get(id=category_id)
-
+    category_image=category.category_image
     if request.method=="POST":
-        category_name=request.POST.get('categoryName')
-        category_desc=request.POST.get('categoryDescription')
-        category_image = request.FILES.get('category_img')
+        category_name= request.POST.get('categoryName')
         
+        category.description    = request.POST.get('categoryDescription')
+        category_img = request.FILES.get('category_img')
+
+        if category_img is None:
+            category.category_image = category_image
+    
+        else:
+            category.category_image = category_img
+
         if Category.objects.filter(category_name=category_name).exclude(id=category_id).exists():
             messages.error(request,"Entered Category is already taken!!")
             return redirect('categories')
             
         else:
-             category.category_name = category_name
-             category.description = category_desc
-             category.category_image=category_image
+             category.category_name  = category_name
              category.save()
              return redirect('categories')
     # return render(request,'dashboard/users.html')
@@ -137,7 +142,7 @@ def delete_categories(request,category_id):
 
        
     
-        category=Category.objects.all()
+        category=Category.objects.all().order_by('id')
         context={
             'categories':category
         }
@@ -147,7 +152,7 @@ def delete_categories(request,category_id):
         category.save()
         # categories=Category.objects.all
 
-        category=Category.objects.all()
+        category=Category.objects.all().order_by('id')
         context={
             'categories':category
         }
@@ -156,7 +161,7 @@ def delete_categories(request,category_id):
 
 def sub_categories(request):
     category=Category.objects.filter(is_activate=True)
-    subcategory=Sub_Category.objects.all()
+    subcategory=Sub_Category.objects.all().order_by('id')
     context={
         'subcategories':subcategory,
         'categories':category
@@ -196,9 +201,9 @@ def edit_subcategories(request,subcategory_id):
         sub_Category_img = request.FILES.get('cat_img')
         # checking if the subcategory image is none 
         if sub_Category_img is None:
-            Sub_Category.sub_category_image = sub_category_image
+            subcategory.sub_Category_image = sub_category_image
         else:
-            Sub_Category.sub_category_image = sub_Category_img      
+            subcategory.sub_Category_image = sub_Category_img      
 
 
         if Sub_Category.objects.filter(sub_category_name=sub_category_name).exclude(id=subcategory_id).exists():
@@ -221,8 +226,8 @@ def delete_subcategories(request,subcategory_id):
 
        
         
-        category=Category.objects.filter(is_activate=True)
-        subcategory=Sub_Category.objects.all()
+        category=Category.objects.filter(is_activate=True).order_by('id')
+        subcategory=Sub_Category.objects.all().order_by('id')
         context={
             'subcategories':subcategory,
             'categories':category
@@ -234,8 +239,8 @@ def delete_subcategories(request,subcategory_id):
         category.save()
         
 
-        category=Category.objects.filter(is_activate=True)
-        subcategory=Sub_Category.objects.all()
+        category=Category.objects.filter(is_activate=True).order_by('id')
+        subcategory=Sub_Category.objects.all().order_by('id')
         context={
             'subcategories':subcategory,
             'categories':category

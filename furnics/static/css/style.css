@@ -119,7 +119,7 @@ a {
       .hero h1 {
         font-size: 54px; } }
   .hero p {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.941);
     margin-bottom: 30px; }
   .hero .hero-img-wrap {
     position: relative; }
@@ -175,11 +175,28 @@ a {
     -webkit-box-shadow: none;
     box-shadow: none; }
   .btn.btn-primary {
-    background: #3b5d50;
-    border-color: #3b5d50; }
+    background: #314d43;
+    border-color: #f8f8f8; }
     .btn.btn-primary:hover {
       background: #314d43;
       border-color: #314d43; }
+  .button-addtocart{
+    background: #a31a1a;
+    border-color: #e4e4e4; }
+  
+    .button-addtocart:hover {
+      background: #314d43;
+      border-color: #314d43; 
+  }
+  .button-addtowishlist{
+    background: #d9ea17;
+    border-color: #e4e4e4; }
+  
+    .button-addtowishlist:hover {
+      background: #314d43;
+      border-color: #314d43; 
+  }
+
   .btn.btn-secondary {
     color: #2f2f2f;
     background: #f9bf29;

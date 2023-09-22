@@ -15,7 +15,7 @@ from django.contrib.auth.hashers import make_password
 # view function for user login
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def user_login(request):
-    if 'email' in request.session:
+    if 'useremail' in request.session:
         return redirect('homepage')
     if 'adminemail' in request.session:
         return redirect('admin_home')

@@ -1,0 +1,192 @@
+<!-- this page is for choosing the products based on the sub category -->
+
+{% extends 'accounts/base.html' %}
+
+{% load static %}
+<!-- Start Header/Navigation -->
+{% block bootstraplink %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center mt-5">
+	<h2> Shop By Categories</h2>
+</div>
+<div class="d-flex justify-content-evenly mt-5">
+	{% for categories in subcategory %}
+	<div>
+		<a href="{% url 'display_product' sub_category_id=categories.id %}"> 
+			<div>
+				<img src="/media/{{categories.sub_Category_image}}"    style=" height: 71%; width: 200px;">
+				<p>{{categories.sub_category_name}}</p>
+			</div>
+		</a>
+
+	</div>
+	{% endfor %}
+</div>
+<div class="d-flex justify-content-center">
+	<a href="">
+	<P>Know more about our categories </P>
+</a>
+</div>
+
+<div class="untree_co-section product-section before-footer-section">
+	<div class="container">
+		<div class="row">
+
+			<!-- Start Column 1 -->
+			{% for products in product %}
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="{% url 'product_details' product_id=products.id%}">
+					<img src="/media/{{products.images}}" class="img-fluid product-thumbnail">
+					<h3 class="product-title">{{products.product_name}}</h3>
+					<strong class="product-price"></strong>
+
+					<span class="icon-cross">
+						<img src="images/cross.svg" class="img-fluid">
+					</span>
+				</a>
+				<div class="d-flex justify-content-center mt-3">
+					<button class="btn btn-sm button-addtocart">Add to Cart</button>
+				</div>
+				<div class="d-flex justify-content-center mt-3">
+					<button class="btn btn-primary btn-sm">Add to wishlist</button>
+				</div>
+
+			</div>
+			{% endfor %}
+			<!-- End Column 1 -->
+
+			<!-- Start Column 2 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="#">
+					<img src="images/product-1.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Nordic Chair</h3>
+					<strong class="product-price">$50.00</strong>
+
+					<span class="icon-cross">
+						<img src="images/cross.svg" class="img-fluid">
+					</span>
+				</a>
+			</div>
+			<!-- End Column 2 -->
+
+			<!-- Start Column 3 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="#">
+					<img src="images/product-2.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Kruzo Aero Chair</h3>
+					<strong class="product-price">$78.00</strong>
+
+					<span class="icon-cross">
+						<img src="images/cross.svg" class="img-fluid">
+					</span>
+				</a>
+			</div>
+			<!-- End Column 3 -->
+
+			<!-- Start Column 4 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="#">
+					<img src="images/product-3.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Ergonomic Chair</h3>
+					<strong class="product-price">$43.00</strong>
+
+					<span class="icon-cross">
+						<img src="images/cross.svg" class="img-fluid">
+					</span>
+				</a>
+			</div>
+			<!-- End Column 4 -->
+
+
+			<!-- Start Column 1 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="#">
+					<img src="images/product-3.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Nordic Chair</h3>
+					<strong class="product-price">$50.00</strong>
+
+					<span class="icon-cross">
+						<img src="images/cross.svg" class="img-fluid">
+					</span>
+				</a>
+			</div>
+			<!-- End Column 1 -->
+
+			<!-- Start Column 2 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="#">
+					<img src="images/product-1.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Nordic Chair</h3>
+					<strong class="product-price">$50.00</strong>
+
+					<span class="icon-cross">
+						<img src="images/cross.svg" class="img-fluid">
+					</span>
+				</a>
+			</div>
+			<!-- End Column 2 -->
+
+			<!-- Start Column 3 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="#">
+					<img src="images/product-2.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Kruzo Aero Chair</h3>
+					<strong class="product-price">$78.00</strong>
+
+					<span class="icon-cross">
+						<img src="images/cross.svg" class="img-fluid">
+					</span>
+				</a>
+			</div>
+			<!-- End Column 3 -->
+
+			<!-- Start Column 4 -->
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="#">
+					<img src="images/product-3.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Ergonomic Chair</h3>
+					<strong class="product-price">$43.00</strong>
+
+					<span class="icon-cross">
+						<img src="images/cross.svg" class="img-fluid">
+					</span>
+				</a>
+			</div>
+			<!-- End Column 4 -->
+			<div class="d-flex justify-content-center mt-5">
+				<h2> Our Latest Arrivals</h2>	 
+			</div>
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<a class="product-item" href="#">
+					<img src="images/product-3.png" class="img-fluid product-thumbnail">
+					<h3 class="product-title">Nordic Chair</h3>
+					<strong class="product-price">$50.00</strong>
+			
+					<span class="icon-cross">
+						<img src="images/cross.svg" class="img-fluid">
+					</span>
+				</a>
+				<div class="d-flex justify-content-center mt-3">
+					<button class="btn btn-sm button-addtocart">Add to Cart</button>
+				</div>
+				<div class="d-flex justify-content-center mt-3">
+					<button class="btn btn-primary btn-sm">Add to wishlist</button>
+				</div>
+			
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

@@ -16,7 +16,20 @@ body {
 
     margin-left: 10px;
 }
-/* .signup-form{
+
+/* .form-group{
+    margin-bottom: 20px;
+}
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    font-size: 16px;
+    outline: none; /* Remove the input outline when clicked 
+ }  
+
+ .signup-form{
 
     flex: 3;
 } */

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'dashboard',
     'categories',
     'store',
+    'carts',
     
 ]
 
