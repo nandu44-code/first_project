@@ -2,20 +2,20 @@
 {% load static %}
 <!-- Start Header/Navigation -->
 {% block bootstraplink %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-    /* Custom CSS for vertical alignment */
-    /*.vertical-align {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }*/
+    h4 {
+        text-shadow: black;
+    }
+
+    .user_info {
+        background: #968c8c;
+    }
 </style>
 
 {% endblock %}
+
 
 {% block content %}
 {% for user in users %}
@@ -41,67 +41,66 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-5 bg-">
-                <!-- Your content goes here -->
+
+        <main class="col-md-6 ms-sm-auto col-lg-10 px-md-4 mt-5 bg-">
+
+            <!-- Your content goes here -->
+            <div class="user_info col-md-6">
+
+
                 <div>
-                    <h2 class="">User Details:</h2>
-                <div class="">
-                    <p><strong>Name:</strong> {{ user.username }}</p>
-                    <p><strong>Email:</strong> {{ user.email }}</p>
-                    <p><strong>Phone Number:</strong> {{ user.phone }}</p> 
-                </div>
+                    <h3 class="">Profile Info</h3>
+                    <div class="">
+                        <p><strong>Name:</strong> {{ user.username }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Phone Number:</strong> {{ user.phone }}</p>
+                    </div>
                     <!-- Add your orders content here -->
                 </div>
                 <div>
-                    <button class=" btn btn-info toggle-btn" data-toggle="modal" data-target="#editUserDetails"> Edit
-            </button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userModal">
+                        Edit
+                    </button>
 
+                </div>
+            </div>
+        </main>
     </div>
-    </main>
-</div>
 </div>
 
-{% endfor %}
+
 <!-- userDetails edit modal -->
-{% for user in users %}
-<div class="modal fade" id="editUserDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
+
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit your info</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="userModalLabel">User Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="POST" action="" enctype="multipart/form-data">
-                {% csrf_token %}
+            <div class="modal-body">
+                <!-- User Information Form -->
+                <form method="POST" action="{% url 'edit_user_profile' user_id=user.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" value="{{user.username}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{user.email}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" value="{{user.phone}}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
 
-                <div class="modal-body">
-
-                    <!-- Category Name Field -->
-                    <div class="form-group">
-                        <label for="Username">Username</label>
-                        <input type="text" class="form-control" id="UserName" name="UserName"
-                            value="{{   .category_name}}" required>
-                    </div>
-                    b
-                    <!-- Category Description Field -->
-                    <div class="form-group">
-                        <label for="categoryDescription">Category Description:</label>
-                        <input type='email' class="form-control" id="email" name="email"
-                            required>{{user.email}}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="cat_img">Phone number</label>
-                        <input type="text" class="form-control-file" id="PhoneNo" name="PhoneNo">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success" id="submitCategory">Submit</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
@@ -109,10 +108,9 @@
 
 <!-- Bootstrap JS scripts -->
 
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
 
 {% endblock %}
 {% block script %}
-<!-- <script src="/javascript/script.js"></script> -->
-<!-- <script src="/javascript/myaccounts.js"></script> -->
+
 {% endblock %}

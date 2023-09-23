@@ -69,3 +69,18 @@ def user_profile(request):
     }
 
     return render(request,'home/user_profile.html',context)
+
+def edit_user_profile(request,user_id):
+  
+   
+    if request.method=='POST':
+        user  =CustomUser.objects.get(id=user_id)
+
+        if user:
+            print(user.username)
+            user.username=request.POST.get('username')
+            user.email   =request.POST.get('email')
+            user.phone   =request.POST.get('phone')
+            user.save()
+
+    return redirect('user_profile')
