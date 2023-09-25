@@ -60,27 +60,3 @@ def product_details(request,product_id):
 
     return render(request,'home/product_details.html',context)
 
-def user_profile(request):
-    email=request.session['useremail']
-    user=CustomUser.objects.filter(email=email)
-
-    context={
-        'users':user
-    }
-
-    return render(request,'home/user_profile.html',context)
-
-def edit_user_profile(request,user_id):
-  
-   
-    if request.method=='POST':
-        user  =CustomUser.objects.get(id=user_id)
-
-        if user:
-            print(user.username)
-            user.username=request.POST.get('username')
-            user.email   =request.POST.get('email')
-            user.phone   =request.POST.get('phone')
-            user.save()
-
-    return redirect('user_profile')

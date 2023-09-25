@@ -1,0 +1,265 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+<!-- Start Header/Navigation -->
+{% block bootstraplink %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+    h4 {
+        text-shadow: black;
+    }
+
+    .user_info {
+        background: #968c8c;
+    }
+
+    .address_display {
+
+        background: rgb(67, 89, 67)
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+            <div class="position-sticky">
+                <h4>Welcome {{users.username}}</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#my-profile">
+                            My Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#my-orders">
+                            My Orders
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+
+        <main class="col-md-6 ms-sm-auto col-lg-10 px-md-4 mt-5 bg-">
+
+            <!-- Your content goes here -->
+            <div class="user_info col-md-6">
+
+
+                <div>
+                    <div class="d-flex justify-content-center col-lg-6">
+                        <h4>User Info</h4>
+                    </div>
+
+                    <div class="card col-lg-6">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                    value="{{users.username}}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    value="{{users.email}}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" value="{{users.phone}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center col-lg-6 mt-2">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#userModal">
+                            Edit
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="d-flex justify-content-center">
+                <h5 class="card-title mt-5">Address Details</h5>
+            </div>
+            <div class="row">
+                <div class="card mt-5 col-md-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center">
+                            <h5>ADD YOUR ADDRESS HERE</h5>
+                        </div>
+
+                        <p class="card-text">
+                        <form method="POST" action="{% url 'add_address' user_id=user.id %}">
+                            {% csrf_token %}
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="RecipientName" class="form-label">Recipient Name:</label>
+                                        <input type="text" class="form-control" id="RecipientName" name="RecipientName"
+                                            value="" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="house_no" class="form-label">House No:</label>
+                                        <input type="text" class="form-control" id="house_no" name="house_no" value=""
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="street_name" class="form-label">Street Name:</label>
+                                        <input type="text" class="form-control" id="street_name" name="street_name"
+                                            value="" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="Village" class="form-label">Village/City:</label>
+                                        <input type="text" class="form-control" id="Village" name="Village" value=""
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="postal_code" class="form-label">Postal Code:</label>
+                                        <input type="text" class="form-control" id="postal_code" name="postal_code"
+                                            value="" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="district" class="form-label">District:</label>
+                                        <input type="text" class="form-control" id="district" name="district" value=""
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="state" class="form-label">State:</label>
+                                        <input type="text" class="form-control" id="state" name="state" value=""
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="country" class="form-label">Country:</label>
+                                        <input type="text" class="form-control" id="country" name="country" value=""
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center col-lg-12 mt-2">
+                                <button type="submit" class="btn btn-primary">
+                                    Save the Address
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+                <div class="coloumn col-md-6 mt-5">
+                    {% for address in address %}
+                    <h5>Address-{{ forloop.counter }}</h5>
+                    <div class="mt-2 card">
+                        <div>
+                            <h5><strong>{{address.recipient_name}}</strong></h5>
+                            <p>{{address.house_no}}/{{address.street_name}}/{{address.village_name}}/{{address.postal_code}}/{{address.district}}/{{address.state}}/{{address.country}}
+                            </p>
+                        </div>
+                       
+                    </div>
+                    <a href="">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="100" viewBox="0 0 24 24">
+                        <path d="M14.5 5.5L3 17 3 21 7 21 18.5 9.5zM21.2 2.8c-1.1-1.1-2.9-1.1-4 0L16 4l4 4 1.2-1.2C22.3 5.7 22.3 3.9 21.2 2.8z"></path>
+                        </svg>
+                    </a>
+                    <a>
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="100" viewBox="0 0 24 24">
+                            <path d="M 10.806641 2 C 10.289641 2 9.7956875 2.2043125 9.4296875 2.5703125 L 9 3 L 4 3 A 1.0001 1.0001 0 1 0 4 5 L 20 5 A 1.0001 1.0001 0 1 0 20 3 L 15 3 L 14.570312 2.5703125 C 14.205312 2.2043125 13.710359 2 13.193359 2 L 10.806641 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z"></path>
+                            </svg>
+                    </a>
+                   
+                    <!-- <button CLASS="btn btn-sm">
+                     delete
+                    </button> -->
+                    {%endfor%}
+                </div>
+            </div>
+
+
+
+        </main>
+    </div>
+</div>
+
+
+
+
+
+<!-- userDetails edit modal -->
+
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">User Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- User Information Form -->
+                <form method="POST" action="{% url 'edit_user_profile' user_id=user.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                            value="{{users.username}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{users.email}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" value="{{users.phone}}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Bootstrap JS scripts -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}
+{% block script %}
+
+{% endblock %}
