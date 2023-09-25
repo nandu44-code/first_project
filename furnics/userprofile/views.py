@@ -63,4 +63,25 @@ def add_address(request,user_id):
         return redirect('user_profile')
 
 def edit_address(request,address_id):
-    pass
+ 
+ if request.method=='POST':
+        address=Address.objects.get(id=address_id)
+        
+        address.house_no = request.POST.get('house_no')
+        address.recipient_name = request.POST.get('RecipientName')
+        address.street_name = request.POST.get('street_name')
+        address.village_name =  request.POST.get('Village')
+        address.postal_code =  request.POST.get('postal_code')
+        address.district =  request.POST.get('district')
+        address.state =  request.POST.get('state')
+        address.country =  request.POST.get('country')
+
+        address.save()
+
+        return redirect('user_profile')
+
+def delete_address(request,address_id):
+
+    address=Address.objects.get(id=address_id)
+    address.delete()
+    return redirect('user_profile')
