@@ -16,7 +16,9 @@ body {
   color: #6a6a6a;
   font-size: 14px;
   background-color: #eff2f1; }
-
+.sorry_msg{
+  color: #dd0909;
+}
 a {
   text-decoration: none;
   -webkit-transition: .3s all ease;
@@ -161,8 +163,8 @@ a {
 
 .btn {
   font-weight: 600;
-  padding: 12px 30px;
-  border-radius: 30px;
+  padding: 12px 15px;
+  border-radius: 10px;
   color: #ffffff;
   background: #2f2f2f;
   border-color: #2f2f2f; }
@@ -197,6 +199,11 @@ a {
       border-color: #314d43; 
   }
 
+  .btn.btn-danger{
+    color:#f4f4f4;
+    background: #dd0909 !important;
+    border-color:rgb(248, 22, 22) 
+  }
   .btn.btn-secondary {
     color: #2f2f2f;
     background: #f9bf29;
