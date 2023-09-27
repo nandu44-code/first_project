@@ -66,7 +66,9 @@
                 <!-- Buttons -->
                 <div class="mt-3">
                     
-                    <button class="btn btn-sm button-addtocart">Add To Cart</button>
+                        <a href="{% url 'add_cart' product_id=product.id %}">
+                        <button class="btn btn-sm button-addtocart">Add to Cart</button>
+                        </a>
                     <button class="btn btn-primary">Buy Now</button>
                 </div>
             </div>
