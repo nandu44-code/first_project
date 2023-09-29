@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.contrib import messages
-
+from django.http import Http404
 from accounts.models import CustomUser
 from .models import Address
 
@@ -84,4 +84,34 @@ def delete_address(request,address_id):
 
     address=Address.objects.get(id=address_id)
     address.delete()
+    return redirect('user_profile')
+
+
+
+def default_address(request):
+
+    if request.method =='POST':
+        try:
+            # Attempt to retrieve the default address
+            default_address_check = Address.objects.get(is_default=True)
+            
+            # If a default address exists, remove the old default address
+            default_address_check.is_default = False
+            default_address_check.save()
+            
+        except Address.DoesNotExist:
+            # Handle the case where no default address exists
+            pass
+
+        address_id = request.POST.get("default_address")  # getting the address selected by the user
+        
+        try:
+            # Attempt to retrieve the selected address
+            address = Address.objects.get(id=address_id)
+            address.is_default = True
+            address.save()
+        except Address.DoesNotExist:
+            # Handle the case where the selected address doesn't exist
+            raise Http404("The selected address does not exist")  # Raise Http404 to indicate a not found error
+
     return redirect('user_profile')

@@ -12,6 +12,7 @@ class Address(models.Model):
     district = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
+    is_default = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Adress for {self.recipient_name}"
