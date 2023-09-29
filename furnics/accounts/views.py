@@ -2,7 +2,7 @@ from datetime import datetime
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
 import pyotp
-from .models import CustomUser
+from .models import CustomUser, CustomUserManager
 from django.contrib import messages
 from django.views.decorators.cache import cache_control
 from .utils import  send_otp
@@ -15,47 +15,60 @@ from django.contrib.auth.hashers import make_password
 # view function for user login
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def user_login(request):
+    # Check if a user or admin is already logged in
     if 'useremail' in request.session:
         return redirect('homepage')
     if 'adminemail' in request.session:
         return redirect('admin_home')
 
-    if request.method=='POST':
-         
-         user_email=request.POST.get('email')
-         user_password=request.POST.get('password')
+    if request.method == 'POST':
+        user_email = request.POST.get('email')
+        user_password = request.POST.get('password')
 
-         user=authenticate(request,email=user_email,password=user_password)
-         
+        # Check if the user exists
+        try:
+            user = CustomUser.objects.get(email=user_email)
+        except CustomUser.DoesNotExist:
+            user = None
 
-         if user is not None and user.is_superuser is False:
-            login(request,user)
-            request.session['useremail']=user_email
-            return redirect('homepage')
-         else:
-            messages.error(request,'email or password is incorrect')
-            return redirect('user_login')
+        if user is not None:
+            # Check if the user is blocked
+            if not user.is_active:
+                messages.error(request, 'Your account has been blocked')
+                return redirect('user_login')
 
-    return render(request,'accounts/login.html')
+            # Attempt to authenticate the user
+            user = authenticate(request, email=user_email, password=user_password)
 
-              
+            if user is not None and not user.is_superuser:
+                # Login the user and set the session variable
+                login(request, user)
+                request.session['useremail'] = user_email
+                return redirect('homepage')
+            else:
+                messages.error(request, 'Email or password is incorrect')
+        else:
+            messages.error(request, 'User does not exist')
+
+    return render(request, 'accounts/login.html')
+
 
 # view function for user to signup   
 def user_signup(request):
-    if request.method=="POST":
-        username=request.POST.get('username')
-        user_email=request.POST.get('email')
-        phone=request.POST.get('phone_no')
-        password=request.POST.get('password')
-        confirm_password=request.POST.get('confirmpassword')
+    if request.method == "POST":
+        username = request.POST.get('username')
+        user_email = request.POST.get('email')
+        phone = request.POST.get('phone_no')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirmpassword')
         
-        email_checking=CustomUser.objects.filter(email=user_email)
+        email_checking = CustomUser.objects.filter(email = user_email)
 
         
         if  email_checking.exists():
             messages.error(request,"email is already taken") 
             return redirect('user_signup')
-        elif password==confirm_password:
+        elif password == confirm_password:
             otp=send_otp(request)
             subject = 'verify your email to continue to create an account at Furnics.4U'
             message = otp
@@ -64,10 +77,10 @@ def user_signup(request):
 
             send_mail(subject, message, from_email, recipient_list)  
 
-            request.session['useremail']=user_email
-            request.session['username']=username
-            request.session['phoneno']=phone
-            request.session['password']=password
+            request.session['useremail'] = user_email
+            request.session['username'] = username
+            request.session['phoneno'] = phone
+            request.session['password'] = password
 
             
             
