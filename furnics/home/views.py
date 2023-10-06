@@ -1,10 +1,10 @@
 from django.shortcuts import render,redirect
 from django.views.decorators.cache import never_cache
-from django.db.models import Q
+from django.db.models import Q,Max
 from categories.models import Category
 from categories.models import Sub_Category
 from accounts.models import CustomUser
-from store.models import Product
+from store.models import Product, Variation
 # Create your views here.
 # @never_cache  
 def homepage(request):
@@ -22,6 +22,9 @@ def homepage(request):
 def view_shop(request):
     categories=Category.objects.filter(is_activate=True)
     products=Product.objects.filter(is_activate=True)
+    # products = Product.objects.annotate(
+    #     first_variant_image=Max('variation__variantimage__image')
+    # ).all()
     context={
         'category':categories,
         'product':products,
@@ -43,12 +46,14 @@ def view_subcategory(request,category_id):
 def display_products(request,sub_category_id):
     
     product=Product.objects.filter(Q(is_activate=True) & Q(sub_category = sub_category_id))
+    
+    
     context={
         'product':product
             
             }                            
 
-    return render(request,'home/products_display.html',context)       
+    return render(request,'home/products_display.html',context)
 
 def product_details(request,product_id):
 

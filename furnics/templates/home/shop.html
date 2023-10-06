@@ -52,12 +52,12 @@
 		<div class="row">
 
 			<!-- Start Column 1 -->
-			{% for products in product %}
+			{% for product in product %}
 			<div class="col-12 col-md-4 col-lg-3 mb-5 mt-5">
-				<a class="product-item" href="{% url 'product_details' product_id=products.id%}">
-					<img src="/media/{{products.images}}" class="img-fluid product-thumbnail">
-					<h3 class="product-title">{{products.product_name}}</h3>
-					<strong class="product-price">Rs.{{products.price}}</strong>
+				<a class="product-item" href="{% url 'product_details' product_id=product.id%}">
+					<img src="/media/{{product.latest_variant_image}}" class="img-fluid product-thumbnail">
+					<h3 class="product-title">{{product.product_name}}</h3>
+					<strong class="product-price">Rs.{{product.variant_set.latest.selling_price}}</strong>
 					<div class="d-flex justify-content-center"> 
 						<span class="icon-cross">
 						
@@ -67,7 +67,7 @@
 							
 						</span>
 						<div class="d-flex justify-content-center mt-1 mb-5">
-							<a href="{% url 'add_cart' product_id=products.id %}">
+							<a href="{% url 'add_cart' product_id=product.id %}">
 							<button class="btn btn-sm button-addtocart">Add to Cart</button>
 							</a>
 						</div>

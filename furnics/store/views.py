@@ -1,5 +1,6 @@
+from decimal import Decimal
 from django.shortcuts import render,redirect
-from store.models import Product
+from store.models import Product, VariantImage, Variation
 from categories.models import Category,Sub_Category
 from django.contrib import messages
 # Create your views here.
@@ -17,69 +18,38 @@ def product_view(request):
     
         return render(request,'dashboard/products.html',context)
 def add_product(request):
-    if request.method=='POST':
-        product_name          =  request.POST['product_name']
-        stock                 =  request.POST['stock']
-        price                 =  request.POST['price']
-        description           =  request.POST['product_description']
-        image                 =  request.FILES.get('product_img', None)
-        image1                =  request.FILES.get('product_img1', None)
-        image2                =  request.FILES.get('product_img2', None)
-        image3                =  request.FILES.get('product_img3',None)
-        sub_category_id       =  request.POST.get('subcategory_name')
-        sub_category_instance =  Sub_Category.objects.get(pk=sub_category_id)
-        category              =  sub_category_instance.category
+     product = Product()
+     if request.method == 'POST':
+        # product_name = request.POST.get('product_name')
+        product.product_name = request.POST.get('product_name')
+        product.description = request.POST.get('product_description')
+        sub_category = request.POST.get('subcategory_name')
+        sub_cat = Sub_Category.objects.get(id=sub_category)
+        product.sub_category = sub_cat
+        product.category = sub_cat.category
+      
+        product.save()
+            
 
-        if Product.objects.filter(product_name=product_name).exists():
-
-            messages.error(request, 'Product name already exist')
-            return redirect('product_view')
-        else:
-            product = Product.objects.create(
-                product_name=product_name,
-                stock=stock,
-                price=price,
-                images=image,
-                image1=image1,
-                image2=image2,
-                image3=image3,
-                category=category,
-                sub_category=sub_category_instance,
-                description=description,
-                
-               )
-              
-            product.save()
-            return redirect('product_view')
-
+        return redirect('product_view')
+       
 
 def edit_product(request,product_id):
     product=Product.objects.get(pk = product_id)
-    product_image=product.images
+
     if request.method == 'POST':
         product_name = request.POST['product_name']
         product.product_name = request.POST['product_name']
-        product.stock = request.POST['stock']
-        product.price = request.POST['price']
+        # product.price = request.POST['price']
         product.description = request.POST['product_description']
-        product_images = request.FILES.get('product_img', None)
-        product.image1 = request.FILES.get('product_img1', None)
-        product.image2 = request.FILES.get('product_img2', None)
-        product.image3 = request.FILES.get('product_img3',None)
         sub_category_id = request.POST.get('subcategory_name')
         sub_category_instance=Sub_Category.objects.get(pk=sub_category_id)
         product.category=sub_category_instance.category
-        # checking whether choses an image to replace. if it is not chosen replacing the older image 
-        if product_images is None:
-
-            product.images = product_image
-        # if chosen another image that image is saving 
-        else:
-            product.images = product_images   
-
+       
+        
         if Product.objects.filter(product_name=product_name).exclude(pk=product_id).exists():
 
-            messages.error(request,"Entered Sub Category is already taken!!")
+            messages.error(request,"Entered product is already taken!!")
             return redirect('sub_categories')
         else:
             product.save()
@@ -120,3 +90,59 @@ def delete_product(request,product_id):
         }
         return render(request,'dashboard/products.html',context)
         
+def variant_view(request,product_id):
+
+    variants = Variation.objects.filter(product=product_id)
+    product = Product.objects.get(pk=product_id)
+    # for variant in variants:
+
+    # variant_image = VariantImage.objects.filter(variant=variant)
+    # first_variant_image = variant_image.first()
+    context = {
+       
+       'variant': variants,
+       'product': product,
+    #    'variant_image': first_variant_image
+    }
+
+    return render(request, 'dashboard/variants.html',context)
+
+def add_variant(request,product_id):
+    product_id = product_id
+    if request.method =='POST':
+        product = Product.objects.get(pk=product_id)
+        color = request.POST.get('color')
+        stock = request.POST.get('stock')
+        actual_price = request.POST.get('ActualPrice')
+        selling_price = request.POST.get('SellingPrice')
+        images = request.FILES.getlist('VariantImage')
+        image1 = images[0]
+        image2 = images[1]
+        image3 = images[2]
+        image4 = images[3]
+        
+        variant = Variation(
+            product = product,
+            color = color,
+            stock = stock,
+            actual_price = actual_price,
+            selling_price = selling_price,
+            image1 = image1,
+            image2 = image2,
+            image3 = image3,
+            image4 = image4
+
+        )
+        variant.save()
+        
+        # if images:
+        #     for image in images:
+        #         VariantImage.objects.create(
+        #             variant =  variant,
+        #             image = image
+        #         )
+                
+                
+
+
+        return redirect('variant_view',product_id)

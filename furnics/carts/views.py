@@ -22,7 +22,7 @@ def cart_page(request,total=0,quantity=0,cart_items=None):
         pass
 
     context = {
-
+        
         'total':total,
         'quantity':quantity,
         'cart_items':cart_items,

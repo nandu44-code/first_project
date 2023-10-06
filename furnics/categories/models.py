@@ -1,5 +1,5 @@
 from django.db import models
-from django.urls import reverse
+# from django.urls import reverse
 
 # Create your models here.
 class Category(models.Model):
@@ -8,21 +8,13 @@ class Category(models.Model):
     description = models.TextField(max_length=225,blank=True)
     is_activate=models.BooleanField(default=True)
 
-    # def save(self, *args, **kwargs):
-    #     # generate slug field from name field if slug is empty
-    #     if not self.slug:
-    #         self.slug = slugify(self.category_name)
-    #     super(Category, self).save(*args, **kwargs)
-
     class Meta:
         verbose_name = 'category'
         verbose_name_plural= 'categories'
 
-    def get_url(self):
-        return reverse('products_by_category', args={self.slug})
+    # def get_url(self):
+    #     return reverse('products_by_category', args={self.slug})
     
-        
-
     def __str__(self):
         return self.category_name
     
@@ -34,19 +26,12 @@ class Sub_Category(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     is_activate=models.BooleanField(default=True)
 
-    # def save(self, *args, **kwargs):
-    #     # generate slug field from name field if slug is empty
-    #     if not self.slug:
-    #         self.slug = slugify(self.sub_category_name)
-    #     super(Sub_Category, self).save(*args, **kwargs)
-
-
     class Meta:
         verbose_name = 'sub category'
         verbose_name_plural = 'sub categories'
 
-    def get_url(self):
-        return reverse('products_by_sub_category',args=[self.slug])
+    # def get_url(self):
+    #     return reverse('products_by_sub_category',args=[self.slug])
 
     def __str__(self):
         return self.sub_category_name
