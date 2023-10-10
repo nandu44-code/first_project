@@ -1,6 +1,7 @@
 from decimal import Decimal
-from django.shortcuts import render,redirect
-from store.models import Product, VariantImage, Variation
+import os
+from django.shortcuts import get_object_or_404, render,redirect
+from store.models import Product, Variation
 from categories.models import Category,Sub_Category
 from django.contrib import messages
 # Create your views here.
@@ -17,6 +18,8 @@ def product_view(request):
         }
     
         return render(request,'dashboard/products.html',context)
+    else:
+        return redirect('admin_login')
 def add_product(request):
      product = Product()
      if request.method == 'POST':
@@ -127,6 +130,7 @@ def add_variant(request,product_id):
             stock = stock,
             actual_price = actual_price,
             selling_price = selling_price,
+            # assigning the images into the single variables
             image1 = image1,
             image2 = image2,
             image3 = image3,
@@ -134,15 +138,39 @@ def add_variant(request,product_id):
 
         )
         variant.save()
-        
-        # if images:
-        #     for image in images:
-        #         VariantImage.objects.create(
-        #             variant =  variant,
-        #             image = image
-        #         )
-                
-                
-
 
         return redirect('variant_view',product_id)
+
+def edit_variants(request, variant_id):
+    variant = get_object_or_404(Variation, pk=variant_id)
+    product_id = variant.product.id
+
+    if request.method == 'POST':
+        # Update the Variation object with new data
+        variant.color = request.POST.get('color')
+        variant.stock = request.POST.get('stock')
+        variant.actual_price = request.POST.get('ActualPrice')
+        variant.selling_price = request.POST.get('SellingPrice')
+        
+        # Handle image uploads
+        images = request.FILES.getlist('VariantImage')
+        for i in range(min(len(images), 4)):
+            image_field_name = f'image{i+1}'  # image1, image2, image3, image4
+            image = images[i]
+            setattr(variant, image_field_name, image)
+
+        # Delete existing image files only if new images are uploaded
+        if any(images):
+            if variant.image1 and os.path.exists(variant.image1.path):
+                os.remove(variant.image1.path)
+            if variant.image2 and os.path.exists(variant.image2.path):
+                os.remove(variant.image2.path)
+            if variant.image3 and os.path.exists(variant.image3.path):
+                os.remove(variant.image3.path)
+            if variant.image4 and os.path.exists(variant.image4.path):
+                os.remove(variant.image4.path)
+
+        variant.save()
+        return redirect('variant_view', product_id)
+
+    

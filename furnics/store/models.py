@@ -29,7 +29,8 @@ class Product(models.Model):
 class Variation(models.Model):
    
  
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variations')
+    # sub_category = models.ForeignKey(Sub_Category, on_delete=models.CASCADE)
     color = models.CharField(max_length=20)
     stock = models.PositiveIntegerField(default=None)  # Use PositiveIntegerField for stock
     # images = models.ImageField(upload_to='photos/products/',default=None)

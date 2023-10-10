@@ -22,12 +22,13 @@ def homepage(request):
 def view_shop(request):
     categories=Category.objects.filter(is_activate=True)
     products=Product.objects.filter(is_activate=True)
-    # products = Product.objects.annotate(
-    #     first_variant_image=Max('variation__variantimage__image')
-    # ).all()
+    variants = Variation.objects.order_by('product').distinct('product')
+
+   
     context={
         'category':categories,
         'product':products,
+        'variants':variants
     }
 
 
@@ -47,20 +48,31 @@ def display_products(request,sub_category_id):
     
     product=Product.objects.filter(Q(is_activate=True) & Q(sub_category = sub_category_id))
     
-    
+    # Fetch one variant for each product using distinct
+    variants = Variation.objects.order_by('product').distinct('product')
+
     context={
-        'product':product
+        'variants':variants
             
             }                            
 
     return render(request,'home/products_display.html',context)
 
-def product_details(request,product_id):
+def product_details(request,variant_id):
 
-    product=Product.objects.filter(Q(is_activate=True) & Q(id=product_id))
 
+    variants = Variation.objects.get(pk=variant_id)
+    product_id = variants.product
+
+    available_variants =Variation.objects.filter(product=product_id)
+    
+    for i in available_variants:
+
+        print(i.color)
     context={
-        'product':product
+        # 'product':product,
+        'variant': variants,
+        'available_vatiants':available_variants
     }
 
     return render(request,'home/product_details.html',context)

@@ -58,7 +58,7 @@
 
                     </td>
                     <td>
-                        {% if product.is_activate %}
+                        {% if product.is_available %}
                         <a href="{% url 'delete_product' product_id=product.id %}">
                             <button class="btn btn-danger toggle-btn">Deactivate</button>
                         </a>
@@ -74,50 +74,65 @@
             </tbody>
         </table>
     </div>
-    {% for product in products %}
-    <!--Edit product Modal -->
+    {% for variant in variant %}
+    <!--Edit variant Modal -->
     <div class="modal fade" id="editProductModal-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Product</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Variant</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{% url 'edit_product' product_id=product.id %}"
+                    <form method="POST" action="{% url 'edit_variants' variant_id=variant.id %}"
                         enctype="multipart/form-data">
                         {% csrf_token %}
 
-                        <div class="modal-body">
+                        <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
                             <div class="form-row">
-                                <!-- Sub Category Field -->
+                                <!-- Variant color Field -->
                                 <div class="form-group col-md-6">
-                                    <label for="category">Sub Category:</label>
-                                    <select class="form-control" name="subcategory_name" required>
-                                        {% for subcategories in sub_category %}
-                                        <option value="{{subcategories.id}}">{{subcategories.sub_category_name}}
-                                        </option>
-                                        {% endfor %}
+                                    <label for="category">Color</label>
+                                    <select class="form-control" name="color" required>
+                                        <option value="red">Red</option>
+                                        <option value="green">Green</option>
+                                        <option value="blue">Blue</option>
+                                        <option value="yellow">Yellow</option>
+                                        <option value="orange">Orange</option>
+                                        <option value="purple">Purple</option>
+                                        <option value="pink">Pink</option>
+                                        <option value="brown">Brown</option>
+                                        <option value="gray">Gray</option>
+                                        <option value="black">Black</option>
                                     </select>
                                 </div>
-                                <!-- Product Name Field -->
+                                
+                                <!-- Variant stock  Field -->
                                 <div class="form-group col-md-6">
-                                    <label for="categoryName">Product Name:</label>
-                                    <input type="text" class="form-control" id="product_name" name="product_name"
-                                        value="{{product.product_name}}" required>
+                                    <label for="VariantStock">Stock</label>
+                                    <input type="number" class="form-control" id="stock" name="stock" value="{{variant.stock}}"
+                                    required>
                                 </div>
                             </div>
-                            <!-- Description Field (Alone in its Row) -->
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <label for="productDescription">Description:</label>
-                                    <textarea class="form-control" id="productDescription" name="product_description"
-                                        rows="4" required>{{product.description}}</textarea>
-                                </div>
+                        </div>
+                            <!-- Variant Actual Price Field -->
+                            <div class="form-group col">
+                                <label for="VariantActualPrice">Actual Price</label>
+                                <input type="number" class="form-control" id="ActualPrice" name="ActualPrice" value="{{variant.actual_price}}"
+                                required>
                             </div>
+                            <div class="form-group col">
+                                <label for="VariantSellingPrice">Selling Price</label>
+                                <input type="number" class="form-control" id="SellingPrice" name="SellingPrice" value="{{variant.selling_price}}"
+                                required>
+                            </div>
+                        <div class="form-group col">
+                            <label for="imageUpload">Variant Image</label>
+                            <input type="file" class="form-control" id="imageUpload" name="VariantImage" multiple>
+                        </div> 
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

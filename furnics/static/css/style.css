@@ -24,8 +24,8 @@ a {
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease;
-  color: #2f2f2f;
-  text-decoration: underline; }
+  color: #19723d;
+  text-decoration: none; }
   a:hover {
     color: #2f2f2f;
     text-decoration: none; }
@@ -160,10 +160,17 @@ a {
       @media (min-width: 1200px) {
         .hero .hero-img-wrap:after {
           top: -40px; } }
+.variant_button{
+  color:white;
+  background:white;
+  border-color:#000000
 
+
+}
 .btn {
-  font-weight: 600;
+  font-weight: 900;
   padding: 12px 15px;
+  
   border-radius: 10px;
   color: #ffffff;
   background: #2f2f2f;
@@ -180,7 +187,7 @@ a {
     background: #314d43;
     border-color: #f8f8f8; }
     .btn.btn-primary:hover {
-      background: #314d43;
+      background: #2e443c;
       border-color: #314d43; }
   .button-addtocart{
     background: #a31a1a;
@@ -207,10 +214,12 @@ a {
   .btn.btn-secondary {
     color: #2f2f2f;
     background: #f9bf29;
-    border-color: #f9bf29; }
+    border-color: #f9bf29;
+    
+   }
     .btn.btn-secondary:hover {
-      background: #f8b810;
-      border-color: #f8b810; }
+      background: #f9bf29;
+      border-color: #f9bf29; }
   .btn.btn-white-outline {
     background: transparent;
     border-width: 2px;
@@ -335,7 +344,10 @@ a {
     font-size: 14px;
     line-height: 22px;
     color: #6a6a6a; }
-
+.h2{
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 30px; }
 .we-help-section {
   padding: 7rem 0; }
   .we-help-section .imgs-grid {
