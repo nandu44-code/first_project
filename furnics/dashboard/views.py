@@ -29,9 +29,12 @@ def admin_login(request):
 
 
 def adminhome(request):
+    if 'adminemail' in request.session:
 
-    return render(request,'dashboard/adminhome.html')
 
+        return render(request,'dashboard/adminhome.html')
+    else:
+        return redirect('admin_login')
 
 
 def adminlogout(request):
@@ -44,13 +47,17 @@ def adminlogout(request):
 
 # view function for going to users page
 def users(request):
-    user=CustomUser.objects.filter(is_superuser=False).order_by('id')
+    if 'adminemail' in request.session:
+        user=CustomUser.objects.filter(is_superuser=False).order_by('id')
     
-    context={
-        'users':user
-        }
-    return render (request,'dashboard/users.html',context)
+        context={
+             'users':user
+                }
+        return render (request,'dashboard/users.html',context)
 
+    else:
+        return redirect('admin_login')
+ 
 
 # view function for blocking and unblocking the user
 def block_user(request,user_id):
@@ -82,14 +89,15 @@ def block_user(request,user_id):
     
 
 def categories(request):
+    if 'adminemail' in request.session:
+        category=Category.objects.all().order_by('id')
+        context={
+            'categories':category
+        }
 
-    category=Category.objects.all().order_by('id')
-    context={
-        'categories':category
-    }
-
-    return render(request,'dashboard/categories.html',context)
-
+        return render(request,'dashboard/categories.html',context)
+    else:
+        return redirect('admin_login')
 
 def add_categories(request):
 

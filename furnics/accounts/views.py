@@ -36,7 +36,7 @@ def user_login(request):
             if not user.is_active:
                 messages.error(request, 'Your account has been blocked')
                 return redirect('user_login')
-
+                
             # Attempt to authenticate the user
             user = authenticate(request, email=user_email, password=user_password)
 

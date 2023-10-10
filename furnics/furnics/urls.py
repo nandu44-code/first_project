@@ -28,7 +28,7 @@ urlpatterns = [
     path('store/',include('store.urls')),
     path('cart/',include('carts.urls')),
     path('user-profile/',include('userprofile.urls')),
-    
+    path('home/',include("home.urls"))
 ] 
 
 if settings.DEBUG:

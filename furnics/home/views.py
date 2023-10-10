@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.views.decorators.cache import never_cache
 from django.db.models import Q,Max
@@ -65,7 +66,7 @@ def product_details(request,variant_id):
     product_id = variants.product
 
     available_variants =Variation.objects.filter(product=product_id)
-    
+
     for i in available_variants:
 
         print(i.color)
@@ -76,4 +77,32 @@ def product_details(request,variant_id):
     }
 
     return render(request,'home/product_details.html',context)
+
+def variant_select(request,variant_id):
+
+
+    variants = Variation.objects.get(pk=variant_id)
+    product_id = variants.product
+
+    available_variants =Variation.objects.filter(product=product_id)
+    
+   
+    
+    variant_price = variants.selling_price
+    variant_stock = variants.stock
+    variant_image1 = variants.image1.url
+    variant_image2 = variants.image2.url
+    variant_image3 = variants.image3.url
+    variant_image4 = variants.image4.url
+
+        # 'available_vatiants':available_variants
+    
+
+    return JsonResponse({'variant':variant_price,
+                         'variant_stock':variant_stock,
+                         'variant_image1':variant_image1,
+                         'variant_image2':variant_image2,
+                         'variant_image3':variant_image3,
+                         'variant_image4':variant_image4
+                         })
 
