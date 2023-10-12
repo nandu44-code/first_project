@@ -17,7 +17,7 @@ def homepage(request):
 
 
 
-
+    
     return render(request,'home/index.html')
 
 def view_shop(request):
@@ -39,8 +39,15 @@ def view_shop(request):
 def view_subcategory(request,category_id):
    
     subcategory=Sub_Category.objects.filter(Q(is_activate=True) & Q(category=category_id))
+    # Assuming you already have 'subcategory' containing the filtered subcategories
+    products = Product.objects.filter(sub_category__in=subcategory, is_activate=True)
+
+    
+    base_variants = Variation.objects.filter(product__in=products).values('product').distinct()
+
     context={
-        'subcategory':subcategory
+        'subcategory':subcategory,
+        'base_variant':base_variants
     }
 
     return render(request,'home/subcategory.html',context)
@@ -73,7 +80,7 @@ def product_details(request,variant_id):
     context={
         # 'product':product,
         'variant': variants,
-        'available_vatiants':available_variants
+        'available_variants':available_variants
     }
 
     return render(request,'home/product_details.html',context)

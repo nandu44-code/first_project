@@ -75,7 +75,7 @@
             <div class="d-flex">
 
 
-                {% for variants in available_vatiants %}
+                {% for variants in available_variants %}
 
                 <div class="d-flex mr-5 mb-5 mt-1 ">
                     <button type="button" class="btn variant-button" id="variant-selector-{{ variants.id }}"
@@ -85,12 +85,12 @@
                     </button>
                 </div>
                 {% endfor %}
-            </div>
+            </div>  
 
             <!-- Buttons -->
             <div class="mt-3">
 
-                <a href="{% url 'add_cart' product_id=variant.product.id %}">
+                <a href="{% url 'add_cart' product_id=variant.id %}">
                     <button class="btn btn-sm button-addtocart">Add to Cart</button>
                 </a>
                 <button class="btn btn-primary">Buy Now</button>
