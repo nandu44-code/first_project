@@ -1,6 +1,7 @@
 {% extends 'accounts/base.html' %}
-{% block content %}
 
+
+{% block content %}
 <!-- Start Hero Section -->
 <div class="hero">
 	<div class="container">
@@ -19,11 +20,38 @@
 <!-- End Hero Section -->
 
 <div class="untree_co-section">
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-6">
+	<div class="container-fluid ">
+		<form method="POST" action="{% url 'place_order' %}">
+			{% csrf_token %}
+			<div class="row mb-5">
+				<div class="col-md-12">
+					<h2 class="h3 mb-1 text-black p-2 "> Address</h2>
 
-				<div class="row mb-5">
+					<div class="container-fluid d-flex p-3 p-lg-3" style="overflow-x: auto;">
+						{% for address in address %}
+						<div class="address-card p-3" style="border: 2px solid rgb(81, 81, 81); max-width:200px;">
+							<div><input type="radio" id="address{{ address.id }}" name="selectedAddress"
+									value="{{ address.id }}"></div>
+							<label for="address{{ address.id }}" class="mt-2">
+								<strong>{{ address.recipient_name }}</strong><br>
+								{{ address.house_no }} {{ address.street_name }} {{ address.village_name }} <br>
+								{{ address.district }}, {{ address.state }} {{ address.postal_code }}
+								{{ address.country }}
+							</label>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+			<div class="container-fluid d-flex justify-content-evenly">
+
+				<!-- <div class="row"> -->
+				<div style="width: 40%;">
+
+
+
+
+					<!-- <div class="row mb-5">
 					<div class="col-md-12">
 						<h2 class="h3 mb-3 text-black">Coupon Code</h2>
 						<div class="p-3 p-lg-5 border bg-white">
@@ -39,10 +67,12 @@
 
 						</div>
 					</div>
+				</div> -->
 				</div>
+				<div style="width: 40%; height:20px">
+					<div class="row">
 
-				<div class="row mb-5">
-					<div class="col-md-12">
+
 						<h2 class="h3 mb-3 text-black">Your Order</h2>
 						<div class="p-3 p-lg-5 border bg-white">
 							<table class="table site-block-order-table mb-5">
@@ -53,10 +83,11 @@
 								<tbody>
 									{% for cart_item in cart_items%}
 									<tr>
-										<td>{{cart_item.product.product_name}} <strong class="mx-2">x</strong> 1</td>
-										<td>₹ {{total}}</td>
+										<td>{{cart_item.product.product.product_name}} <strong class="mx-2">x</strong>
+											{{quantity}}</td>
+										<td>₹ {{ cart_item.sub_total }}</td>
 									</tr>
-									
+
 									{%endfor%}
 									<tr>
 										<td><strong class="mx-2">Tax</strong> </td>
@@ -69,169 +100,292 @@
 								</tbody>
 							</table>
 
-							<div class="border p-3 mb-3">
-								<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsebank"
-										role="button" aria-expanded="false" aria-controls="collapsebank">Cash on
-										delivery</a></h3>
+							<!-- <div class="border p-3 mb-3">
+							<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsebank"
+									role="button" aria-expanded="false" aria-controls="collapsebank">Cash on
+									delivery</a></h3>
 
 
-							</div>
+						</div>
 
-							<div class="border p-3 mb-5">
-								<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsepaypal"
-										role="button" aria-expanded="false" aria-controls="collapsepaypal">Paypal</a>
-								</h3>
+						<div class="border p-3 mb-5">
+							<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsepaypal"
+									role="button" aria-expanded="false" aria-controls="collapsepaypal">Paypal</a>
+							</h3>
 
-								<div class="collapse" id="collapsepaypal">
-									<div class="py-2">
-										<p class="mb-0">Make your payment directly into our bank account. Please use
-											your Order ID as the payment reference. Your order won’t be shipped until
-											the funds have cleared in our account.</p>
-									</div>
+							<div class="collapse" id="collapsepaypal">
+								<div class="py-2">
+									<p class="mb-0">Make your payment directly into our bank account. Please use
+										your Order ID as the payment reference. Your order won’t be shipped until
+										the funds have cleared in our account.</p>
 								</div>
 							</div>
-
-							<div class="form-group">
-								<button class="btn btn-black btn-lg py-3 btn-block"
-									onclick="window.location='thankyou.html'">Place Order</button>
+						</div> -->
+							<div>
+								<button type="submit" class="btn btn-secondary">
+									Cash on delivery
+								</button>
 							</div>
 
+							<div>
+								<button class="mt-2 btn btn-danger paywithRazorpay">
+									Pay With RazorPay
+								</button>
+							</div>
+
+							<!-- <div class="form-group">
+							<button class="btn btn-black btn-lg py-3 btn-block"
+								onclick="window.location='thankyou.html'">Place Order</button>
+						</div> -->
 						</div>
 					</div>
 				</div>
 
 			</div>
-			<div class="col-md-6">
+
+		</form>
+			<div class="col-md-6 d-flex justify-content-center">
 				<div class="card mt-5 col-md-6">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-center">
-                            <h5>BILLING DETAILS</h5>
-                        </div>
-
-                        <p class="card-text">
-                        <form method="POST" action="{% url 'add_address' user_id=user.id %}">
-                            {% csrf_token %}
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="RecipientName" class="form-label">Recipient Name:</label>
-                                        <input type="text" class="form-control" id="RecipientName" name="RecipientName"
-                                            value="" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="house_no" class="form-label">House No:</label>
-                                        <input type="text" class="form-control" id="house_no" name="house_no" value=""
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="street_name" class="form-label">Street Name:</label>
-                                        <input type="text" class="form-control" id="street_name" name="street_name"
-                                            value="" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="Village" class="form-label">Village/City:</label>
-                                        <input type="text" class="form-control" id="Village" name="Village" value=""
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="postal_code" class="form-label">Postal Code:</label>
-                                        <input type="text" class="form-control" id="postal_code" name="postal_code"
-                                            value="" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="district" class="form-label">District:</label>
-                                        <input type="text" class="form-control" id="district" name="district" value=""
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="state" class="form-label">State:</label>
-                                        <input type="text" class="form-control" id="state" name="state" value=""
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="country" class="form-label">Country:</label>
-                                        <input type="text" class="form-control" id="country" name="country" value=""
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-center col-lg-12 mt-2">
-                                <button type="submit" class="btn btn-primary">
-                                    Save the Address
-                                </button>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-				{% for address in address %}
-				<div class="justify-content-around">
-					<h5>Address-{{ forloop.counter }}</h5>
-					{% if address.is_default is True %}
-					<div class="border p-2">
-						Default
-					</div>
-					{% endif %}
-				</div>
-			   
-				<div class="mt-2 card">
 					<div class="card-body">
-						<h5 class="card-title"><strong>{{ address.recipient_name }}</strong></h5>
+						<div class="d-flex justify-content-center">
+							<h5>ADD NEW ADDRESS</h5>
+						</div>
+
 						<p class="card-text">
-							{{ address.house_no }}/{{ address.street_name }}<br>
-							{{ address.village_name }}<br>
-							{{ address.postal_code }}/{{ address.district }}<br>
-							{{ address.state }}/{{ address.country }}
-						</p>
+						<form method="POST" action="{% url 'add_address' user_id=user.id %}">
+							{% csrf_token %}
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="mb-3">
+										<label for="RecipientName" class="form-label">Recipient Name:</label>
+										<input type="text" class="form-control" id="RecipientName" name="RecipientName"
+											value="" required>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="mb-3">
+										<label for="house_no" class="form-label">House No:</label>
+										<input type="text" class="form-control" id="house_no" name="house_no" value=""
+											required>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="mb-3">
+										<label for="street_name" class="form-label">Street Name:</label>
+										<input type="text" class="form-control" id="street_name" name="street_name"
+											value="" required>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="mb-3">
+										<label for="Village" class="form-label">Village/City:</label>
+										<input type="text" class="form-control" id="Village" name="Village" value=""
+											required>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="mb-3">
+										<label for="postal_code" class="form-label">Postal Code:</label>
+										<input type="text" class="form-control" id="postal_code" name="postal_code"
+											value="" required>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="mb-3">
+										<label for="district" class="form-label">District:</label>
+										<input type="text" class="form-control" id="district" name="district" value=""
+											required>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="mb-3">
+										<label for="state" class="form-label">State:</label>
+										<input type="text" class="form-control" id="state" name="state" value=""
+											required>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="mb-3">
+										<label for="country" class="form-label">Country:</label>
+										<input type="text" class="form-control" id="country" name="country" value=""
+											required>
+									</div>
+								</div>
+							</div>
+							<div class="d-flex justify-content-center col-lg-12 mt-2">
+								<button type="submit" class="btn btn-primary">
+									Save the Address
+								</button>
+							</div>
+						</form>
+
 					</div>
 				</div>
-
-				<svg id="editIcon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="100"
-					viewBox="0 0 24 24">
-					<path
-						d="M14.5 5.5L3 17 3 21 7 21 18.5 9.5zM21.2 2.8c-1.1-1.1-2.9-1.1-4 0L16 4l4 4 1.2-1.2C22.3 5.7 22.3 3.9 21.2 2.8z">
-					</path>
-				</svg>
-
-
-				<a href="{% url 'delete_address' address_id=address.id %}">
-					<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="100"
-						viewBox="0 0 24 24">
-						<path
-							d="M 10.806641 2 C 10.289641 2 9.7956875 2.2043125 9.4296875 2.5703125 L 9 3 L 4 3 A 1.0001 1.0001 0 1 0 4 5 L 20 5 A 1.0001 1.0001 0 1 0 20 3 L 15 3 L 14.570312 2.5703125 C 14.205312 2.2043125 13.710359 2 13.193359 2 L 10.806641 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z">
-						</path>
-					</svg>
-				</a>
-				{% endfor %}
-			
 			</div>
+
+
+	</div>
+
+</div>
+<!-- <div>
+	{% for address in address %}
+	<div class="justify-content-around">
+		<h5>Address-{{ forloop.counter }}</h5>
+		{% if address.is_default is True %}
+		<div class="border p-2">
+			Default
+		</div>
+		{% endif %}
+	</div>
+
+	<div class="mt-2 card">
+		<div class="card-body">
+			<h5 class="card-title"><strong>{{ address.recipient_name }}</strong></h5>
+			<p class="card-text">
+				{{ address.house_no }}/{{ address.street_name }}<br>
+				{{ address.village_name }}<br>
+				{{ address.postal_code }}/{{ address.district }}<br>
+				{{ address.state }}/{{ address.country }}
+			</p>
 		</div>
 	</div>
-</div>
+
+	<svg id="editIcon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="100" viewBox="0 0 24 24">
+		<path
+			d="M14.5 5.5L3 17 3 21 7 21 18.5 9.5zM21.2 2.8c-1.1-1.1-2.9-1.1-4 0L16 4l4 4 1.2-1.2C22.3 5.7 22.3 3.9 21.2 2.8z">
+		</path>
+	</svg>
 
 
-{%endblock %}
+	<a href="{% url 'delete_address' address_id=address.id %}">
+		<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="100" viewBox="0 0 24 24">
+			<path
+				d="M 10.806641 2 C 10.289641 2 9.7956875 2.2043125 9.4296875 2.5703125 L 9 3 L 4 3 A 1.0001 1.0001 0 1 0 4 5 L 20 5 A 1.0001 1.0001 0 1 0 20 3 L 15 3 L 14.570312 2.5703125 C 14.205312 2.2043125 13.710359 2 13.193359 2 L 10.806641 2 z M 4.3652344 7 L 5.8925781 20.263672 C 6.0245781 21.253672 6.877 22 7.875 22 L 16.123047 22 C 17.121047 22 17.974422 21.254859 18.107422 20.255859 L 19.634766 7 L 4.3652344 7 z">
+			</path>
+		</svg>
+	</a>
+	{% endfor %}
+
+</div> -->
+<!--Add address-->
+<!-- <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+	data-bs-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel1">Add Address</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form method="post">
+				{% csrf_token %}
+				<div class="row">
+					<div class="col-md-6">
+						<div class="mb-3 ml-2 mr-1">
+							<label for="RecipientName" class="form-label">Recipient Name:</label>
+							<input type="text" class="form-control" id="RecipientName" name="RecipientName" value=""
+								required placeholder="Enter Username">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3 ml-1 mr-2">
+							<label for="house_no" class="form-label">House No:</label>
+							<input type="text" class="form-control" name="house_no" value=""
+								placeholder="Enter House No" required>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="mb-3  ml-2 mr-1">
+							<label for="street_name" class="form-label">Street Name:</label>
+							<input type="text" class="form-control" id="street_name" name="street_name"
+								placeholder="Enter Street" value="" required>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3  ml-1 mr-2">
+							<label for="Village" class="form-label">Village/City:</label>
+							<input type="text" class="form-control" id="Village" name="Village" value=""
+								placeholder="Enter City" required>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="mb-3 ml-2 mr-1">
+							<label for="postal_code" class="form-label">Postal Code:</label>
+							<input type="text" class="form-control" id="postal_code" name="postal_code" value=""
+								required placeholder="Enter Postal Code">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3 ml-1 mr-2">
+							<label for="district" class="form-label">District:</label>
+							<input type="text" class="form-control" id="districct" name="district" value=""
+								placeholder="Enter District" required>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="mb-3 ml-2 mr-1">
+							<label for="postal_code" class="form-label"> Email:</label>
+							<input type="text" class="form-control" name="email" placeholder="Enter Email" value=""
+								required>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3 ml-1 mr-2">
+							<label for="district" class="form-label">phone:</label>
+							<input type="tel" class="form-control" name="phone" placeholder="phone" required>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="mb-3 ml-2 mr-1">
+							<label for="state" class="form-label">State:</label>
+							<input type="text" class="form-control" name="state" value="" placeholder="Enter State"
+								required>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3 ml-1 mr-2">
+							<label for="country" class="form-label">Country:</label>
+							<input type="text" class="form-control" name="country" value="" placeholder="Enter country"
+								required>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Add</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div> -->
+
+
+{%endblock content%}
+
+{% block script%}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+{% endblock script %}

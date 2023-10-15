@@ -1,0 +1,28 @@
+.nav-link{
+    color:rgb(255, 255, 255) !important;
+}
+.nav-link:hover{
+
+    color: rgb(255, 55, 55) !important ;
+
+}
+
+.sidebar-div {
+    position: fixed !important ;;
+    height:100% !important ;;
+    background-color: rgb(255, 255, 255) !important;
+}
+
+.itemsdiv{
+    border-radius: 10px;
+    background-color: rgb(93, 100, 102)!important ;
+}
+
+.itemsdiv:hover {
+    display: grid!important ;
+    place-items: center !important ;
+    width: 200px!important ; 
+    border: #ccc!important ;
+    border-width: 10px!important ;
+    background-color: rgb(0, 0, 0)!important ;
+}

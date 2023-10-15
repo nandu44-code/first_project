@@ -6,15 +6,17 @@ from .models import Address
 
 # Create your views here.
 def user_profile(request):
-    email=request.session['useremail']
-    user=CustomUser.objects.get(email=email)
-    user_id=user.id
-    address=Address.objects.filter(user_id=user_id)
-    context={
-        'users':user,
-        'address':address
-    }
-
+    if 'useremail' in request.session:
+     email=request.session['useremail']
+     user=CustomUser.objects.get(email=email)
+     user_id=user.id
+     address=Address.objects.filter(user_id=user_id)
+     context={
+            'users':user,
+            'address':address
+        }
+    else:
+        return redirect('user_login')
     return render(request,'userprofile/user_profile.html',context)
 
 def edit_user_profile(request,user_id):

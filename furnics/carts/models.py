@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import CustomUser
+from userprofile.models import Address
 
 from store.models import Product, Variation
 
@@ -28,3 +29,49 @@ class CartItem(models.Model):
 
         return self.product.product_name
     
+class Order(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    total_price = models.FloatField(null=False)
+    payment_mode = models.CharField(max_length=150, null=False)
+    payment_id = models.CharField(max_length=250, null=True)
+    message = models.TextField(null=True)
+    tracking_no = models.CharField(max_length=150, null=True)
+    orderstatuses=(
+        ('Order confirmed', 'Order confirmed'),
+        ('Shipped', 'Shipped'),
+        ('Out for delivery', 'Out for delivery'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+        ('Return requested', 'Return requested'),
+        ('Return processing', 'Return processing'),
+        ('Returned', 'Returned'),
+    )
+
+    status = models.CharField(max_length=150, choices=orderstatuses, default='Order confirmed')
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    def _str_(self):
+        return str(self.tracking_no)
+    
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variant=models.ForeignKey(Variation, on_delete=models.CASCADE)
+    price = models.FloatField(null=False)
+    quantity = models.IntegerField(null=False)
+    STATUS = (
+        ('Order confirmed', 'Order confirmed'),
+        ('Shipped', 'Shipped'),
+        ('Out for delivery', 'Out for delivery'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+        ('Return requested', 'Return requested'),
+        ('Return processing', 'Return processing'),
+        ('Returned', 'Returned'),
+    )
+    status = models.CharField(max_length=150, choices=STATUS, default='Order Confirmed')
+
+    def str(self):
+        return f"{self.order.id, self.order.tracking_no}"

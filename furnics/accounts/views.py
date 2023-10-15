@@ -82,11 +82,9 @@ def user_signup(request):
             request.session['phoneno'] = phone
             request.session['password'] = password
 
-            
-            
             return redirect('user_otp')
         else:
-            messages.error(request,'passwords do not match')
+            messages.error( request,'passwords do not match')
             
 
     return render(request,'accounts/signup.html')

@@ -191,7 +191,10 @@ a {
       border-color: #314d43; }
   .button-addtocart{
     background: #a31a1a;
-    border-color: #e4e4e4; }
+    border-color: #e4e4e4; 
+    
+    
+  }
   
     .button-addtocart:hover {
       background: #314d43;
@@ -746,3 +749,43 @@ textarea {
     height: 50px;
     border-radius: 50%;
     background: rgba(59, 93, 80, 0.2); }
+
+    .address-card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 5px;
+      width: 200px; /* Set a fixed width */
+      height: 150px; /* Set a fixed height */
+      float: left;
+      position: relative; /* Add position relative to allow absolute positioning */
+  }
+
+  .address-card input[type="radio"] {
+      position: absolute;
+      top: 7px;
+      left: 7;
+  }
+
+  .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+  }
+.address-option{
+border: 1px solid #ccc;
+  border-radius:3px;
+  padding: 10px;
+  margin: 10px;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  
+  vertical-align: top;
+  background-color: #f9f9f9;
+}
+#address{
+  position: absolute;
+  top: 6px;
+  left: 10;
+}
+
