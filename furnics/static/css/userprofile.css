@@ -1,9 +1,9 @@
-.nav-link{
-    color:rgb(255, 255, 255) !important;
+.navitem{
+    color:rgb(0, 171, 43) !important;
 }
-.nav-link:hover{
+.navitem:hover{
 
-    color: rgb(255, 55, 55) !important ;
+    color: rgb(255, 255, 255) !important;
 
 }
 
@@ -15,7 +15,8 @@
 
 .itemsdiv{
     border-radius: 10px;
-    background-color: rgb(93, 100, 102)!important ;
+    background-color: rgb(234, 234, 234)!important ;
+    place-items: center !important ;
 }
 
 .itemsdiv:hover {
@@ -24,5 +25,5 @@
     width: 200px!important ; 
     border: #ccc!important ;
     border-width: 10px!important ;
-    background-color: rgb(0, 0, 0)!important ;
+    background-color: rgb(89, 89, 89)!important ;
 }

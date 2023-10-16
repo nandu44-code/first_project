@@ -7,14 +7,14 @@ from .models import Address
 # Create your views here.
 def user_profile(request):
     if 'useremail' in request.session:
-     email=request.session['useremail']
-     user=CustomUser.objects.get(email=email)
-     user_id=user.id
-     address=Address.objects.filter(user_id=user_id)
-     context={
-            'users':user,
-            'address':address
-        }
+        email=request.session['useremail']
+        user=CustomUser.objects.get(email=email)
+        user_id=user.id
+        address=Address.objects.filter(user_id=user_id)
+        context={
+                'users':user,
+                'address':address
+            }
     else:
         return redirect('user_login')
     return render(request,'userprofile/user_profile.html',context)
@@ -34,7 +34,21 @@ def edit_user_profile(request,user_id):
             user.save()
  
             return redirect('user_profile')
-        
+
+def address_view(request):
+
+    if 'useremail' in request.session:
+        email=request.session['useremail']
+        user=CustomUser.objects.get(email=email)
+        user_id=user.id
+        address=Address.objects.filter(user_id=user_id)
+        context={
+                'users':user,
+                'address':address
+            }
+    else:
+        return redirect('user_login')
+    return render(request,'userprofile/address.html',context)
 
 def add_address(request,user_id):
     
@@ -66,7 +80,7 @@ def add_address(request,user_id):
 
 def edit_address(request,address_id):
  
- if request.method=='POST':
+    if request.method=='POST':   
         address=Address.objects.get(id=address_id)
         
         address.house_no = request.POST.get('house_no')

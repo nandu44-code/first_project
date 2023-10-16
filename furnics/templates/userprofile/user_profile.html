@@ -2,7 +2,8 @@
 {% load static %}
 <!-- Start Header/Navigation -->
 {% block style %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link href="{% static 'css/userprofile.css' %}" rel="stylesheet">
 {% endblock style %}
@@ -13,190 +14,173 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Left Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+        <nav class="col-lg-2 d-md-block sidebar">
             <div class="position-sticky">
                 <div class="d-flex justify-content-center">
                     <h4 class="mt-4 ml-3" style="color: rgb(102, 0, 0); font-weight:1200;">Hi {{users.username}}</h4>
                 </div>
-            
+
                 <ul class="nav flex-column">
                     <div class="itemsdiv mx-2 my-2">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#my-profile">
-                            My Profile
-                        </a>
-                    </li>
-                    </div>
-                    <div class="itemsdiv mx-2 my-2">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#my-orders">
-                            My Orders
-                        </a>
-                    </li>
-                    </div>
-                    <div class="itemsdiv mx-2 my-2">
                         <li class="nav-item">
-                            <a class="nav-link" href="">
-                                My Address
+                            <a class="nav-link navitem" href="#my-profile">
+                                My Profile
                             </a>
                         </li>
                     </div>
                     <div class="itemsdiv mx-2 my-2">
                         <li class="nav-item">
-                            <a class="nav-link" href="#my-orders">
+                            <a class="nav-link navitem" href="#my-orders">
                                 My Orders
                             </a>
                         </li>
                     </div>
-                       
-
                 </ul>
             </div>
         </nav>
 
         <!-- Main Content -->
 
-        <main class="col-md-6 ms-sm-auto col-lg-10 px-md-4 mt-5 bg-">
+        <!-- <main class="ms-sm-auto px-md-4 mt-5"> -->
 
-            <!-- Your content goes here -->
-            <div class="user_info col-md-6">
+        <!-- Your content goes here -->
+        <div class="user_info col-lg-5 px-md-4 mt-5">
 
 
-                <div>
-                    <div class="d-flex justify-content-center col-lg-6">
-                        <h4>User Info</h4>
-                    </div>
-
-                    <div class="card col-lg-6">
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                    value="{{users.username}}">
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                    value="{{users.email}}">
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="phone" name="phone" value="{{users.phone}}">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center col-lg-6 mt-2">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#userModal">
-                            Edit
-                        </button>
-
-                    </div>
+            <div>
+                <div class="d-flex justify-content-center col-lg-6">
+                    <h4>User Info</h4>
                 </div>
-            </div>
 
-            <div class="d-flex justify-content-center">
-                <h2 class="card-title mt-5">Address Details</h2>
-            </div>
-
-            <div class="justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                    data-bs-target="#SelectAddressModal">
-                    Select Your Default Address
-                </button>
-            </div>
-
-
-            <div class="row">
-                <div class="card mt-5 col-md-4">
+                <div class="card col-lg-12">
                     <div class="card-body">
-                        <div class="d-flex justify-content-center">
-                            <h5>ADD YOUR ADDRESS HERE</h5>
-                        </div>
-
-                        <p class="card-text">
-                        <form method="POST" action="{% url 'add_address' user_id=user.id %}">
+                        <form method="POST" action="{% url 'edit_user_profile' user_id=user.id %}">
                             {% csrf_token %}
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="RecipientName" class="form-label">Recipient Name:</label>
-                                        <input type="text" class="form-control" id="RecipientName" name="RecipientName"
-                                            value="" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="house_no" class="form-label">House No:</label>
-                                        <input type="text" class="form-control" id="house_no" name="house_no" value=""
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="street_name" class="form-label">Street Name:</label>
-                                        <input type="text" class="form-control" id="street_name" name="street_name"
-                                            value="" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="Village" class="form-label">Village/City:</label>
-                                        <input type="text" class="form-control" id="Village" name="Village" value=""
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="postal_code" class="form-label">Postal Code:</label>
-                                        <input type="text" class="form-control" id="postal_code" name="postal_code"
-                                            value="" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="district" class="form-label">District:</label>
-                                        <input type="text" class="form-control" id="district" name="district" value=""
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="state" class="form-label">State:</label>
-                                        <input type="text" class="form-control" id="state" name="state" value=""
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="country" class="form-label">Country:</label>
-                                        <input type="text" class="form-control" id="country" name="country" value=""
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-center col-lg-12 mt-2">
-                                <button type="submit" class="btn btn-primary">
-                                    Save the Address
-                                </button>
-                            </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username"
+                                value="{{users.username}}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" readonly class="form-control" id="email" name="email" value="{{users.email}}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" value="{{users.phone}}">
+                        </div>
+                        <div class="d-flex justify-content-center col-lg-6 mt-2">
+                            <button type="submit" class="btn btn-primary">
+                                submit
+                            </button>
+        
+                        </div>
                         </form>
-
                     </div>
                 </div>
-                <div class="coloumn col-md-6 mt-5">
-                    {% for address in address %}
-                    <div class="justify-content-around">
+                
+            </div>
+        </div>
+        <!-- 7777777777777777777777777777777777777777777777777777777777777777777 -->
+        <div class="card mt-5 col-lg-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-center">
+                    <h5>ADD YOUR ADDRESS HERE</h5>
+                </div>
+
+                <p class="card-text">
+                <form method="POST" action="{% url 'add_address' user_id=user.id %}">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="RecipientName" class="form-label">Recipient Name:</label>
+                                <input type="text" class="form-control" id="RecipientName" name="RecipientName" value=""
+                                    required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="house_no" class="form-label">House No:</label>
+                                <input type="text" class="form-control" id="house_no" name="house_no" value="" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="street_name" class="form-label">Street Name:</label>
+                                <input type="text" class="form-control" id="street_name" name="street_name" value=""
+                                    required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="Village" class="form-label">Village/City:</label>
+                                <input type="text" class="form-control" id="Village" name="Village" value="" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="postal_code" class="form-label">Postal Code:</label>
+                                <input type="text" class="form-control" id="postal_code" name="postal_code" value=""
+                                    required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="district" class="form-label">District:</label>
+                                <input type="text" class="form-control" id="district" name="district" value="" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="state" class="form-label">State:</label>
+                                <input type="text" class="form-control" id="state" name="state" value="" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="country" class="form-label">Country:</label>
+                                <input type="text" class="form-control" id="country" name="country" value="" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center col-lg-12 mt-2">
+                        <button type="submit" class="btn btn-primary">
+                            Save the Address
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <h2 class="card-title mt-5">Address Details</h2>
+        </div>
+
+        <div class=" d-flex justify-content-center mt-4">
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#myModal">
+                Select default address
+            </button>
+        </div>
+
+
+        <div class="row justify-content-around">
+
+            <div class="mt-5 d-flex row mx-5">
+                {% for address in address %}
+                <div class="col-lg-2 col-mf-5  mx-3">
+                    <div>
                         <h5>Address-{{ forloop.counter }}</h5>
                         {% if address.is_default is True %}
                         <div class="border p-2">
@@ -205,9 +189,10 @@
                         {% endif %}
                     </div>
 
-                    <div class="mt-2 card">
+                    <div class="mt-2 card coloumn col-md-12">
                         <div class="card-body">
-                            <h5 class="card-title" style="color:black;"><strong>{{ address.recipient_name }}</strong></h5>
+                            <h5 class="card-title" style="color:black;"><strong>{{ address.recipient_name }}</strong>
+                            </h5>
                             <p class="card-text">
                                 {{ address.house_no }}/{{ address.street_name }}<br>
                                 {{ address.village_name }}<br>
@@ -215,14 +200,17 @@
                                 {{ address.state }}/{{ address.country }}
                             </p>
                         </div>
-                        <div class="justify-content-center">
-                            <svg id="editIcon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20"
-                                height="100" viewBox="0 0 24 24">
-                                <path
-                                    d="M14.5 5.5L3 17 3 21 7 21 18.5 9.5zM21.2 2.8c-1.1-1.1-2.9-1.1-4 0L16 4l4 4 1.2-1.2C22.3 5.7 22.3 3.9 21.2 2.8z">
-                                </path>
-                            </svg>
-
+                        <div class="justify-content-evenly">
+                            <!-- <a href="{% url 'edit_address' address_id=address.id %}"> -->
+                            <button class="toggle-btn" data-toggle="modal"
+                                data-target="#editAddressModal-{{forloop.counter}}">
+                                <svg id="editIcon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20"
+                                    height="100" viewBox="0 0 24 24">
+                                    <path
+                                        d="M14.5 5.5L3 17 3 21 7 21 18.5 9.5zM21.2 2.8c-1.1-1.1-2.9-1.1-4 0L16 4l4 4 1.2-1.2C22.3 5.7 22.3 3.9 21.2 2.8z">
+                                    </path>
+                                </svg>
+                            </button>
 
                             <a href="{% url 'delete_address' address_id=address.id %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="100"
@@ -232,167 +220,128 @@
                                     </path>
                                 </svg>
                             </a>
-                        </div>  
-                    </div>
-
-
-                    <!--Address Edit Modal -->
-                    <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Address Edit Form -->
-                                    <form method="POST" action="{% url 'edit_address' address_id=address.id%}">
-                                        {% csrf_token %}
-
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="RecipientName" class="form-label">Recipient
-                                                        Name:</label>
-                                                    <input type="text" class="form-control" id="RecipientName"
-                                                        name="RecipientName" value="" required>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="house_no" class="form-label">House No:</label>
-                                                    <input type="text" class="form-control" id="house_no"
-                                                        name="house_no" value="" required>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="street_name" class="form-label">Street Name:</label>
-                                                    <input type="text" class="form-control" id="street_name"
-                                                        name="street_name" value="" required>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="Village" class="form-label">Village/City:</label>
-                                                    <input type="text" class="form-control" id="Village" name="Village"
-                                                        value="" required>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="postal_code" class="form-label">Postal Code:</label>
-                                                    <input type="text" class="form-control" id="postal_code"
-                                                        name="postal_code" value="" required>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="district" class="form-label">District:</label>
-                                                    <input type="text" class="form-control" id="district"
-                                                        name="district" value="" required>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="state" class="form-label">State:</label>
-                                                    <input type="text" class="form-control" id="state" name="state"
-                                                        value="" required>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="country" class="form-label">Country:</label>
-                                                    <input type="text" class="form-control" id="country" name="country"
-                                                        value="" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-center mt-2">
-                                            <button type="submit" class="btn btn-primary">
-                                                Save Changes
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                    {%endfor%}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!--Address Edit Modal -->
+        {% for address in address %}
+        <div class="modal fade" id="editAddressModal-{{forloop.counter}}" tabindex="-1"
+            aria-labelledby="editAddressModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Address Edit Form -->
+                        <form method="POST" action="{% url 'edit_address' address_id=address.id%}">
+                            {% csrf_token %}
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="RecipientName" class="form-label">Recipient
+                                            Name:</label>
+                                        <input type="text" class="form-control" id="RecipientName" name="RecipientName"
+                                            value="{{ address.recipient_name }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="house_no" class="form-label">House No:</label>
+                                        <input type="text" class="form-control" id="house_no" name="house_no"
+                                            value="{{ address.house_no }}" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="street_name" class="form-label">Street Name:</label>
+                                        <input type="text" class="form-control" id="street_name" name="street_name"
+                                            value="{{ address.street_name }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="Village" class="form-label">Village/City:</label>
+                                        <input type="text" class="form-control" id="Village" name="Village"
+                                            value="{{ address.village_name }}" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="postal_code" class="form-label">Postal Code:</label>
+                                        <input type="text" class="form-control" id="postal_code" name="postal_code"
+                                            value="{{ address.postal_code }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="district" class="form-label">District:</label>
+                                        <input type="text" class="form-control" id="district" name="district"
+                                            value="{{ address.district }}" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="state" class="form-label">State:</label>
+                                        <input type="text" class="form-control" id="state" name="state"
+                                            value="{{ address.state }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="country" class="form-label">Country:</label>
+                                        <input type="text" class="form-control" id="country" name="country"
+                                            value="{{ address.country }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center mt-2">
+                                <button type="submit" class="btn btn-primary">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-
-
-        </main>
-    </div>
-</div>
-
-
-
-
-
-<!-- userDetails edit modal -->
-
-<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="userModalLabel">User Information</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- User Information Form -->
-                <form method="POST" action="{% url 'edit_user_profile' user_id=user.id %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username"
-                            value="{{users.username}}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{users.email}}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" value="{{users.phone}}">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-            </div>
-
         </div>
+        {%endfor%}
+
+
+
+
+        <!-- </main> -->
     </div>
-</div>
+</div
 
 <!-- This modal is for selecting the default address for user -->
-
-<div class="modal fade" id="SelectAddressModal" tabindex="-1" aria-labelledby="SelectAddressModalLabel"
-    aria-hidden="true">
+<div class="modal" id="myModal">
     <div class="modal-dialog">
         <div class="modal-content">
+
+            <!-- Modal Header -->
             <div class="modal-header">
-                <h5 class="modal-title" id="SelectAddressModalLabel">Select Your Default Address</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h4 class="modal-title">Modal Heading</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
+
+            <!-- Modal body -->
             <div class="modal-body">
-                <!-- All the available addresses will be displayed here and user has to choose a default address -->
 
                 <form method="POST" action="{% url 'default_address'%}">
                     {% csrf_token %}
@@ -409,31 +358,25 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <button class="btn btn-primary mt-3" type="submit">Submit</button>
                 </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-secondary">Submit</button>
             </div>
 
         </div>
     </div>
 </div>
 
-
-<!-- Bootstrap JS scripts -->
-
-
 {% endblock %}
 {% block script %}
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const editIcon = document.getElementById('editIcon');
-    const editModal = new bootstrap.Modal(document.getElementById('editAddressModal')); // Create a Bootstrap modal instance
-
-    editIcon.addEventListener('click', function () {
-        // Open the modal when the edit icon is clicked
-        editModal.show();
-    });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
 
 
 
