@@ -789,3 +789,13 @@ border: 1px solid #ccc;
   left: 10;
 }
 
+
+
+.display-address{
+
+  @media (min-width:200px) and (max-width:952px){
+
+    flex-direction: column;
+    
+  }
+}

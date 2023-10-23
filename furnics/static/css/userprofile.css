@@ -27,3 +27,10 @@
     border-width: 10px!important ;
     background-color: rgb(89, 89, 89)!important ;
 }
+
+.icons-edit-delete{
+
+    outline-style: groove;
+    outline-color:rgb(180, 180, 180);
+    color:blue;
+}

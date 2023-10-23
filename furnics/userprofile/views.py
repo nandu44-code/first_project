@@ -63,17 +63,38 @@ def add_address(request,user_id):
         district =  request.POST.get('district')
         state =  request.POST.get('state')
         country =  request.POST.get('country')
-
-        address=Address(    user_id        =user_id,
-                            house_no       = house_no,
+        exists = Address.objects.filter(user_id=user_id).exists()
+        print(exists)
+        if exists == False:
+        
+            address=Address(    
+                            user_id = user_id,
+                            house_no = house_no,
                             recipient_name = recipient_name,
-                            street_name    = street_name,
-                            village_name   =  village_name,
-                            postal_code    = postal_code,
-                            district       =  district,
-                            state          =  state,
-                            country        =  country
+                            street_name = street_name,
+                            village_name =  village_name,
+                            postal_code = postal_code,
+                            district =  district,
+                            state =  state,
+                            country =  country,
+                            is_default = True
                         )
+
+        else:
+             address=Address(
+                            user_id = user_id,
+                            house_no = house_no,
+                            recipient_name = recipient_name,
+                            street_name = street_name,
+                            village_name =  village_name,
+                            postal_code = postal_code,
+                            district =  district,
+                            state =  state,
+                            country =  country,
+                            
+                        )
+
+
         address.save()
 
         return redirect('user_profile')

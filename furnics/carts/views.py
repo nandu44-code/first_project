@@ -1,4 +1,5 @@
 import random
+from django.db.models import Q
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render,redirect,get_object_or_404
@@ -132,15 +133,22 @@ def remove_cart_item(request,product_id):
 
 
 
-def checkout_page(request,quantity):
-    if 'useremail' in  request.session:
-        
-        if quantity :
+def checkout_page(request):
+    if request.method=='POST':
+
+        if 'useremail' in  request.session:
         
             email = request.session['useremail'] #getting the email of the user from the session
             user = CustomUser.objects.get(email=email) 
             user_id = user.id
-            address = Address.objects.filter(user_id=user_id)#using the user id getting all addresses associated with that user
+
+            selected_address_id=request.POST.get('selectedAddress')
+            if selected_address_id is None:
+                default_address=Address.objects.get(user_id=user_id,is_default=True)
+                selected_address_id=default_address.id
+
+            print(selected_address_id)
+            address = Address.objects.get(id=selected_address_id) #using the user id getting all addresses associated with that user
 
             tax=0
             quantity=0
@@ -172,10 +180,61 @@ def checkout_page(request,quantity):
             }
         
             return render(request,'cart/checkout.html',context)
-        else:
-            return redirect('cart_page')
-    else:
-        return redirect('user_login')
+    #     else:
+    #         return redirect('cart_page')
+    # else:
+    #     return redirect('user_login')
+
+def address_checkout(request):
+    if 'useremail' in request.session:
+        email=request.session['useremail']
+        # getting the user associated with this username
+        user = CustomUser.objects.get(email=email)
+        address = Address.objects.filter(user_id=user.id,is_default=False)
+
+        for i in address:
+            print(i.recipient_name)
+        default_address =Address.objects.get(is_default=True)  
+
+        context={
+            'address':address,
+            'default_address': default_address
+        }
+        return render(request,'cart/address_selection.html',context)
+    
+def add_address_checkout(request,user_id):
+
+    if request.method=='POST':
+        user=CustomUser.objects.get(pk=user_id)
+        user_id=user
+        
+        house_no = request.POST.get('house_no')
+        recipient_name = request.POST.get('RecipientName')
+        street_name = request.POST.get('street_name')
+        village_name =  request.POST.get('Village')
+        postal_code =  request.POST.get('postal_code')
+        district =  request.POST.get('district')
+        state =  request.POST.get('state')
+        country =  request.POST.get('country')
+
+        address = Address(    
+            user_id = user_id,
+            house_no = house_no,
+            recipient_name = recipient_name,
+            street_name = street_name,
+            village_name = village_name,
+            postal_code = postal_code,
+            district = district,
+            state = state,
+            country = country
+            )
+        exists = Address.objects.filter(user=user).exists()
+        print(exists)
+        if exists is None:
+            address.is_default=True
+
+        address.save()
+        return redirect('address_checkout')
     
 def place_order(request):
     if request.method == 'POST':
