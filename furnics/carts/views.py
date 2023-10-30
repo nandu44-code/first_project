@@ -1,7 +1,7 @@
 import random
 from django.db.models import Q
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from django.shortcuts import render,redirect,get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from accounts.models import CustomUser
@@ -155,9 +155,10 @@ def checkout_page(request):
             cart_items=None
             grand_total=0
             total=0
-            
+            print("/////////////////////////////")
             cart_id = _cart_id(request) #get or generate the cart_id
             try:
+                print(".........")
                 cart = Cart.objects.get(user=user)
                 cart_items = CartItem.objects.filter(cart=cart,is_active=True)
                 for cart_item in cart_items:
@@ -237,19 +238,21 @@ def add_address_checkout(request,user_id):
         return redirect('address_checkout')
     
 def place_order(request):
+    print("ffffffffffffffff")
     if request.method == 'POST':
+        print("hdskjhkhjjkkhkhhhjkjhjhjhjjj")
         email = request.session['useremail']
         user = CustomUser.objects.get(email=email)
-        recipient_name = request.POST.get('username')
-        selected_address_id = request.POST.get('selectedAddress')
-        if recipient_name is None:
-            address = Address.objects.get(id=selected_address_id)
-        else:
-            address = Address.objects.get(recipient_name=recipient_name)
+       
+        selected_address_id = request.POST.get('selected_address')
+       
+        address = Address.objects.get(id=selected_address_id)
 
         order = Order()
         order.user = user
         order.address = address
+        print(address.id)
+        print(",,.,.><><><><><><><><><><><><><><><><><><><><><.")
         cart = Cart.objects.get(user=user)
         try:
             cart_item = CartItem.objects.filter(cart=cart, is_active=True)
@@ -278,10 +281,11 @@ def place_order(request):
 
         neworderitems = CartItem.objects.filter(cart=cart, is_active=True)
         for item in neworderitems:
+
             OrderItem.objects.create(
                 order=order,
-                product=item.product.product,
                 variant=item.product,
+                product=item.product.product,
                 price=item.product.selling_price,
                 quantity=item.quantity,
             )
@@ -296,9 +300,9 @@ def place_order(request):
         if payMode == 'Paid by Razorpay':
             return JsonResponse({'status': 'Your order has been placed successfully'})
         else:
-            pass
+           pass
 
-        return redirect('order_success  ')
+        return redirect('order_success')
             # return redirect('my_orders')
         # return redirect('home')
 
