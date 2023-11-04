@@ -27,8 +27,6 @@ class Product(models.Model):
         return self.product_name
     
 class Variation(models.Model):
-   
- 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variations')
     # sub_category = models.ForeignKey(Sub_Category, on_delete=models.CASCADE)
     color = models.CharField(max_length=20)

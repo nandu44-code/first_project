@@ -353,6 +353,60 @@ def place_order(request):
     #     return render(request, 'user/checkout/checkout.html', context)
     # return redirect('user_signin')
 
+
+# def razorpay_check(request):
+#     print("hoooo")
+#     user=request.user
+#     print(user)
+#     user = CustomUser.objects.get(email =user)
+#     print("knsgkjnsd")
+#     cart = Cart.objects.get(user=user)
+#     cart_items = CartItem.objects.filter(cart=cart)
+#     total_price=0
+    
+#     for item in cart_items:
+#          print(item.selling_price)
+#          total_price = total_price + item.product.selling_price * item.quantity
+   
+#     print(total_price)
+#     return JsonResponse({
+#         'total_price': total_price
+#     })
+def razorpay_check(request):
+    try:
+        user = request.user
+        print("User:", user)
+        
+        try:
+            user = CustomUser.objects.get(email=user)
+        except ObjectDoesNotExist:
+            # Handle the case where the user does not exist
+            return JsonResponse({'error': 'User not found'}, status=400)
+
+        try:
+            cart = Cart.objects.get(user=user)
+        except ObjectDoesNotExist:
+            # Handle the case where the cart does not exist
+            return JsonResponse({'error': 'Cart not found'}, status=400)
+
+        cart_items = CartItem.objects.filter(cart=cart)
+        total_price = 0
+
+        for item in cart_items:
+            print("Selling Price:", item.product.selling_price)
+            total_price += item.product.selling_price * item.quantity
+
+        print("Total Price:", total_price)
+
+        return JsonResponse({
+            'total_price': total_price
+        })
+
+    except Exception as e:
+        # Handle other unexpected exceptions
+        print("Error:", e)
+        return JsonResponse({'error': 'Internal Server Error'}, status=500)
+
 def order_success(request):
 
 

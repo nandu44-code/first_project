@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.http import Http404
 from accounts.models import CustomUser
+from carts.models import Order
 from .models import Address
 
 # Create your views here.
@@ -152,3 +153,14 @@ def default_address(request):
             raise Http404("The selected address does not exist")  # Raise Http404 to indicate a not found error
 
     return redirect('user_profile')
+
+def my_orders(request):
+    if request.user:
+        
+        order=Order.objects.filter(user=request.user)
+
+        context={
+            "order":order
+        }
+
+        return render(request,"userprofile/my_orders.html",context)

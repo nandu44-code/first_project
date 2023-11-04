@@ -30,6 +30,8 @@
                 </p>
             </div>
             <input type="hidden" name="selected_address" value="{{ address.id }}">
+            <input type="hidden" name="recipient_name" value="{{ address.recipient_name }}">
+          
         </div>
         <div class="p-3 p-lg-5 border bg-white">
             <table class="table site-block-order-table mb-5">
@@ -78,5 +80,6 @@
 {% block script%}
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 {% endblock script %}

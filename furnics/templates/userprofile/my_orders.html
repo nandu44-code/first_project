@@ -1,0 +1,49 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block style %}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link href="{% static 'css/userprofile/userprofile.css' %}" rel="stylesheet">
+{% endblock style %}
+
+
+{% block content%}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <nav class="col-lg-2 d-md-block sidebar">
+            <div class="position-sticky">
+                <div class="d-flex justify-content-center">
+                    <h4 class="mt-4 ml-3" style="color: rgb(70, 43, 43); font-weight:1200;">Hi {{user.username}}</h4>
+                </div>
+
+                <ul class="nav flex-column">
+                    <div class="itemsdiv mx-2 my-2">
+                        <li class="nav-item">
+                            <a class="nav-link navitem" href="{% url 'user_profile'%}">
+                                My Profile
+                            </a>
+                        </li>
+                    </div>
+                    <div class="itemsdiv mx-2 my-2">
+                        <li class="nav-item">
+                            <a class="nav-link navitem" href="{% url 'my_orders'%}">
+                                My Orders
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+        <div class="col-lg-10 col-md-8">
+
+            <div class=" d-flex justify-content-center mt-4 heading">
+                <h2 class="Main-heading"
+                    style="color: rgb(49, 49, 49); font-style: normal; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-weight: 600;">
+                    MY ORDERS</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

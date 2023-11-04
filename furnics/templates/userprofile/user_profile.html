@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link href="{% static 'css/userprofile.css' %}" rel="stylesheet">
+<link href="{% static 'css/userprofile/userprofile.css' %}" rel="stylesheet">
 {% endblock style %}
 
 
@@ -17,7 +17,7 @@
         <nav class="col-lg-2 d-md-block sidebar">
             <div class="position-sticky">
                 <div class="d-flex justify-content-center">
-                    <h4 class="mt-4 ml-3" style="color: rgb(102, 0, 0); font-weight:1200;">Hi {{users.username}}</h4>
+                    <h4 class="mt-4 ml-3" style="color: rgb(102, 0, 0); font-weight:1200;">Hi {{user.username}}</h4>
                 </div>
 
                 <ul class="nav flex-column">
@@ -30,7 +30,7 @@
                     </div>
                     <div class="itemsdiv mx-2 my-2">
                         <li class="nav-item">
-                            <a class="nav-link navitem" href="#my-orders">
+                            <a class="nav-link navitem" href="{% url 'my_orders'%}">
                                 My Orders
                             </a>
                         </li>
