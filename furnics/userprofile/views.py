@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.http import Http404
 from accounts.models import CustomUser
-from carts.models import Order
+from carts.models import Order, OrderItem
 from .models import Address
 
 # Create your views here.
@@ -156,11 +156,22 @@ def default_address(request):
 
 def my_orders(request):
     if request.user:
-        
+        order_items=None
         order=Order.objects.filter(user=request.user)
-
+        order_items = OrderItem.objects.order_by('order').distinct('order')
+        # order_item =order_item.objects.filter(order=order)
         context={
-            "order":order
+            "order":order,
+            "order_items":order_items
         }
 
         return render(request,"userprofile/my_orders.html",context)
+def order_details(request,order_id):
+    
+    order=Order.objects.get(id=order_id)
+    order_items=OrderItem.objects.filter(order=order)
+    context={
+        "order_items":order_items,
+        "order":order
+    }
+    return render(request,"userprofile/order_details.html",context)

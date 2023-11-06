@@ -1,0 +1,99 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block style %}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link href="{% static 'css/userprofile/userprofile.css' %}" rel="stylesheet">
+{% endblock style %}
+
+
+{% block content%}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <nav class="col-lg-2 d-md-block sidebar">
+            <div class="position-sticky">
+                <div class="d-flex justify-content-center">
+                    <h4 class="mt-4 ml-3" style="color: rgb(70, 43, 43); font-weight:1200;">Hi {{user.username}}</h4>
+                </div>
+
+                <ul class="nav flex-column">
+                    <div class="itemsdiv mx-2 my-2">
+                        <li class="nav-item">
+                            <a class="nav-link navitem" href="{% url 'user_profile'%}">
+                                My Profile
+                            </a>
+                        </li>
+                    </div>
+                    <div class="itemsdiv mx-2 my-2">
+                        <li class="nav-item">
+                            <a class="nav-link navitem" href="{% url 'my_orders'%}">
+                                My Orders
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+        <div class="col-lg-10">
+            <h6 class="mt-5" style="color:black; font-family: Verdana, Geneva, Tahoma, sans-serif">Order Tracking
+                ID:&nbsp&nbsp{{order.tracking_no}}</h6>
+            {% if order.payment_mode == 'cod' %}
+
+            <h6 class="mt-3" style="color:black; font-family: Verdana, Geneva, Tahoma, sans-serif">Payment Mode:
+                &nbsp&nbsp&nbsp&nbsp Cash On Delivery</h6>
+            {% else %}
+            <h6 class="mt-3" style="color:black; font-family: Verdana, Geneva, Tahoma, sans-serif">
+                {{order.payment_mode}}</h6>
+            <h6 class="mt-3" style="color:black; font-family: Arial, Helvetica, sans-serif;">Payment
+                ID:&nbsp&nbsp{{order.payment_id}}</h6>
+            {%endif%}
+            <h6 class="mt-3" style="color:black; font-family: Verdana, Geneva, Tahoma, sans-serif">Total
+                amount:&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp{{order.total_price}}</h6>
+            <div class="d-flex justify-content-center">
+                <p class="h5 mb-2 mt-5 text-black" style="color: black; font-family: Verdana, Geneva, Tahoma, sans-serif">Shipping address:</p>
+                    <div class="card-body mt-5">
+                        <h5 class="card-title" style="color:black;"><strong>{{ order.address.recipient_name }}</strong>
+                        </h5>
+                        <p class="card-text">
+                            {{ order.address.house_no }}/{{ order.address.street_name }}<br>
+                            {{ order.address.village_name }}<br>
+                            {{ order.address.postal_code }}/{{ order.address.district }}<br>
+                            {{ order.address.state }}/{{ order.address.country }}
+                        </p>
+                    </div>
+            </div>
+
+            <h5 class="d-flex justify-content-center mt-4"
+                style="color:rgb(54, 54, 54); border-bottom: rgb(0, 0, 0); border-bottom-width: 8px; font-family: Verdana, Geneva, Tahoma, sans-serif">
+                Order Items</h5>
+            {% for order_item in order_items%}
+
+            <div class="card mb-3 mt-5" style="box-shadow: 5px 10px 5px rgb(40, 40, 40);"><span
+                    class="border border-success"></span>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <h6 style="color: rgb(0, 0, 0); font-family: Verdana, Geneva, Tahoma, sans-serif">{{order_item.product.product_name}}</h6>
+                        </div>
+                        <div class="col-lg-3">
+                            <img src="/media/{{order_item.variant.image1}}" width="40%">
+                            <p>X {{order_item.quantity}}</p>
+                        </div>
+                        <div class="col-lg-3">
+                            <p style="color: rgb(143, 130, 50);">{{ order_item.order.status }}</p>
+                        </div>
+                        <div class="col-lg-3">
+                            <h6 style="color: rgb(250, 1, 1);">Rs.{{ order_item.variant.selling_price }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <>
+
+        </div>
+
+
+
+        {% endblock content%}

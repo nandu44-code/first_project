@@ -15,7 +15,8 @@ urlpatterns = [
     path('user-delete-address<int:address_id>',views.delete_address,name="delete_address"),
     path('default-address',views.default_address,name="default_address"),
 
-    path("user-orders",views.my_orders,name="my_orders")
+    path("user-orders",views.my_orders,name="my_orders"),
+    path("order-details/<int:order_id>",views.order_details,name="order_details")
 ]   
 
 
