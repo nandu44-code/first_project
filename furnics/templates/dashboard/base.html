@@ -88,12 +88,20 @@
                         </div>
                         <div class="itemsdiv mx-2 my-2  mb-4">
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'admin_logout' %}">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                <a class="nav-link" href="{% url 'orders' %}">
+                                    <i class="fas fa-folder"></i> Orders
                                 </a>
                             </li>
-
                         </div>
+                        <div class="itemsdiv mx-2 my-2  mb-4">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'sub_categories' %}">
+                                    <i class="fas fa-folder"></i> Coupons
+                                </a>
+                            </li>
+                        </div>
+
+
 
                     </ul>
                 </div>
@@ -106,6 +114,7 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% block script%}
+    
     {% endblock %}
 
 </body>

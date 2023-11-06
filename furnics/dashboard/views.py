@@ -1,9 +1,10 @@
  
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
-from accounts.models import CustomUser
+from accounts.models import CustomUser, UserWallet
 from django.contrib import messages
 from categories.models import Category,Sub_Category
+from carts.models import Order,OrderItem
 # Create your views here.
 # view function for admin login
 def admin_login(request):
@@ -254,3 +255,80 @@ def delete_subcategories(request,subcategory_id):
             'categories':category
          }
     return render(request,'dashboard/subcategories.html',context)
+
+
+def orders(request):
+
+    orders = Order.objects.all()
+    order_items = OrderItem.objects.order_by('order').distinct('order')
+    for i in order_items:
+        print(i.quantity)
+    context={
+        "orders":orders,
+        "orderitems":order_items
+    }
+    return render(request,"dashboard/orders.html",context)
+
+def orders_details(request,order_id):
+    
+    order=Order.objects.get(id=order_id)
+    order_item = OrderItem.objects.filter(order=order)
+
+    context={
+        "order":order,
+        "orderitems":order_item
+    }
+
+    return render(request,"dashboard/orders_details.html",context)
+
+
+def order_status(request):
+  
+    if request.method == 'POST':
+        url = request.META.get('HTTP_REFERER')
+        try:
+            order_id = request.POST.get('order_id')
+            order_status = request.POST.get('order_status')
+            print(order_status)
+            if order_status == 'Order Status':
+                order = Order.objects.get(id=order_id)
+                order_item = OrderItem.objects.filter(order=order)
+                context = {
+                    'order': order,
+                    'order_item': order_item
+                }
+                return redirect(url)
+                # return render(request, 'dashboard/orders_details.html', context)
+            order = Order.objects.get(id=order_id)
+            order_item = OrderItem.objects.filter(order=order)
+            
+            order.status = order_status
+            order.save()
+            if order_status == 'Returned':
+                email = order.user.email
+                user = CustomUser.objects.get(email=email)
+                user.wallet = user.wallet + order.total_price
+                userwallet = UserWallet()
+                userwallet.user = user
+                userwallet.amount = order.total_price
+                userwallet.transaction = 'Credited'
+                userwallet.save()
+                user.save()
+            order_item = OrderItem.objects.filter(order=order)
+            context = {
+                'order': order,
+                'order_item': order_item
+            }
+            print(order.total_price)
+            print("order_status")
+            return redirect(url)
+         
+        except:
+            pass
+    print("order_status")
+    order_item = OrderItem.objects.filter(order=order)
+    context = {
+        'order': order,
+        'order_item': order_item
+    }
+    return render(request, 'dashboard/orders_details.html', context)

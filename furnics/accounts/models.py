@@ -48,7 +48,7 @@ class CustomUser(AbstractUser):
                              blank=True,null=True,)
    
 
-    # wallet  = models.PositiveIntegerField(default=0)
+    wallet  = models.PositiveIntegerField(default=0)
     groups = models.ManyToManyField(
         AuthGroup,
         verbose_name='groups',
@@ -74,3 +74,14 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name='CustomUser'
         verbose_name_plural="CustomUsers"
+
+
+
+class UserWallet(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    transaction = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    amount = models.FloatField()
+    
+    def _str_(self):
+        return f'{self.user.username} amount {self.amount}'
