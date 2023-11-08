@@ -41,13 +41,14 @@ def view_subcategory(request,category_id):
     subcategory=Sub_Category.objects.filter(Q(is_activate=True) & Q(category=category_id))
     # Assuming you already have 'subcategory' containing the filtered subcategories
     products = Product.objects.filter(sub_category__in=subcategory, is_activate=True)
-
-    
-    base_variants = Variation.objects.filter(product__in=products).values('product').distinct()
+    variants = Variation.objects.filter(product__in=products).values('product').distinct()
+    for i in variants:
+        print("[][[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]")
+        print(i.id)
 
     context={
         'subcategory':subcategory,
-        'base_variant':base_variants
+        'base_variant':variants
     }
 
     return render(request,'home/subcategory.html',context)
@@ -68,7 +69,6 @@ def display_products(request,sub_category_id):
 
 def product_details(request,variant_id):
 
-
     variants = Variation.objects.get(pk=variant_id)
     product_id = variants.product
 
@@ -87,13 +87,10 @@ def product_details(request,variant_id):
 
 def variant_select(request,variant_id):
 
-
     variants = Variation.objects.get(pk=variant_id)
     product_id = variants.product
 
     available_variants =Variation.objects.filter(product=product_id)
-    
-   
     
     variant_price = variants.selling_price
     variant_stock = variants.stock
@@ -119,7 +116,6 @@ def product_search(request):
     query=request.GET.get('q')
     modified_string = query.replace(" ", "")
     variants=None
-    product_id=[]
     if modified_string == "":
         
         return redirect('shop_page')
