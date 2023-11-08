@@ -13,6 +13,8 @@ urlpatterns = [
       path('product-details/<int:variant_id>/',views.product_details,name="product_details"),
       path('variant_select/<int:variant_id>/',views.variant_select,name="variant_select"),
 
+      path('product-search',views.product_search,name="product_search")
+
       
 
 ]

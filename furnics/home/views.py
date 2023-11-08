@@ -54,7 +54,7 @@ def view_subcategory(request,category_id):
 
 def display_products(request,sub_category_id):
     
-    product=Product.objects.filter(Q(is_activate=True) & Q(sub_category = sub_category_id))
+    product = Product.objects.filter(Q(is_activate=True) & Q(sub_category = sub_category_id))
     
     # Fetch one variant for each product using distinct
     variants = Variation.objects.order_by('product').distinct('product')
@@ -113,3 +113,26 @@ def variant_select(request,variant_id):
                          'variant_image4':variant_image4
                          })
 
+
+def product_search(request):
+
+    query=request.GET.get('q')
+    modified_string = query.replace(" ", "")
+    variants=None
+    product_id=[]
+    if modified_string == "":
+        
+        return redirect('shop_page')
+    else:
+
+        product=Product.objects.filter(product_name__icontains=query)
+        for product in product:
+            # product_id.append(product.id)
+
+            variants=Variation.objects.filter(product=product)
+
+        context={
+            "product":product,
+            "variants":variants,
+        }
+        return render(request,'home/product_search.html',context)
