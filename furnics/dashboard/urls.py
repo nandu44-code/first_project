@@ -22,7 +22,9 @@ urlpatterns = [
 
        path('orders',views.orders,name="orders"),
        path("orders-details/<int:order_id>/",views.orders_details,name="orders_details"),
-       path('order-status',views.order_status,name="order_status")
+       path('order-status',views.order_status,name="order_status"),
+
+       path('get-sales-revenue/', views.get_sales_revenue,name='get_sales_revenue')
        
 ]
 

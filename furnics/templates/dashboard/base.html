@@ -27,17 +27,16 @@
     <div class="container-fluid">
 
         <div class="row" style="background-color: rgb(255, 255, 255); box-shadow: 20px 1px 10px #000000;">
-            <div class="search-container d-flex justify-content-center mt-2 col-9">
-                <input type="text" class="search-input" placeholder="Search...">
-                <button class="search-button pl-2 btn btn-lg btn-dark">Search</button>
+            <div class="col-7 d-flex justify-content-end mt-2 mb-2">
+                <h1 style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;letter-spacing: 5px; color: rgb(0, 83, 34);">Admin dashboard</h1>
             </div>
-            <div class="col-3 mt-2">
+            
+            <div class="col-5 mt-2  mb-2 d-flex justify-content-end">
                 <button class="btn btn-dark">
                     <a class="nav-link" href="{% url 'admin_logout' %}">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </button>
-
             </div>
         </div>
 

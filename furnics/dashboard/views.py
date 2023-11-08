@@ -1,10 +1,14 @@
  
+from django.utils import timezone
+from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
 from accounts.models import CustomUser, UserWallet
 from django.contrib import messages
 from categories.models import Category,Sub_Category
 from carts.models import Order,OrderItem
+from django.db.models.functions import ExtractMonth
+from django.db.models import Sum
 # Create your views here.
 # view function for admin login
 def admin_login(request):
@@ -32,8 +36,44 @@ def admin_login(request):
 def adminhome(request):
     if 'adminemail' in request.session:
 
+        current_year = timezone.now().year
 
-        return render(request,'dashboard/adminhome.html')
+        # Calculate monthly sales for the current year
+        monthly_sales = Order.objects.filter(
+            created_at__year=current_year
+        ).annotate(month=ExtractMonth('created_at')).values('month').annotate(total_sales=Sum('total_price')).order_by(
+            'month')
+
+        # Create a dictionary to hold the monthly sales data
+        monthly_sales_data = {month: 0 for month in range(1, 13)}
+
+        for entry in monthly_sales:
+            month = entry['month']
+            total_sales = entry['total_sales']
+            monthly_sales_data[month] = total_sales
+        users=CustomUser.objects.all().count()
+        try:
+
+            sales=Order.objects.filter(status="Delivered").count()
+        except:
+            sales=0
+        try:
+
+            cancelled=Order.objects.filter(status="Cancelled").count()
+        except:
+            cancelled=0
+        try:
+
+            returned=Order.objects.filter(status="Returned").count()
+        except:
+            returned=0
+        context={
+            "sales":sales,
+            "cancelled":cancelled,
+            "returned":returned,
+            'monthly_sales_data': monthly_sales_data
+        }
+        return render(request,'dashboard/adminhome.html',context)
     else:
         return redirect('admin_login')
 
@@ -43,6 +83,8 @@ def adminlogout(request):
     if 'adminemail' in request.session:
 
         logout(request)
+        return redirect('admin_login')
+    else:
         return redirect('admin_login')
     
 
@@ -86,7 +128,6 @@ def block_user(request,user_id):
         }
 
         return render(request,'dashboard/users.html',context)
-
     
 
 def categories(request):
@@ -332,3 +373,14 @@ def order_status(request):
         'order_item': order_item
     }
     return render(request, 'dashboard/orders_details.html', context)
+
+def get_sales_revenue(request):
+    # Replace this with your actual data retrieval logic
+    # Example mock data
+    data = {
+        'labels': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        'sales': [100, 200, 150, 300, 250, 400],
+        'revenue': [500, 600, 550, 700, 650, 800],
+    }
+
+    return JsonResponse(data)

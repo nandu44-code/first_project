@@ -1,9 +1,14 @@
 from django.shortcuts import redirect, render
 from django.contrib import messages
-from django.http import Http404
-from accounts.models import CustomUser
+from django.http import Http404, HttpResponse, JsonResponse
+from accounts.models import CustomUser, UserWallet
 from carts.models import Order, OrderItem
 from .models import Address
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+import os
+from io import BytesIO
+from django.conf import settings
 
 # Create your views here.
 def user_profile(request):
@@ -170,8 +175,60 @@ def order_details(request,order_id):
     
     order=Order.objects.get(id=order_id)
     order_items=OrderItem.objects.filter(order=order)
+    status=order.status
     context={
         "order_items":order_items,
-        "order":order
+        "order":order,
+        "status":status
     }
     return render(request,"userprofile/order_details.html",context)
+
+def order_cancellation(request,order_id):
+    
+    order=Order.objects.get(id=order_id)
+    user=request.user
+    
+    
+    order.status = 'Cancelled'
+    order.save()
+    if order.payment_mode=="Paid by Razorpay":
+        user.wallet+=order.total_price
+
+    user.save()
+    order_items=OrderItem.objects.filter(order=order)
+    status=order.status
+    context={
+        "order_items":order_items,
+        "order":order,
+        "status":status
+    }
+    return render(request,"userprofile/order_details.html",context)
+
+
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html  = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)#, link_callback=fetch_resources)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+def pdf_download(request,id):
+    order=Order.objects.get(id=id)
+    neworderitems=OrderItem.objects.filter(order=order)
+    cont = {
+        'order': order,
+        'cart_items': neworderitems
+    }
+    pdf = render_to_pdf('userprofile/order_invoice.html', cont)
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = "Invoice_%s.pdf" % (cont['order'])
+        content = "inline; filename='%s'" % (filename)
+        # download = request.GET.get("download")
+        # if download:
+        content = "attachment; filename=%s" % (filename)
+        response['Content-Disposition'] = content
+        return response
+    

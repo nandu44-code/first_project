@@ -16,7 +16,12 @@ urlpatterns = [
     path('default-address',views.default_address,name="default_address"),
 
     path("user-orders",views.my_orders,name="my_orders"),
-    path("order-details/<int:order_id>",views.order_details,name="order_details")
+    path("order-details/<int:order_id>",views.order_details,name="order_details"),
+    path("order-cancellation/<int:order_id>/",views.order_cancellation,name="order_cancellation"),
+
+    path('pdf-download/<int:id>', views.pdf_download, name='pdf_download'),
+    
+
 ]   
 
 

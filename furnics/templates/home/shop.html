@@ -7,23 +7,21 @@
 {% endblock %}
 
 {% block content %}
-<!-- Start Hero Section -->
-<!-- <div class="hero">
-				<div class="container">
-					<div class="row justify-content-between">
-						<div class="col-lg-5">
-							<div class="intro-excerpt">
-								<h1>Shop</h1>
-				
-							</div>
-						</div>
-						<div class="col-lg-7">
-							
-						</div>
+<div class="container mt-4">
+	<form method="post">
+		<div class="row d-flex justify-content-center">
+			<div class="col-md-6">
+				<div class="input-group mb-3">
+					<input type="text" class="form-control" placeholder="Search" aria-label="Search"
+						aria-describedby="search-button">
+					<div class="input-group-append d-flex justify-content-center">
+						<button class="btn btn-dark" type="button" id="search-button">Search</button>
 					</div>
 				</div>
-			</div> -->
-<!-- End Hero Section -->
+			</div>
+		</div>
+	</form>
+</div>
 <div class="d-flex justify-content-center mt-5">
 	<h2> SHOP BY CATEOGRIES</h2>
 </div>
@@ -32,7 +30,7 @@
 	<div>
 		<a href="{% url 'sub_category_page' category_id=categories.id %}">
 			<div>
-				<img src="/media/{{categories.category_image}}"    style=" height: 71%;
+				<img src="/media/{{categories.category_image}}" style=" height: 71%;
 				width: 200px;">
 				<h5 class="mt-3 ml-5">{{categories.category_name}}</h5>
 			</div>
@@ -43,8 +41,8 @@
 </div>
 <div class="d-flex justify-content-center">
 	<a href="">
-	<P class="mt-5">Know more about our categories </P>
-</a>
+		<P class="mt-5">Know more about our categories </P>
+	</a>
 </div>
 
 <div class="untree_co-section product-section before-footer-section">
@@ -58,29 +56,29 @@
 					<img src="/media/{{variant.image1}}" class="img-fluid product-thumbnail" width="60%" height="60%">
 					<h3 class="product-title">{{variant.product.product_name}}</h3>
 					<strong class="product-price">Rs.{{variant.selling_price}}</strong>
-					<div class="d-flex justify-content-center"> 
+					<div class="d-flex justify-content-center">
 						<span class="icon-cross">
-						
+
 							<!-- <img src="{% static 'images/cross.svg'%}" class="img-fluid"> -->
 							<img src="{% static 'images/icons8-love-16.png' %}" class="img-fluid">
-							
-							
+
+
 						</span>
 						<div class="d-flex justify-content-center mt-1 mb-5">
 							<a href="{% url 'add_cart' product_id=variant.id %}">
-							<button class="btn btn-sm button-addtocart">Add to Cart</button>
+								<button class="btn btn-sm button-addtocart">Add to Cart</button>
 							</a>
 						</div>
 						<div class="d-flex justify-content-center mt-1 mb-5">
 							<button class="btn btn-primary btn-sm">Buy Now</button>
 						</div>
-					
+
 					</div>
-					
+
 				</a>
-				
+
 			</div>
-            {% endfor %}	
+			{% endfor %}
 		</div>
 	</div>
 </div>
