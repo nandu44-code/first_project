@@ -19,9 +19,9 @@
 
 {% block content %}
 {% if messages %}
-<div class="text-danger d-flex justify-content-center mt-2">
+<div class="text-dark d-flex justify-content-center mt-2" id="messagesDiv">
     {% for message in messages%}
-    {{message}}
+    <h5 style="background-color: rgb(255, 94, 94); border-radius:10px; padding-left:30px;padding-right:30px; padding-top:10px; padding-bottom:10px;">{{message}}</h5>
     {%endfor%}  
 </div>
 {% endif %}
@@ -87,7 +87,7 @@
                 <div class="d-flex mr-5 mb-5 mt-1 ">
                     <button type="button" class="btn variant-button" id="variant-selector-{{ variants.id }}"
                         data-variant-id="{{ variants.id }}"
-                        style=" background: {{ variants.color }} ; margin-right:5px; width: 10px; height:10px;">
+                        style=" background: {{ variants.color }} ; margin-right:5px; width: 10px; height: 10px;">
 
                     </button>
                 </div>
@@ -170,7 +170,7 @@
         subImage.setAttribute("src", mainImageSrc);
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.getElementById('wishlist').addEventListener('click', function() {
         Swal.fire({
@@ -180,18 +180,17 @@
             confirmButtonText: 'Okay'
         });
     });
-</script>
+</script> -->
 <script>
-    document.getElementById('wishlist').addEventListener('click', function() {
-        Swal.fire({
-            title: 'sucsess!',
-            text: 'Product Added to  successfully!',
-            icon: 'danger',
-            confirmButtonText: 'Okay'
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            var messagesDiv = document.getElementById('messagesDiv');
+            if (messagesDiv) {
+                messagesDiv.style.display = 'none';
+            }
+        }, 5000); // Adjust the time as needed
     });
 </script>
-
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

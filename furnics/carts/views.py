@@ -5,6 +5,7 @@ from django.http import JsonResponse,HttpResponse
 from django.shortcuts import render,redirect,get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from accounts.models import CustomUser
+from wishlist.models import WishlistItem
 from userprofile.models import Address
 from store.models import Product, Variation
 from carts.models import Cart,CartItem, Order, OrderItem
@@ -64,37 +65,44 @@ def add_cart(request,product_id):
     variant = Variation.objects.get(id=product_id) #get the product variation
     # if product.stock is None:
     #     return redirect('view_shop')
-    cart_id = _cart_id(request)
-    
-    try:
-        cart = Cart.objects.get(user = user) #get the cart using cart_id present in the session
+    is_exist = WishlistItem.objects.filter(user = user, product_name=variant).exists()
+
+    if is_exist:
+        wishlist_item = WishlistItem.objects.get(user = user, product_name=variant)
+        wishlist_item.delete()
+        return redirect('shop_page')
+    else:
+        cart_id = _cart_id(request)
         
-    except Cart.DoesNotExist:
-        if 'useremail' in request.session:
-            email = request.session['useremail']
-        user=CustomUser.objects.get(email=email)
-        if user is not None:
+        try:
+            cart = Cart.objects.get(user = user) #get the cart using cart_id present in the session
+            
+        except Cart.DoesNotExist:
+            if 'useremail' in request.session:
+                email = request.session['useremail']
+            user=CustomUser.objects.get(email=email)
+            if user is not None:
 
-            cart = Cart.objects.create(
-                cart_id = _cart_id(request),
-                user = user
+                cart = Cart.objects.create(
+                    cart_id = _cart_id(request),
+                    user = user
+                )
+                cart.save()
+        
+        try:
+            cart_item = CartItem.objects.get(product=variant,cart=cart)
+            cart_item.quantity += 1
+            cart_item.save()
+        except CartItem.DoesNotExist:
+
+            cart_item =CartItem.objects.create(
+
+                product = variant,
+                quantity = 1,
+                cart = cart,
             )
-            cart.save()
-    
-    try:
-        cart_item = CartItem.objects.get(product=variant,cart=cart)
-        cart_item.quantity += 1
-        cart_item.save()
-    except CartItem.DoesNotExist:
-
-        cart_item =CartItem.objects.create(
-
-            product = variant,
-            quantity = 1,
-            cart = cart,
-        )
-        cart_item.save()
-    return redirect('cart_page')
+            cart_item.save()
+        return redirect('cart_page')
 
 
 def decrement_cartitem(request,product_id):
@@ -303,75 +311,7 @@ def place_order(request):
            pass
 
         return redirect('order_success')
-            # return redirect('my_orders')
-        # return redirect('home')
 
-    # if 'useremail' in request.session:
-    #     cart_id = _cart_id(request)  # Get or generate the cart_id
-    #     tax = 0
-    #     grand_total = 0
-    #     total = 0
-    #     quantity = 0
-    #     cart_items = ''
-    #     try:
-
-    #         try:
-    #             email = request.session['user-email']
-    #             user = CustomUser.objects.get(email=email)
-    #             cart_items = CartItem.objects.filter(user=user, is_active=True)
-    #         except:
-    #             cart = Cart.objects.get(cart_id=cart_id)
-    #             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
-    #         for cart_item in cart_items:
-    #             total += (cart_item.variant.selling_price * cart_item.quantity)
-    #             quantity += cart_item.quantity
-    #         tax = (2 * total) / 100
-    #         grand_total = total + tax
-
-    #     except ObjectDoesNotExist:
-    #         pass
-    #     try:
-    #         email = request.session['user-email']
-    #         user = CustomUser.objects.get(email=email)
-    #         addresses = Address.objects.filter(user_id=user,is_default=False)
-    #     except:
-    #         pass
-    #     try:
-    #         default_address = Address.objects.get(user_id=user, is_default=True)
-    #     except:
-    #         default_address = Address.objects.filter(user_id=user).first()
-
-    #     context = {
-    #         'total': total,
-    #         'quantity': quantity,
-    #         'cart_items': cart_items,
-    #         'addresses': addresses,
-    #         'grand_total': grand_total,
-    #         'default_address': default_address,
-
-    #     }
-    #     return render(request, 'user/checkout/checkout.html', context)
-    # return redirect('user_signin')
-
-
-# def razorpay_check(request):
-#     print("hoooo")
-#     user=request.user
-#     print(user)
-#     user = CustomUser.objects.get(email =user)
-#     print("knsgkjnsd")
-#     cart = Cart.objects.get(user=user)
-#     cart_items = CartItem.objects.filter(cart=cart)
-#     total_price=0
-    
-#     for item in cart_items:
-#          print(item.selling_price)
-#          total_price = total_price + item.product.selling_price * item.quantity
-   
-#     print(total_price)
-#     return JsonResponse({
-#         'total_price': total_price
-#     })
 def razorpay_check(request):
     try:
         user = request.user

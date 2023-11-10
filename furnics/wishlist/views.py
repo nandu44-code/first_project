@@ -30,13 +30,14 @@ def add_to_wishlist(request,product_id):
         if is_exist:
             # Wishlist item already exists
             messages.error(request, 'This product is already in your wishlist.')
+            return redirect('product_details',variant_id=variant.id)
         else:
             # Wishlist item does not exist, add it
             wishlist = WishlistItem(user=user, product_name=variant)
             wishlist.save()
             messages.success(request, 'Product added to wishlist.')
 
-        return redirect('wishlist_view')
+            return redirect('wishlist_view')
 
     except Exception as e:
         # Handle exceptions if any
@@ -45,3 +46,18 @@ def add_to_wishlist(request,product_id):
         messages.error(request, 'Failed to add the product to the wishlist.')
         return redirect('wishlist_view')
 
+def remove_wish_list(request,product_id):
+     
+    wishlist_item = None  # Initializing the variable
+    try:
+        product=Variation.objects.get(id=product_id)
+        # Find the wishlist item
+        wishlist_item = WishlistItem.objects.get(product_name=product, user=request.user)
+        wishlist_item.delete()  # Remove the wishlist item
+    except WishlistItem.DoesNotExist:
+        pass
+    wishlist = WishlistItem.objects.filter(user=request.user)
+    context = {
+        'wishlist': wishlist,
+    }
+    return render(request, 'userprofile/wishlist.html', context)

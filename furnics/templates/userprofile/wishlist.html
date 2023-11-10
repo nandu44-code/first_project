@@ -50,8 +50,9 @@
             <div class=" d-flex justify-content-center mt-4 heading">
                 <h2 class="Main-heading"
                     style="color: rgb(49, 49, 49); font-style: normal; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-weight: 600;">
-                    MY ORDERS</h2>
+                    MY &nbsp WISHLIST</h2>
             </div>
+            {% if wishlist %}
             <div class="col-lg-10 mt-5">
                 <div class="row">
                     <div class="col-lg-3">
@@ -63,7 +64,7 @@
                     
 
                 </div>
-
+                
                 {% for wishlist in wishlist %}
                 
                     <div class="card mb-3" style="box-shadow: 5px 10px 5px rgb(40, 40, 40);"><span
@@ -85,8 +86,12 @@
                                         Rs.{{wishlist.product_name.selling_price}}</h6>
                                 </div>
                                 <div class="col-lg-3 flex-coloum">
-                                    <button class="btn" style="background-color: rgb(61, 86, 92);color:rgba(236, 209, 7, 0.96)">ADD TO CART</button>
+                                    <a href="{% url 'add_cart' product_id=wishlist.product_name.id %}">
+                                        <button class="btn" style="background-color: rgb(61, 86, 92);color:rgba(236, 209, 7, 0.96)">ADD TO CART</button>
+                                    </a>
+                                    <a href="{% url 'remove_wishlist' product_id=wishlist.product_name.id %}"> 
                                     <button class="btn mt-3" style="background-color: rgb(6, 185, 230);color:rgba(255, 255, 255, 0.96)">REMOVE FROM WISHLIST</button>
+                                    </a>
                                     
                                 </div>
                                 </div>
@@ -95,6 +100,11 @@
                         </div>
                     </div>
                 {% endfor %}
+                {% else %}
+                <div class="d-flex jsutify-content-center mt-5 mx-5">
+                    <h2 style="color:red; padding-left:430px; padding-top:100px;"> (Wishlist is empty)</h2>
+                </div>
+                {%endif%}
                 {% endblock content %}
             </div>
         </div>
