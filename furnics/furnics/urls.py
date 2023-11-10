@@ -28,7 +28,8 @@ urlpatterns = [
     path('store/',include('store.urls')),
     path('cart/',include('carts.urls')),
     path('user-profile/',include('userprofile.urls')),
-    path('home/',include("home.urls"))
+    path('home/',include("home.urls")),
+    path('wishlist/',include("wishlist.urls")),
 ] 
 
 if settings.DEBUG:

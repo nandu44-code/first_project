@@ -94,7 +94,9 @@
                     <button class="btn btn-sm button-addtocart">Add to Cart</button>
                 </a>
                 <button class="btn btn-primary">Buy Now</button>
+                <button class="btn" id="wishlist">Add to wishlist</button>
             </div>
+            
         
 
         <h5 class="mt-4" style="color:brown">About this Item :</h5>
@@ -158,6 +160,27 @@
         // Set the clicked sub-image source to the previous main image source
         subImage.setAttribute("src", mainImageSrc);
     }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('wishlist').addEventListener('click', function() {
+        Swal.fire({
+            title: 'sucsess!',
+            text: 'Added to wishlist successfully!',
+            icon: 'danger',
+            confirmButtonText: 'Okay'
+        });
+    });
+</script>
+<script>
+    document.getElementById('wishlist').addEventListener('click', function() {
+        Swal.fire({
+            title: 'sucsess!',
+            text: 'Product Added to  successfully!',
+            icon: 'danger',
+            confirmButtonText: 'Okay'
+        });
+    });
 </script>
 
 

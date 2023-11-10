@@ -23,7 +23,7 @@
                 <ul class="nav flex-column">
                     <div class="itemsdiv mx-2 my-2">
                         <li class="nav-item">
-                            <a class="nav-link navitem" href="#my-profile">
+                            <a class="nav-link navitem" href="{% url 'user_profile'%}">
                                 My Profile
                             </a>
                         </li>
@@ -32,6 +32,13 @@
                         <li class="nav-item">
                             <a class="nav-link navitem" href="{% url 'my_orders'%}">
                                 My Orders
+                            </a>
+                        </li>
+                    </div>
+                    <div class="itemsdiv mx-2 my-2">
+                        <li class="nav-item">
+                            <a class="nav-link navitem" href="{% url 'wishlist_view'%}">
+                                Wishlist
                             </a>
                         </li>
                     </div>
@@ -213,7 +220,7 @@
                         <div class="justify-content-evenly">
                             <!-- <a href="{% url 'edit_address' address_id=address.id %}"> -->
                             <button class="toggle-btn icons-edit-delete" data-toggle="modal"
-                                data-target="#editAddressModal-{{forloop.counter}}">
+                                data-target="#editAddressModal-{{forloop.counter}}" style="border:none; border-radius:20px; outline:none; ">
                                 <svg id="editIcon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20"
                                     height="50" viewBox="0 0 24 24">
                                     <path
@@ -221,7 +228,7 @@
                                     </path>
                                 </svg>
                             </button>
-                            <button>
+                            <button style="border-radius:20px; border:none;">
                                 <a href="{% url 'delete_address' address_id=address.id %}">
                                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="50"
                                         viewBox="0 0 24 24">

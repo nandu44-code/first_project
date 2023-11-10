@@ -12,8 +12,9 @@
 		<div class="row d-flex justify-content-center">
 			<div class="col-md-6">
 				<div class="input-group mb-3">
-					<input type="text" class="form-control" class="fas fa-search" placeholder="Search for Products here..."
-						aria-label="Search" aria-describedby="search-button" name="q">
+					<input type="text" class="form-control" class="fas fa-search"
+						placeholder="Search for Products here..." aria-label="Search" aria-describedby="search-button"
+						name="q">
 					<div class="input-group-append d-flex justify-content-center">
 						<button style="background-color:rgb(61, 128, 82); width:50px;" class="fas fa-search"
 							type="submit" id="search-button"></button>
@@ -23,6 +24,10 @@
 		</div>
 	</form>
 </div>
+
+
+
+
 <div class="d-flex justify-content-center mt-5">
 	<h2> SHOP BY CATEOGRIES</h2>
 </div>
@@ -40,50 +45,83 @@
 	</div>
 	{% endfor %}
 </div>
-<div class="d-flex justify-content-center">
+<!-- <div class="d-flex justify-content-center mx-5">
 	<a href="">
-		<P class="mt-5">Know more about our categories </P>
 	</a>
+</div> -->
+<!-- filter products using color -->
+<div class="d-flex justify-content-center mt-5">
+	<h4>Filter the product using color </h4>
+
 </div>
 
-<div class="untree_co-section product-section before-footer-section">
-	<div class="container">
-		<div class="row">
-			<!-- Start Column 1 -->
-			{% for variant in variants %}
-			<div class="col-lg-3 mb-5 mt-5">
-				<div class="mx-1">
-					<div  class="mx-2 mt-2 mb-2" style="background-color:rgb(214, 214, 214); border: 5px solid rgba(239, 239, 239, 0.968); border-radius:30px;">
-						<a class="product-item" href="{% url 'product_details' variant_id=variant.id %}">
-							<img src="/media/{{variant.image1}}" class="img-fluid product-thumbnail mt-4" width="60%"
-								height="60%">
-							<h3 class="product-title">{{variant.product.product_name}}</h3>
-							<strong class="product-price" style="color: rgb(255, 0, 0);">Rs.{{variant.selling_price}}</strong>
-							<div class="d-flex justify-content-center">
-								<span class="icon-cross">
-									
-									<img src="{% static 'images/icons8-love-16.png' %}" class="img-fluid">
-								</span>
-								<div class="d-flex coloum mt-2 mb-2">									
-									<a href="{% url 'add_cart' product_id=variant.id %}">
-										<button class="btn button-addtocart">Add to Cart</button>
-									</a>
-									<button class="btn btn-primary">Buy Now</button>							
-								</div>									
-							</div>
-						</a>
+	<div class="d-flex flex-coloum justify-content-center mt-5 align-items-center">
+		
+		{% for i in color %}
+		<form method="GET" action="{% url 'product_color_filter' %}">
+			<input type="hidden" value="{{i.color}}" name="q">
+
+			<button style="background-color: {{ i.color }}; height: 40px; width: 40px; border-radius: 50%; border:none;"
+				type="submit" class="mx-2">
+				<div style="background-color: {{ i.color }};" class="mx-2"></div>
+			</button>				
+		</form>
+		{% endfor %}
+	</div>
+	<div class=" d-flex justify-content-center mt-5">
+		<form method="GET" action="{% url 'product_sort' %}">
+			
+			<select name="sort" style="border-radius:10px;">
+				<option disabled>Sort the price</option>
+				<option value="0">price: Low To High</option>
+				<option value="1">price: High to Low</option>
+			</select>
+			<button class="btn btn-secondary" type="submit" >apply</button>
+		</form>
+	</div>
+
+
+
+	<div class=" untree_co-section product-section before-footer-section">
+		<div class="container">
+			<div class="row">
+				<!-- Start Column 1 -->
+				{% for variant in variants %}
+				<div class="col-lg-3 mb-5 mt-5">
+					<div class="mx-1">
+						<div class="mx-2 mt-2 mb-2"
+							style="background-color:rgb(214, 214, 214); border: 5px solid rgba(239, 239, 239, 0.968); border-radius:30px;">
+							<a class="product-item" href="{% url 'product_details' variant_id=variant.id %}">
+								<img src="/media/{{variant.image1}}" class="img-fluid product-thumbnail mt-4"
+									width="60%" height="60%">
+								<h3 class="product-title">{{variant.product.product_name}}</h3>
+								<strong class="product-price"
+									style="color: rgb(255, 0, 0);">Rs.{{variant.selling_price}}</strong>
+								<div class="d-flex justify-content-center">
+									<span class="icon-cross">
+
+										<img src="{% static 'images/icons8-love-16.png' %}" class="img-fluid">
+									</span>
+									<div class="d-flex coloum mt-2 mb-2">
+										<a href="{% url 'add_cart' product_id=variant.id %}">
+											<button class="btn button-addtocart">Add to Cart</button>
+										</a>
+										<button class="btn btn-primary">Buy Now</button>
+									</div>
+								</div>
+							</a>
+						</div>
 					</div>
 				</div>
+				{% endfor %}
 			</div>
-			{% endfor %}
 		</div>
 	</div>
-</div>
 
 
-{% endblock %}
+	{% endblock %}
 
-{% block script %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-{% endblock %}
+	{% block script %}
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+	{% endblock %}

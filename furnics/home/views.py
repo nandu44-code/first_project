@@ -6,6 +6,7 @@ from categories.models import Category
 from categories.models import Sub_Category
 from accounts.models import CustomUser
 from store.models import Product, Variation
+
 # Create your views here.
 # @never_cache  
 def homepage(request):
@@ -25,11 +26,12 @@ def view_shop(request):
     products=Product.objects.filter(is_activate=True)
     variants = Variation.objects.order_by('product').distinct('product')
 
-   
+    available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
     context={
         'category':categories,
         'product':products,
-        'variants':variants
+        'variants':variants,
+        "color":available_colors,
     }
 
 
@@ -37,15 +39,15 @@ def view_shop(request):
     return render(request,'home/shop.html',context)
 
 def view_subcategory(request,category_id):
-   
+    variants={}
     subcategory=Sub_Category.objects.filter(Q(is_activate=True) & Q(category=category_id))
     # Assuming you already have 'subcategory' containing the filtered subcategories
     products = Product.objects.filter(sub_category__in=subcategory, is_activate=True)
-    variants = Variation.objects.filter(product__in=products).values('product').distinct()
-    for i in variants:
-        print("[][[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]")
-        print(i.id)
+    for product in products:
 
+        variants = Variation.objects.filter(product=product)
+        print(product.id)
+    print(variants)
     context={
         'subcategory':subcategory,
         'base_variant':variants
@@ -116,19 +118,64 @@ def product_search(request):
     query=request.GET.get('q')
     modified_string = query.replace(" ", "")
     variants=None
+    
+    categories=Category.objects.filter(is_activate=True)
+    products=Product.objects.filter(is_activate=True)
+    available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
     if modified_string == "":
         
         return redirect('shop_page')
+    
     else:
 
         product=Product.objects.filter(product_name__icontains=query)
         for product in product:
-            # product_id.append(product.id)
+            
 
             variants=Variation.objects.filter(product=product)
-
+        print(variants)
         context={
-            "product":product,
-            "variants":variants,
-        }
-        return render(request,'home/product_search.html',context)
+        'category':categories,
+        'product':products,
+        'variants':variants,
+        "color":available_colors,
+    }
+        return render(request,'home/shop.html',context)
+    
+def product_color_filter(request):
+    
+    categories=Category.objects.filter(is_activate=True)
+    products=Product.objects.filter(is_activate=True)
+    available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
+    query=request.GET.get('q')
+    variants=Variation.objects.filter(color=query)
+    context={
+        'category':categories,
+        'product':products,
+        'variants':variants,
+        "color":available_colors,
+    }
+
+
+    return render(request,'home/shop.html',context)
+
+def product_sort(request):
+    sort=request.GET.get('sort')
+    categories=Category.objects.filter(is_activate=True)
+    products=Product.objects.filter(is_activate=True)
+    available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
+
+    if sort== '1':
+        variants=Variation.objects.filter(is_available=True).order_by('-selling_price')
+
+    else:
+         variants=Variation.objects.filter(is_available=True).order_by('selling_price')
+
+    context={
+        'category':categories,
+        'product':products,
+        'variants':variants,
+        "color":available_colors,
+    }
+
+    return render(request,'home/shop.html',context)
