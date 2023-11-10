@@ -55,14 +55,12 @@
             <div class="col-lg-10 mt-5">
                 <div class="row">
                     <div class="col-lg-3">
-                        <h5 style="color: black;">Order Item</h4>
+                        <h5 style="color: black;"> Item</h4>
                     </div>
                     <div class="col-lg-3">
-                        <h5 style="color: black;">Order Status</h4>
+                        <h5 style="color: black;">amount</h4>
                     </div>
-                    <div class="col-lg-3">
-                        <h5 style="color: black;">Total Amount</h4>
-                    </div>
+                    
 
                 </div>
 
@@ -74,8 +72,8 @@
                             <div class="row">
                                 <div class="col-lg-3">
                                     <h6 style="color: rgb(0, 0, 0); font-family: Verdana, Geneva, Tahoma, sans-serif">
-                                        {{wishlist.product.product_name}}</h6>
-                                    <img src="/media/{{wishlist.product.image1}}" width="30%">
+                                        {{wishlist.product_name.product_name}}</h6>
+                                    <img src="/media/{{wishlist.product_name.image1}}" width="30%">
                                 </div>
                                 <!-- <div class="col-lg-3">
                                     <p
@@ -84,13 +82,15 @@
                                 </div> -->
                                 <div class="col-lg-3">
                                     <h6 style="color: rgb(250, 1, 1); font-family: Verdana, Geneva, Tahoma, sans-serif">
-                                        Rs.{{wishlist.product.selling_price}}</h6>
+                                        Rs.{{wishlist.product_name.selling_price}}</h6>
                                 </div>
-                                <div class="col-lg-3">
-                                    <button type="submit" class="btn"
-                                        style="background-color: rgb(61, 86, 92);color:rgba(236, 209, 7, 0.96)">View
-                                        more details</button>
+                                <div class="col-lg-3 flex-coloum">
+                                    <button class="btn" style="background-color: rgb(61, 86, 92);color:rgba(236, 209, 7, 0.96)">ADD TO CART</button>
+                                    <button class="btn mt-3" style="background-color: rgb(6, 185, 230);color:rgba(255, 255, 255, 0.96)">REMOVE FROM WISHLIST</button>
+                                    
                                 </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>

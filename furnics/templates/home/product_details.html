@@ -18,6 +18,13 @@
 {% endblock %}
 
 {% block content %}
+{% if messages %}
+<div class="text-danger d-flex justify-content-center mt-2">
+    {% for message in messages%}
+    {{message}}
+    {%endfor%}  
+</div>
+{% endif %}
 
 <div class="container mt-5">
 
@@ -94,7 +101,9 @@
                     <button class="btn btn-sm button-addtocart">Add to Cart</button>
                 </a>
                 <button class="btn btn-primary">Buy Now</button>
-                <button class="btn" id="wishlist">Add to wishlist</button>
+                <a href="{% url 'add_to_wishlist' product_id=variant.id %}">
+                    <button class="btn" id="wishlist">Add to wishlist</button>
+                </a>
             </div>
             
         
