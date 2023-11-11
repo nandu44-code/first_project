@@ -2,13 +2,15 @@ from django.db import models
 from accounts.models import CustomUser
 from userprofile.models import Address
 
-from store.models import Product, Variation
+from store.models import Coupon, Product, Variation
 
 # Create your models here.
 class Cart(models.Model):
-    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,null=True,blank=True) 
+    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,null=True,blank=True)
+    coupon=models.ForeignKey(Coupon,on_delete=models.SET_NULL,null=True,blank=True) 
     cart_id=models.CharField(max_length=250,blank=True)
     date_added=models.DateTimeField(auto_now_add=True)
+
     
     def __str__(self):
          

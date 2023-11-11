@@ -1,6 +1,6 @@
  
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
 from accounts.models import CustomUser, UserWallet
@@ -9,6 +9,9 @@ from categories.models import Category,Sub_Category
 from carts.models import Order,OrderItem
 from django.db.models.functions import ExtractMonth
 from django.db.models import Sum
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from store.models import Coupon
 # Create your views here.
 # view function for admin login
 def admin_login(request):
@@ -34,48 +37,143 @@ def admin_login(request):
 
 
 def adminhome(request):
-    if 'adminemail' in request.session:
+    total_sales = 0
+    if request.method == 'POST':
+        users=CustomUser.objects.filter(is_activate=True)
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
 
-        current_year = timezone.now().year
+    
+        if start_date == end_date:
+            print(start_date)
+            orders = Order.objects.filter(created_at__date=start_date)
+        else:
+            orders = Order.objects.filter(created_at__range=(start_date, end_date))
+        total_order = Order.objects.filter(created_at__range=(start_date, end_date)).count()
+        Pending = Order.objects.filter(created_at__range=(start_date, end_date),status='Order confirmed').count()
+        Processing = Order.objects.filter(created_at__range=(start_date, end_date),status="In Production").count()
+        Shipped = Order.objects.filter(created_at__range=(start_date, end_date),status='Shipped').count()
+        Delivered = Order.objects.filter(created_at__range=(start_date, end_date),status='Delivered').count()
+        cancelled = Order.objects.filter(created_at__range=(start_date, end_date),status='Cancelled').count()
+        Return = Order.objects.filter(created_at__range=(start_date, end_date),status='Returned').count()
+        for order in orders:
+            total_sales = total_sales + order.total_price
 
-        # Calculate monthly sales for the current year
-        monthly_sales = Order.objects.filter(
-            created_at__year=current_year
-        ).annotate(month=ExtractMonth('created_at')).values('month').annotate(total_sales=Sum('total_price')).order_by(
-            'month')
 
-        # Create a dictionary to hold the monthly sales data
-        monthly_sales_data = {month: 0 for month in range(1, 13)}
-
-        for entry in monthly_sales:
-            month = entry['month']
-            total_sales = entry['total_sales']
-            monthly_sales_data[month] = total_sales
-        users=CustomUser.objects.all().count()
-        try:
-
-            sales=Order.objects.filter(status="Delivered").count()
-        except:
-            sales=0
-        try:
-
-            cancelled=Order.objects.filter(status="Cancelled").count()
-        except:
-            cancelled=0
-        try:
-
-            returned=Order.objects.filter(status="Returned").count()
-        except:
-            returned=0
-        context={
-            "sales":sales,
-            "cancelled":cancelled,
-            "returned":returned,
-            'monthly_sales_data': monthly_sales_data
-        }
-        return render(request,'dashboard/adminhome.html',context)
     else:
-        return redirect('admin_login')
+
+        orders = Order.objects.all()
+        total_order = Order.objects.all().count()
+        Pending = Order.objects.filter(status='Order confirmed').count()
+        Processing = Order.objects.filter(status="In Production").count()
+        Shipped = Order.objects.filter(status='Shipped').count()
+        Delivered = Order.objects.filter(status='Delivered').count()
+        cancelled = Order.objects.filter(status='Cancelled').count()
+        Return = Order.objects.filter(status='Returned').count()
+        for order in orders:
+            total_sales = total_sales + order.total_price
+        
+        if 'adminemail' in request.session:
+
+            current_year = timezone.now().year
+
+            # Calculate monthly sales for the current year
+            monthly_sales = Order.objects.filter(
+                created_at__year=current_year
+            ).annotate(month=ExtractMonth('created_at')).values('month').annotate(total_sales=Sum('total_price')).order_by(
+                'month')
+
+            # Create a dictionary to hold the monthly sales data
+            monthly_sales_data = {month: 0 for month in range(1, 13)}
+
+            for entry in monthly_sales:
+                month = entry['month']
+                total_sales = entry['total_sales']
+                monthly_sales_data[month] = total_sales
+            users=CustomUser.objects.all().count()
+            try:
+
+                sales=Order.objects.filter(status="Delivered").count()
+                revenue=Order.objects.filter(status="Delivered")
+                total=0
+                for i in revenue:
+                    total+=i.total_price
+            except:
+                sales=0
+            try:
+
+                cancelled=Order.objects.filter(status="Cancelled").count()
+            except:
+                cancelled=0
+            try:
+
+                returned=Order.objects.filter(status="Returned").count()
+            except:
+                returned=0
+
+            context = {
+                "users":users,
+                'total':total,
+                'orders': orders,
+                'total_sales': total_sales,
+                'total_order': total_order,
+                'Pending': Pending,
+                'Processing': Processing,
+                'Shipped': Shipped,
+                "Delivered": Delivered,
+                'cancelled': cancelled,
+                'Return': Return,
+                "sales":sales,
+                "cancelled":cancelled,
+                "returned":returned,
+                'monthly_sales_data': monthly_sales_data
+            }
+            return render(request, 'dashboard/adminhome.html', context)
+        else:
+            return redirect('admin_login')
+
+    # if 'adminemail' in request.session:
+
+    #     current_year = timezone.now().year
+
+    #     # Calculate monthly sales for the current year
+    #     monthly_sales = Order.objects.filter(
+    #         created_at__year=current_year
+    #     ).annotate(month=ExtractMonth('created_at')).values('month').annotate(total_sales=Sum('total_price')).order_by(
+    #         'month')
+
+    #     # Create a dictionary to hold the monthly sales data
+    #     monthly_sales_data = {month: 0 for month in range(1, 13)}
+
+    #     for entry in monthly_sales:
+    #         month = entry['month']
+    #         total_sales = entry['total_sales']
+    #         monthly_sales_data[month] = total_sales
+    #     users=CustomUser.objects.all().count()
+    #     try:
+
+    #         sales=Order.objects.filter(status="Delivered").count()
+    #     except:
+    #         sales=0
+    #     try:
+
+    #         cancelled=Order.objects.filter(status="Cancelled").count()
+    #     except:
+    #         cancelled=0
+    #     try:
+
+    #         returned=Order.objects.filter(status="Returned").count()
+    #     except:
+    #         returned=0
+        # context={
+        #     "sales":sales,
+        #     "cancelled":cancelled,
+        #     "returned":returned,
+        #     'monthly_sales_data': monthly_sales_data
+        # }
+        # return render(request,'dashboard/adminhome.html',context)
+    # else:
+    #     return redirect('admin_login')
 
 
 def adminlogout(request):
@@ -384,3 +482,91 @@ def get_sales_revenue(request):
     }
 
     return JsonResponse(data)
+
+
+
+
+def render_to_pdf(template_path, context_dict):
+    template = get_template(template_path)
+    html = template.render(context_dict)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Sales_report.pdf"'
+
+    # Create a PDF with xhtml2pdf
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+def sales_report_pdf_download(request):
+    order = Order.objects.all()
+    cont = {
+        'orders': order,
+    }
+    pdf = render_to_pdf('dashboard/sales_report_pdf.html', cont)
+    return pdf
+
+def coupon(request):
+    
+    coupon=Coupon.objects.all().order_by('id')
+
+    context={
+        'coupon':coupon,
+    }
+    return render(request,'dashboard/coupons.html',context)
+
+def add_coupon(request):
+    
+    if request.method=='POST':
+        coupon_name=request.POST.get('couponName')
+        coupon_code=request.POST.get('couponCode')
+        discountAmount=request.POST.get('discountAmount')
+        validFrom=request.POST.get('validFrom')
+        validTo=request.POST.get('validTo')
+        minimumAmount=request.POST.get('minimumAmount')
+
+        if Coupon.objects.filter(coupon_name=coupon_name).exists():
+            messages.error(request,"Entered Coupon is already exists!!")
+
+            return redirect('coupon')
+            
+        else:
+            coupon=Coupon(coupon_name=coupon_name,code=coupon_code,discount=discountAmount, valid_from = validFrom, valid_to = validTo, minimum_amount = minimumAmount)
+            coupon.save()
+
+            return redirect('coupon')
+        
+def edit_coupon(request,coupon_id):
+
+    if request.method=='POST':
+        coupon=Coupon.objects.get(id=coupon_id)
+        coupon_name = request.POST.get('couponName')
+        coupon.coupon_name = coupon_name
+        coupon.coupon_code = request.POST.get('couponCode')
+        coupon.discount = request.POST.get('discountAmount')
+        coupon.valid_from = request.POST.get('validFrom')
+        coupon.valid_to = request.POST.get('validTo')
+        coupon.minimum_amount = request.POST.get('minimumAmount')
+
+        
+
+        if Coupon.objects.filter(coupon_name=coupon_name).exclude(id=coupon_id).exists():
+
+            messages.error(request,"Coupon name you have chosen is already taken ")
+            return redirect('coupon')
+        else:
+            coupon.save()
+            return redirect('coupon')
+        
+def block_coupon(request,coupon_id):
+
+    coupon=Coupon.objects.get(id=coupon_id)
+    print("hjksjhfkjhdkjfhksjdfhksdhfksdjhfksjdhk")
+    if coupon.is_available == True:
+        print("nanduandunandynadynandynandynabdynab=ndu")
+        coupon.is_available=False
+    else:
+        coupon.is_available=True
+    coupon.save()
+    return redirect('coupon')

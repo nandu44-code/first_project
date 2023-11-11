@@ -9,6 +9,7 @@ urlpatterns = [
        path('admin-logout',views.adminlogout,name='admin_logout'),
        path('users/',views.users,name='users'),
        path('block/<int:user_id>/',views.block_user,name='block_user'),
+       path('sales-report-pdf/', views.sales_report_pdf_download, name='sales_report_pdf'),
 
        path('categories/',views.categories,name='categories'),
        path('add-categories/',views.add_categories,name='add_categories'),
@@ -24,7 +25,11 @@ urlpatterns = [
        path("orders-details/<int:order_id>/",views.orders_details,name="orders_details"),
        path('order-status',views.order_status,name="order_status"),
 
-       path('get-sales-revenue/', views.get_sales_revenue,name='get_sales_revenue')
-       
+       path('get-sales-revenue/', views.get_sales_revenue,name='get_sales_revenue'),
+
+       path('coupon',views.coupon,name='coupon'),
+       path('add-coupon',views.add_coupon,name="add_coupon"),
+       path('edit-coupon/<int:coupon_id>/',views.edit_coupon,name="edit_coupon"),
+       path('block-coupon/<int:coupon_id>/',views.block_coupon,name="block_coupon")
 ]
 
