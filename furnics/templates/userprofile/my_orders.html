@@ -60,36 +60,53 @@
                     <div class="col-lg-3">
                         <h5 style="color: black;">Total Amount</h4>
                     </div>
-                    
+
                 </div>
-                
+
                 {% for orderitem in order_items %}
                 <form method="POST" action="{% url 'order_details' order_id=orderitem.order.id%}">
-                {% csrf_token %}
-                <div class="card mb-3" style="box-shadow: 5px 10px 5px rgb(40, 40, 40);"><span class="border border-success"></span>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <h6 style="color: rgb(0, 0, 0); font-family: Verdana, Geneva, Tahoma, sans-serif">{{orderitem.product.product_name}}</h6>
-                                <img src="/media/{{orderitem.variant.image1}}" width="30%">
+                    {% csrf_token %}
+                    <div class="card mb-3" style="box-shadow: 5px 10px 5px rgb(40, 40, 40);"><span
+                            class="border border-success"></span>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <h6 style="color: rgb(0, 0, 0); font-family: Verdana, Geneva, Tahoma, sans-serif">
+                                        {{orderitem.product.product_name}}</h6>
+                                    <img src="/media/{{orderitem.variant.image1}}" width="30%">
+                                </div>
+                                <div class="col-lg-3">
+                                    <p
+                                        style="color: rgb(7, 153, 102); font-family: Verdana, Geneva, Tahoma, sans-serif">
+                                        {{orderitem.order.status}}</p>
+                                </div>
+                                <div class="col-lg-3">
+                                    <h6 style="color: rgb(250, 1, 1); font-family: Verdana, Geneva, Tahoma, sans-serif">
+                                        Rs.{{orderitem.order.total_price}}</h6>
+                                </div>
+                                <div class="col-lg-3">
+                                    <button type="submit" class="btn"
+                                        style="background-color: rgb(61, 86, 92);color:rgba(236, 209, 7, 0.96)">View
+                                        more details</button>
+                                    {% if orderitem.order.status == 'Delivered' or orderitem.order.status == 'Cancelled' %}
+                                    <div>CANT CANCEL THE ORDER</div>
+                                    {% else %}
+                                    <a href="{% url 'order_cancellation' order_id=orderitem.order.id %}">
+                                        <button type="button" class="btn mt-4">cancel the order</button>
+                                    </a>
+                                    {% endif %}
+                                </div>
+
                             </div>
-                            <div class="col-lg-3">
-                                <p style="color: rgb(7, 153, 102); font-family: Verdana, Geneva, Tahoma, sans-serif">{{orderitem.order.status}}</p>
+                            <div class="d-flex justify-content-center">
+                                <p style="color: rgb(10, 10, 99);">* To view more details about this order please click
+                                    the view more details button</p>
                             </div>
-                            <div class="col-lg-3">
-                                <h6 style="color: rgb(250, 1, 1); font-family: Verdana, Geneva, Tahoma, sans-serif">Rs.{{orderitem.order.total_price}}</h6>
-                            </div>
-                            <div class="col-lg-3">
-                                <button type="submit" class="btn" style="background-color: rgb(61, 86, 92);color:rgba(236, 209, 7, 0.96)">View more details</button>
-                            </div>
-        
+
                         </div>
-                        <div class="d-flex justify-content-center"><p style="color: rgb(10, 10, 99);">* To view more details about this order please click the view more details button</p></div>
-                        
                     </div>
-                </div>
-            </form>
-                {% endfor %}
+                </form>
+            {% endfor %}
                 {% endblock content %}
 
             </div>

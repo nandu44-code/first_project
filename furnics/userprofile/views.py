@@ -191,9 +191,10 @@ def order_cancellation(request,order_id):
     
     order.status = 'Cancelled'
     order.save()
-    if order.payment_mode=="Paid by Razorpay":
+   
+    if order.payment_mode== "Paid by Razorpay":
         user.wallet+=order.total_price
-
+        
     user.save()
     order_items=OrderItem.objects.filter(order=order)
     status=order.status
@@ -231,4 +232,19 @@ def pdf_download(request,id):
         content = "attachment; filename=%s" % (filename)
         response['Content-Disposition'] = content
         return response
+    
+def order_return(request,order_id):
+
+    order=Order.objects.get(id=order_id)
+    order.status='Return requested'
+    order.save()
+
+    order_items=OrderItem.objects.filter(order=order)
+    status=order.status
+    context={
+        "order_items":order_items,
+        "order":order,
+        "status":status
+    }
+    return render(request,"userprofile/order_details.html",context)
     
