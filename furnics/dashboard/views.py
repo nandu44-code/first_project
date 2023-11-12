@@ -528,7 +528,9 @@ def add_coupon(request):
 
         if Coupon.objects.filter(coupon_name=coupon_name).exists():
             messages.error(request,"Entered Coupon is already exists!!")
-
+            return redirect('coupon')
+        elif Coupon.objects.filter(code=coupon_code).exists():
+            messages.error(request,"Entered Coupon code is already exists!!")
             return redirect('coupon')
             
         else:
@@ -541,9 +543,13 @@ def edit_coupon(request,coupon_id):
 
     if request.method=='POST':
         coupon=Coupon.objects.get(id=coupon_id)
+
         coupon_name = request.POST.get('couponName')
         coupon.coupon_name = coupon_name
+
+        coupon_code = request.POST.get('couponCode')
         coupon.coupon_code = request.POST.get('couponCode')
+
         coupon.discount = request.POST.get('discountAmount')
         coupon.valid_from = request.POST.get('validFrom')
         coupon.valid_to = request.POST.get('validTo')
@@ -555,6 +561,11 @@ def edit_coupon(request,coupon_id):
 
             messages.error(request,"Coupon name you have chosen is already taken ")
             return redirect('coupon')
+        
+        elif Coupon.objects.filter(code=coupon_code).exclude(id=coupon_id).exists():
+             messages.error(request,"Coupon code you have chosen is already taken ")
+             return redirect('coupon')
+        
         else:
             coupon.save()
             return redirect('coupon')

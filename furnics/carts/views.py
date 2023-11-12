@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from accounts.models import CustomUser
 from wishlist.models import WishlistItem
 from userprofile.models import Address
-from store.models import Product, Variation
+from store.models import Coupon, Product, Variation
 from carts.models import Cart,CartItem, Order, OrderItem
 # Create your views here.
 def cart_page(request,total=0,quantity=0,cart_items=None):
@@ -163,7 +163,7 @@ def checkout_page(request):
             cart_items=None
             grand_total=0
             total=0
-            print("/////////////////////////////")
+            coupons=None
             cart_id = _cart_id(request) #get or generate the cart_id
             try:
                 print(".........")
@@ -174,11 +174,14 @@ def checkout_page(request):
                     quantity += cart_item.quantity
                 tax = (2*total)/100
                 grand_total = total + tax
+                coupons=Coupon.objects.filter(minimum_amount__lte=grand_total)
+                print("jkljkljkljkljkljjkljjkljkl/////////////////////////////")
             except ObjectDoesNotExist:
-                
+                print("...........................................///////////")    
                 pass
-            context = {
 
+            context = {
+                'coupons':coupons,
                 'address': address,
                 'tax': tax,
                 'grand_total': grand_total,
@@ -189,8 +192,57 @@ def checkout_page(request):
             }
         
             return render(request,'cart/checkout.html',context)
-    #     else:
-    #         return redirect('cart_page')
+    else:
+        email = request.session['useremail'] #getting the email of the user from the session
+        user = CustomUser.objects.get(email=email) 
+        user_id = user.id
+
+        # selected_address_id=request.POST.get('selectedAddress')
+        # if selected_address_id is None:
+        #     default_address=Address.objects.get(user_id=user_id,is_default=True)
+        #     selected_address_id=default_address.id
+
+        # print(selected_address_id)
+        # address = Address.objects.get(id=selected_address_id) #using the user id getting all addresses associated with that user
+
+        tax=0
+        quantity=0
+        cart_items=None
+        grand_total=0
+        total=0
+        coupons=None
+        cart_id = _cart_id(request) #get or generate the cart_id
+        try:    
+            print("aaaaaaaaaaaaaaaa")
+            cart = Cart.objects.get(user=user)
+            cart_items = CartItem.objects.filter(cart=cart,is_active=True)
+            for cart_item in cart_items:
+                total += (cart_item.product.selling_price * cart_item.quantity)
+                quantity += cart_item.quantity
+            tax = (2*total)/100
+            grand_total = total + tax
+            coupons=Coupon.objects.filter(minimum_amount__lte=grand_total)
+            print("bbbbbbbbbbbbb")
+        except ObjectDoesNotExist:
+            print("cccccccccccccccccc")    
+            pass
+
+        context = {
+            'coupons':coupons,
+            # 'address': address,
+            'tax': tax,
+            'grand_total': grand_total,
+            'quantity': quantity,
+            'cart_items': cart_items,
+            'total' : total
+        
+            }
+    
+        # return render(request,'cart/checkout.html',context)
+        print("dddddddddddd")
+        return JsonResponse({
+            "hi":"athish"
+        })
     # else:
     #     return redirect('user_login')
 
@@ -255,6 +307,9 @@ def place_order(request):
         selected_address_id = request.POST.get('selected_address')
        
         address = Address.objects.get(id=selected_address_id)
+        
+        
+                
 
         order = Order()
         order.user = user
@@ -266,11 +321,19 @@ def place_order(request):
             cart_item = CartItem.objects.filter(cart=cart, is_active=True)
         except:
             cart_item = CartItem.objects.filter(cart=cart, is_active=True)
-
+       
         cart_total_price = 0
         for item in cart_item:
             cart_total_price = cart_total_price + item.product.selling_price * item.quantity
-        order.total_price = cart_total_price
+        tax = (2*cart_total_price)/100
+        try:
+            if request.session['grand_total']:
+                order.total_price = float(request.session['grand_total'])
+                del request.session['grand_total']
+            else:
+                order.total_price = cart_total_price + tax
+        except:
+            order.total_price = cart_total_price + tax
         trackno = 'pvkewt' + str(random.randint(1111111, 9999999))
         while Order.objects.filter(tracking_no=trackno) is None:
             trackno = 'pvkewt' + str(random.randint(1111111, 9999999))
@@ -303,7 +366,7 @@ def place_order(request):
             orderproduct.save()
         Cart.objects.filter(cart_id=item.cart.cart_id).delete()
         # messages.success(request, "Your order has been placed successfully")
-
+        
         payMode = request.POST.get('payment')
         if payMode == 'Paid by Razorpay':
             return JsonResponse({'status': 'Your order has been placed successfully'})
@@ -331,15 +394,28 @@ def razorpay_check(request):
 
         cart_items = CartItem.objects.filter(cart=cart)
         total_price = 0
-
+        
         for item in cart_items:
             print("Selling Price:", item.product.selling_price)
             total_price += item.product.selling_price * item.quantity
-
-        print("Total Price:", total_price)
+        tax = (2*total_price)/100
+        
+        try:
+            if request.session['grand_total']:
+                coupon = float(request.session['grand_total'])
+                total_price = coupon
+            else:
+                coupon = 0
+                total_price = float(total_price) + float(tax)
+        except:
+            coupon = 0
+            total_price = float(total_price) + float(tax)
+        
 
         return JsonResponse({
-            'total_price': total_price
+            'total_price': total_price,
+            
+        
         })
 
     except Exception as e:
@@ -351,4 +427,19 @@ def order_success(request):
 
 
     return render(request,'cart/thankyou.html')
-    
+def apply_coupon(request):
+    if request.method=='POST':
+        coupon_code = request.POST.get('key1')
+        grand_total=request.POST.get('key2')
+        grand_totals=float(grand_total)
+        try:
+            coupon = Coupon.objects.get(code=coupon_code)
+        except:
+            print("hjhhkhjkkj")
+        discount_amount=coupon.discount
+        total=grand_totals-discount_amount
+        request.session['grand_total'] = total
+
+        print("gdjdjjghjghjjgjjhjhjhjhjhjhjhjhj")
+        return JsonResponse({"total":f"{total}"})
+        
