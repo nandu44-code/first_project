@@ -21,7 +21,9 @@ urlpatterns = [
 
     path('pdf-download/<int:id>/', views.pdf_download, name='pdf_download'),
     
-    path('order-return/<int:order_id>/',views.order_return,name="order_return")
+    path('order-return/<int:order_id>/',views.order_return,name="order_return"),
+
+    path('user-wallet',views.user_wallet,name="user_wallet")
 
 ]   
 

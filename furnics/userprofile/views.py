@@ -9,6 +9,7 @@ from xhtml2pdf import pisa
 import os
 from io import BytesIO
 from django.conf import settings
+from django.db.models import ObjectDoesNotExist
 
 # Create your views here.
 def user_profile(request):
@@ -162,8 +163,15 @@ def default_address(request):
 def my_orders(request):
     if request.user:
         order_items=None
-        order=Order.objects.filter(user=request.user)
-        order_items = OrderItem.objects.order_by('order').distinct('order')
+        useremail=request.session['useremail']
+        print(useremail)
+        user=CustomUser.objects.get(email=useremail)
+        try:
+            order=Order.objects.filter(user=user)
+            order_items = OrderItem.objects.order_by('order').distinct('order')
+        except:
+            order=None
+            order_items=None
         # order_item =order_item.objects.filter(order=order)
         context={
             "order":order,
@@ -183,27 +191,36 @@ def order_details(request,order_id):
     }
     return render(request,"userprofile/order_details.html",context)
 
-def order_cancellation(request,order_id):
-    
-    order=Order.objects.get(id=order_id)
-    user=request.user
-    
-    
+def order_cancellation(request, order_id):
+    order = Order.objects.get(id=order_id)
+    user = request.user
+
+    # try:
+    #     user_wallet = UserWallet.objects.get(user=user)
+    # except ObjectDoesNotExist:
+        # If UserWallet doesn't exist, create a new instance
+    user_wallet = UserWallet(user=user, amount=0)  # Set default amount here
+    user_wallet.save()
+
     order.status = 'Cancelled'
     order.save()
-   
-    if order.payment_mode== "Paid by Razorpay":
-        user.wallet+=order.total_price
-        
+
+    if order.payment_mode == "Paid by Razorpay":
+        user.wallet += order.total_price
+        user_wallet.amount += order.total_price
+
+    user_wallet.transaction = 'credited'
     user.save()
-    order_items=OrderItem.objects.filter(order=order)
-    status=order.status
-    context={
-        "order_items":order_items,
-        "order":order,
-        "status":status
+    user_wallet.save()
+
+    order_items = OrderItem.objects.filter(order=order)
+    status = order.status
+    context = {
+        "order_items": order_items,
+        "order": order,
+        "status": status
     }
-    return render(request,"userprofile/order_details.html",context)
+    return render(request, "userprofile/order_details.html", context)
 
 
 def render_to_pdf(template_src, context_dict={}):
@@ -247,4 +264,12 @@ def order_return(request,order_id):
         "status":status
     }
     return render(request,"userprofile/order_details.html",context)
-    
+
+def user_wallet(request):
+
+    wallet=UserWallet.objects.filter(user=request.user)
+    context={
+        'wallet':wallet,
+    }
+
+    return render(request,'userprofile/wallet.html',context)

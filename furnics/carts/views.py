@@ -63,6 +63,11 @@ def add_cart(request,product_id):
 
     
     variant = Variation.objects.get(id=product_id) #get the product variation
+    print(variant.stock)
+    if variant.stock == 0:
+        print(variant.stock)
+        messages.error(request,"stock is empty")
+        return redirect('cart_page')
     # if product.stock is None:
     #     return redirect('view_shop')
     is_exist = WishlistItem.objects.filter(user = user, product_name=variant).exists()

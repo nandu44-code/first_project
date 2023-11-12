@@ -10,7 +10,7 @@
 				<div class="intro-excerpt">
 					<h1>Cart</h1>
 				</div>
-				
+
 			</div>
 			<div class="col-lg-7">
 
@@ -20,7 +20,13 @@
 </div>
 <!-- End Hero Section -->
 
-
+{% if messages %}
+<div class="text-danger d-flex justify-content-center mt-2">
+	{% for message in messages%}
+	<h3>{{message}}</h3>
+	{%endfor%}
+</div>
+{% endif %}
 
 <div class="untree_co-section before-footer-section">
 	<div class="container">
@@ -40,7 +46,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							
+
 							{% for cart_item in cart_items %}
 							<tr>
 								<td class="product-thumbnail">
@@ -51,8 +57,8 @@
 								<td class="product-name">
 									<h2 class="h5 text-black">{{cart_item.product.product.product_name}}</h2>
 								</td>
-								<td >{{cart_item.product.selling_price}}</td>
-								
+								<td>{{cart_item.product.selling_price}}</td>
+
 								<td>
 									<div class="input-group mb-3 d-flex justify-content-center align-items-center quantity-container"
 										style="max-width: 120px;">
@@ -77,7 +83,8 @@
 
 								</td>
 								<td>{{ cart_item.sub_total }}</td>
-								<td><a href="{% url 'remove_cartitem' product_id=cart_item.product.id %}" class="btn btn-black btn-sm">X</a></td>
+								<td><a href="{% url 'remove_cartitem' product_id=cart_item.product.id %}"
+										class="btn btn-black btn-sm">X</a></td>
 							</tr>
 							{% endfor %}
 						</tbody>
@@ -92,10 +99,8 @@
 						<button class="btn btn-black btn-sm btn-block">Update Cart</button>
 					</div> -->
 					<div class="col-md-6">
-						<a href="{% url 'shop_page' %}">
-							<button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
-						</a>
-						
+
+
 					</div>
 				</div>
 				<div class="row">
@@ -148,9 +153,9 @@
 							<div class="col-md-12">
 								<a href="{% url 'address_checkout'%}">
 									<button class="btn btn-secondary btn-lg py-3 btn-block"
-									onclick="window.location='checkout.html'">Proceed To Checkout</button>
+										onclick="window.location='checkout.html'">Proceed To Checkout</button>
 								</a>
-							
+
 							</div>
 						</div>
 					</div>
@@ -159,11 +164,14 @@
 		</div>
 		{%else%}
 		<h1 class="d-flex justify-content-center mt-2 mb-5">Your Cart is Empty</h1>
+		<a href="{% url 'shop_page' %}">
+			<button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
+		</a>
 		{%endif%}
 
-	
 
-		
+
+
 	</div>
 </div>
 

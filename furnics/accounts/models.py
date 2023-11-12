@@ -78,7 +78,7 @@ class CustomUser(AbstractUser):
 
 
 class UserWallet(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     transaction = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     amount = models.FloatField()
