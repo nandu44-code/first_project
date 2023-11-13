@@ -30,10 +30,11 @@
 
         <h6 class="col-lg-6 mt-3">Coupon Code:</h6>
         <input class="col-lg-6 mt-1" type="text" id="Code" value="{{ coupon.code }}">
-        
+
 
         <button type="button" onclick="copyText()" style="background-color: #09f4b1;">Copy</button>
-        <h6 class="mt-3" style="color: #0055ff;">"Enjoy a discount of Rs.{{ coupon.discount }} on your next purchase!"</h6>
+        <h6 class="mt-3" style="color: #0055ff;">"Enjoy a discount of Rs.{{ coupon.discount }} on your next purchase!"
+        </h6>
         <p class="text-danger mt-3 pb-3">nb: This coupon is only available from {{ coupon.valid_from }} &nbspto&nbsp {{
             coupon.valid_to }}</p>
     </div>
@@ -121,18 +122,26 @@
 
             <div>
                 <button type="submit" class="text-dark btn-warning"
-                    style="border-radius:20px; height:50px; border: 2px solid #f4f4f4; padding:10px">
+                    style="border-radius:20px; height:50px; width:300px; border: 2px solid #f4f4f4; padding:10px">
                     Cash on delivery
                 </button>
             </div>
 
             <div>
                 <button class="mt-2 text-light paywithRazorpay"
-                    style="background-color:#f40909;border-radius:20px; height:50px; border: 2px solid #f4f4f4; padding:10px;">
+                    style="background-color:#f40909;border-radius:20px; height:50px; width:300px; border: 2px solid #f4f4f4; padding:10px;">
                     Pay With RazorPay
                 </button>
             </div>
-        </div>
+            {% if grand_total < wallet %} 
+                <div>
+                    <button class="mt-2 text-light paywithwallet"
+                        style="background-color:#094cf4;border-radius:20px; width:300px; height:50px; border: 2px solid #f4f4f4; padding:10px;">
+                        Pay With Wallet
+                    </button>
+                </div>
+            {% endif %}
+    </div>
     </div>
 </form>
 
@@ -167,36 +176,85 @@
     }
 </script>
 <script>
-    document.getElementById('ApplyCoupon').addEventListener('click', function() {
-    var coupon_code = document.getElementById('coupon').value;
-    var grand_total = document.getElementById('grand_total').value;
-    var token = $("[name='csrfmiddlewaretoken']").val();
-    var dataToSend = {
-        key1: coupon_code,
-        key2: grand_total,
-        csrfmiddlewaretoken: token,
-    };
-    console.log("..................................")
+    document.getElementById('ApplyCoupon').addEventListener('click', function () {
+        var coupon_code = document.getElementById('coupon').value;
+        var grand_total = document.getElementById('grand_total').value;
+        var token = $("[name='csrfmiddlewaretoken']").val();
+        var dataToSend = {
+            key1: coupon_code,
+            key2: grand_total,
+            csrfmiddlewaretoken: token,
+        };
+        console.log("..................................")
 
-    $.ajax({
-        url: '/cart/apply-coupon/',
-        method: 'POST',
-        data: dataToSend,
-        success: function(response) {
-            // Handle the response from the server
-            console.log(response.total);
-            document.getElementById('total_value').innerText="₹"+" "+response.total;
-            
-            document.getElementById('grand_total').innerText=response.total;
-        },
-        error: function(error) {
-            // Handle errors
-            console.error('Error:', error);
-        }
+        $.ajax({
+            url: '/cart/apply-coupon/',
+            method: 'POST',
+            data: dataToSend,
+            success: function (response) {
+                // Handle the response from the server
+                console.log(response.total);
+                document.getElementById('total_value').innerText = "₹" + " " + response.total;
+
+                document.getElementById('grand_total').innerText = response.total;
+            },
+            error: function (error) {
+                // Handle errors
+                console.error('Error:', error);
+            }
+        });
     });
-});
 </script>
+<script>
+    $(document).ready(function () {
 
+        $('.paywithwallet').click(function (e) {
+            e.preventDefault();
+            console.log("Clicked the wallet buttonn");
+            var address_id = $("[name='selected_address']").val();
+            var token = $("[name='csrfmiddlewaretoken']").val();
+    
+            data = {
+                'selected_address': address_id,
+                'payment_mode': 'wallet',
+                'payment_id': '',
+                csrfmiddlewaretoken: token,
+    
+            };
+            $.ajax({
+                url: '/cart/place-order/',
+                method: 'POST',
+                data: data,
+                
+                success: function (responseData) {
+                console.log(responseData);
+                    swal({
+                        title: "Congratulations!",
+                        text: "Your order has been placed successfully",
+                        icon: "success",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                        console.log('...........');
+                            window.location.href = '/cart/order-success/'
+                        } else {
+                            swal("Your imaginary file is safe!");
+                        }
+                    });
+                },
+                error: function (error) {
+                    // Callback function to handle errors
+                    console.error('Error:', error);
+                }
+            });
+    
+    
+    
+        });
+
+    });
+</script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 

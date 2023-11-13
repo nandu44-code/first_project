@@ -16,7 +16,7 @@ urlpatterns = [
        path('checkout',views.checkout_page,name="checkout_page"),
 
        path('place-order/',views.place_order,name='place_order'),
-       path('order-success',views.order_success,name="order_success"),
+       path('order-success/',views.order_success,name="order_success"),
        path('proceed-to-pay/',views.razorpay_check,name="proceed_to_pay"),
 
        path('apply-coupon/',views.apply_coupon,name="apply_coupon")

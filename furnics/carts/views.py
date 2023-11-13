@@ -152,7 +152,8 @@ def checkout_page(request):
         if 'useremail' in  request.session:
         
             email = request.session['useremail'] #getting the email of the user from the session
-            user = CustomUser.objects.get(email=email) 
+            user = CustomUser.objects.get(email=email)
+            wallet=user.wallet
             user_id = user.id
 
             selected_address_id=request.POST.get('selectedAddress')
@@ -192,7 +193,8 @@ def checkout_page(request):
                 'grand_total': grand_total,
                 'quantity': quantity,
                 'cart_items': cart_items,
-                'total' : total
+                'total' : total,
+                'wallet' :wallet
             
             }
         
@@ -239,7 +241,8 @@ def checkout_page(request):
             'grand_total': grand_total,
             'quantity': quantity,
             'cart_items': cart_items,
-            'total' : total
+            'total' : total,
+            'wallet':wallet
         
             }
     
@@ -346,10 +349,25 @@ def place_order(request):
 
         payment_mode = request.POST.get('payment_mode')
         # if payment_mode == 'cod':
-
+        print("payment>>>>>>>>>>>>>>>>>>")
         if payment_mode == 'Paid by Razorpay':
             order.payment_mode = request.POST.get('payment_mode')
             order.payment_id = request.POST.get('payment_id')
+        elif payment_mode == 'wallet':
+            print("welcom to wallet")
+            try:
+                if request.session['grand_total']:
+                    order.total_price = float(request.session['grand_total'])
+                    del request.session['grand_total']
+                else:
+                    grand_total = cart_total_price + tax
+            except:
+                grand_total = cart_total_price + tax
+            user.wallet =user.wallet - grand_total
+            user.save()
+            order.payment_mode = request.POST.get('payment_mode')
+            order.payment_id = request.POST.get('payment_id')
+            print("bye  wallet")
         else:
             order.payment_mode = 'cod'
             order.payment_id = ' '
@@ -374,6 +392,9 @@ def place_order(request):
         
         payMode = request.POST.get('payment')
         if payMode == 'Paid by Razorpay':
+            return JsonResponse({'status': 'Your order has been placed successfully'})
+        elif payMode == 'wallet':
+            print("hey wallet")
             return JsonResponse({'status': 'Your order has been placed successfully'})
         else:
            pass

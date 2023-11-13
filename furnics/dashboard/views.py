@@ -575,9 +575,14 @@ def block_coupon(request,coupon_id):
     coupon=Coupon.objects.get(id=coupon_id)
     print("hjksjhfkjhdkjfhksjdfhksdhfksdjhfksjdhk")
     if coupon.is_available == True:
-        print("nanduandunandynadynandynandynabdynab=ndu")
+        
         coupon.is_available=False
     else:
         coupon.is_available=True
     coupon.save()
     return redirect('coupon')
+
+
+def banner(request):
+
+    return render(request,'banner.html')

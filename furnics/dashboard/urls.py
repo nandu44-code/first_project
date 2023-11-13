@@ -7,6 +7,7 @@ urlpatterns = [
        path('',views.admin_login,name='admin_login'),
        path('admin-home/',views.adminhome,name='admin_home'),
        path('admin-logout',views.adminlogout,name='admin_logout'),
+
        path('users/',views.users,name='users'),
        path('block/<int:user_id>/',views.block_user,name='block_user'),
        path('sales-report-pdf/', views.sales_report_pdf_download, name='sales_report_pdf'),
@@ -30,6 +31,8 @@ urlpatterns = [
        path('coupon',views.coupon,name='coupon'),
        path('add-coupon',views.add_coupon,name="add_coupon"),
        path('edit-coupon/<int:coupon_id>/',views.edit_coupon,name="edit_coupon"),
-       path('block-coupon/<int:coupon_id>/',views.block_coupon,name="block_coupon")
+       path('block-coupon/<int:coupon_id>/',views.block_coupon,name="block_coupon"),
+
+       path('banner',views.banner,name="banner")
 ]
 
