@@ -5,6 +5,7 @@ from django.db.models import Q,Max
 from categories.models import Category
 from categories.models import Sub_Category
 from accounts.models import CustomUser
+from dashboard.models import Banner
 from store.models import Product, Variation
 
 # Create your views here.
@@ -16,10 +17,12 @@ def homepage(request):
     if 'adminemail' in request.session:
         return redirect('admin_home')
 
+    banner=Banner.objects.all()
 
-
-    
-    return render(request,'home/index.html')
+    context={
+        'banner':banner
+    }
+    return render(request,'home/index.html',context)
 
 def view_shop(request):
     categories=Category.objects.filter(is_activate=True)
@@ -42,12 +45,9 @@ def view_subcategory(request,category_id):
     variants={}
     subcategory=Sub_Category.objects.filter(Q(is_activate=True) & Q(category=category_id))
     # Assuming you already have 'subcategory' containing the filtered subcategories
-    products = Product.objects.filter(sub_category__in=subcategory, is_activate=True)
-    for product in products:
+    variants = Variation.objects.filter(product__sub_category__in=subcategory)
 
-        variants = Variation.objects.filter(product=product)
-        print(product.id)
-    print(variants)
+
     context={
         'subcategory':subcategory,
         'base_variant':variants
@@ -59,8 +59,8 @@ def display_products(request,sub_category_id):
     
     product = Product.objects.filter(Q(is_activate=True) & Q(sub_category = sub_category_id))
     
-    # Fetch one variant for each product using distinct
-    variants = Variation.objects.order_by('product').distinct('product')
+    variants = Variation.objects.filter(product__sub_category__in=subcategory)    
+    
 
     context={
         'variants':variants

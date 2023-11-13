@@ -11,6 +11,7 @@ from django.db.models.functions import ExtractMonth
 from django.db.models import Sum
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from dashboard.models import Banner
 from store.models import Coupon
 # Create your views here.
 # view function for admin login
@@ -584,5 +585,70 @@ def block_coupon(request,coupon_id):
 
 
 def banner(request):
+    banner=Banner.objects.all()
 
-    return render(request,'banner.html')
+    context={
+        'banner':banner,
+    }
+
+    return render(request,'dashboard/banner.html',context)
+
+def add_banner(request):
+    if request.method=='POST':
+        banner_name = request.POST.get('bannername')
+        banner_image = request.FILES.get('banner_img')
+
+        try:
+            banner_records_count = Banner.objects.count()
+        
+        except:
+            banner_records_count=0
+        
+       
+      
+        if banner_records_count<1:
+
+            if Banner.objects.filter(banner_name=banner_name).exists():
+                messages.error(request,"Entered banner name is already taken!!")
+                return redirect('banner')
+                
+            else:
+                banner=Banner(banner_name= banner_name,banner_image=banner_image)
+                banner.save()
+                return redirect('banner')
+        else:
+            messages.error(request,"banner limit is reached!!")
+            return redirect('banner')
+        
+def edit_banner(request,banner_id):
+
+    banner = Banner.objects.get(id=banner_id)
+    banner_image = banner.banner_image
+    if request.method=="POST":
+        banner_name= request.POST.get('bannername')
+        
+        banner_images = request.FILES.get('banner_img')
+
+        if banner_images is None:
+            banner.banner_image = banner_image
+    
+        else:
+            banner.banner_image = banner_images
+
+        if Banner.objects.filter(banner_name=banner_name).exclude(id=banner_id).exists():
+            messages.error(request,"Entered Banner name is already taken!!")
+            return redirect('banner')
+            
+        else:
+             banner.banner_name  = banner_name
+             banner.save()
+             return redirect('banner')
+
+def remove_banner(request,banner_id):
+
+    banner=Banner.objects.get(id=banner_id)
+    
+    banner.delete()
+
+
+    return redirect('banner')
