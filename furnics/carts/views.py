@@ -1,14 +1,16 @@
 import random
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
 from django.http import JsonResponse,HttpResponse
 from django.shortcuts import render,redirect,get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from accounts.models import CustomUser
+from accounts.models import CustomUser, UserWallet
 from wishlist.models import WishlistItem
 from userprofile.models import Address
 from store.models import Coupon, Product, Variation
 from carts.models import Cart,CartItem, Order, OrderItem
+from django.utils import timezone
 # Create your views here.
 def cart_page(request,total=0,quantity=0,cart_items=None):
     if 'useremail' not in request.session:
@@ -24,7 +26,6 @@ def cart_page(request,total=0,quantity=0,cart_items=None):
     cart_id = _cart_id(request) #get or generate the cart_id
     try:
        
-
         cart = Cart.objects.get(user=user)
         cart_items = CartItem.objects.filter(cart=cart,is_active=True).order_by('id')
         for cart_item in cart_items:
@@ -54,20 +55,20 @@ def _cart_id(request):
     if not cart:
         cart=request.session.create()
     return cart
-
+@login_required(login_url='user_login')
 def add_cart(request,product_id):
 
     if 'useremail' in request.session:
         email = request.session['useremail']
         user=CustomUser.objects.get(email=email)
-
+    
     
     variant = Variation.objects.get(id=product_id) #get the product variation
     print(variant.stock)
     if variant.stock == 0:
         print(variant.stock)
-        messages.error(request,"stock is empty")
-        return redirect('cart_page')
+        messages.error(request,'out of stock')
+        return redirect('product_details',variant_id=variant.id)
     # if product.stock is None:
     #     return redirect('view_shop')
     is_exist = WishlistItem.objects.filter(user = user, product_name=variant).exists()
@@ -96,8 +97,12 @@ def add_cart(request,product_id):
         
         try:
             cart_item = CartItem.objects.get(product=variant,cart=cart)
-            cart_item.quantity += 1
-            cart_item.save()
+            if variant.stock<=cart_item.quantity:
+                messages.error(request,'stock limit of the product reached')
+                return redirect('cart_page')
+            else:
+                cart_item.quantity += 1
+                cart_item.save()
         except CartItem.DoesNotExist:
 
             cart_item =CartItem.objects.create(
@@ -180,7 +185,11 @@ def checkout_page(request):
                     quantity += cart_item.quantity
                 tax = (2*total)/100
                 grand_total = total + tax
-                coupons=Coupon.objects.filter(minimum_amount__lte=grand_total)
+
+                # Get today's date
+                today = timezone.now().date()
+                coupons=Coupon.objects.filter(minimum_amount__lte=grand_total,valid_to__gte=today)
+
                 print("jkljkljkljkljkljjkljjkljkl/////////////////////////////")
             except ObjectDoesNotExist:
                 print("...........................................///////////")    
@@ -337,7 +346,7 @@ def place_order(request):
         try:
             if request.session['grand_total']:
                 order.total_price = float(request.session['grand_total'])
-                del request.session['grand_total']
+                # del request.session['grand_total']
             else:
                 order.total_price = cart_total_price + tax
         except:
@@ -357,12 +366,23 @@ def place_order(request):
             print("welcom to wallet")
             try:
                 if request.session['grand_total']:
+                    print('checkinggggggggggggggg....')
+                    grand_total=float(request.session['grand_total'])
                     order.total_price = float(request.session['grand_total'])
                     del request.session['grand_total']
+                    print('tryif...............')
                 else:
                     grand_total = cart_total_price + tax
+                    print('tryelse..............>>>>>>>.')
             except:
+                print(tax)
                 grand_total = cart_total_price + tax
+                print('except>>>>>>>>>>>>>>>>>>>>>>>>>...............')
+            userwallet=UserWallet(user=user,
+            amount=grand_total,
+            transaction='debited')
+            userwallet.save()
+
             user.wallet =user.wallet - grand_total
             user.save()
             order.payment_mode = request.POST.get('payment_mode')
@@ -451,8 +471,8 @@ def razorpay_check(request):
 
 def order_success(request):
 
-
     return render(request,'cart/thankyou.html')
+
 def apply_coupon(request):
     if request.method=='POST':
         coupon_code = request.POST.get('key1')
@@ -466,6 +486,5 @@ def apply_coupon(request):
         total=grand_totals-discount_amount
         request.session['grand_total'] = total
 
-        print("gdjdjjghjghjjgjjhjhjhjhjhjhjhjhj")
         return JsonResponse({"total":f"{total}"})
         

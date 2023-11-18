@@ -50,18 +50,16 @@
 							<a class="nav-link" href="{% url 'homepage' %}">Home</a>
 						</li>
 						<li><a class="nav-link" href="{% url 'shop_page' %}">Shop</a></li>
-						<li><a class="nav-link" href="about.html">About us</a></li>
-						<li><a class="nav-link" href="services.html">Services</a></li>
-						<li><a class="nav-link" href="contact.html">Contact us</a></li>
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
 					
 						  {% if user.is_authenticated %}
+						     <li><a class="nav-link" href="{% url 'user_logout' %}">Logout</a></li>
 						     <li><a class="nav-link" href="{% url 'user_profile' %}"><img src="{% static 'images/user.svg' %}"></a></li>
-						  	 <li><a class="nav-link" href="{% url 'user_logout' %}">Logout</a></li>
+						  	 
 						  {% else %}
-					 		 <li><a class="nav-link" href="{% url 'user_login' %}">login</a></li>
+					 		 <li><a class="nav-link" href="{% url 'user_login' %}">Login</a></li>
 					 	  {% endif %}
 					  
 						
@@ -69,7 +67,7 @@
 						
 						
 						<li><a class="nav-link" href="{% url 'cart_page'%}"><img src="{% static 'images/cart.svg' %}"><span class="position-absolute top-26 start-90 translate-middle badge rounded-pill bg-danger">
-							99+
+							
 							
 						  </span></a></li>
 					
@@ -164,9 +162,7 @@
 
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-		<!-- <script src="js/bootstrap.bundle.min.js"></script>
-		<script src="js/tiny-slider.js"></script>
-		<!-- <script src="js/custom.js"></script> -->
+		
 		{% block script %}
 		
 		{% endblock %}

@@ -23,7 +23,7 @@
                 <ul class="nav flex-column">
                     <div class="itemsdiv mx-2 my-2">
                         <li class="nav-item">
-                            <a class="nav-link navitem" href="{% url 'user_profile'%}">
+                            <a class="nav-link navitem" href="{% url 'user_profile' %}">
                                 My Profile
                             </a>
                         </li>
@@ -71,8 +71,11 @@
                         {% for wallet in wallet %}
                             <tr class="table-rows">
                                 <td>{{ wallet.amount }}</td>
-                                <td>{{ wallet.transaction }}</td>
-                              
+                                {% if wallet.transaction == 'credited' %}
+                                <td><p class="text-success"><i class="fas fa-arrow-up"></i>&nbsp;{{ wallet.transaction }}</p></td>
+                                {%else%}
+                                <td><p class="text-danger"><i class="fas fa-arrow-down"></i>{{ wallet.transaction }}</p></td>
+                                {%endif%}
                             </tr>
                         {% endfor%}
                         <!-- Repeat this for each user -->

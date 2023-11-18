@@ -1,6 +1,7 @@
 {% extends 'dashboard/base.html' %}
 {% block bootstraplink%}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
@@ -35,7 +36,7 @@
 
                     <th></th>
                     <th></th>
-                    
+
                 </tr>
             </thead>
             <tbody>
@@ -46,11 +47,15 @@
                     <td>{{ variant.color }}</td>
                     <td>{{ variant.stock}}</td>
                     <td>{{ variant.actual_price}}</td>
-                    
+
                     <td>{{ variant.selling_price }}</td>
-                    
+
                     <!-- <td>{{ variant }}</td> -->
-                    <td><img src="/media/{{variant.image1}}" width="10%"></td>
+                    <td>
+                        <a href="">
+                            <img src="/media/{{variant.image1}}" width="10%">
+                        </a>
+                    </td>
                     <!-- <td>
                         <button class="btn btn-dark">Variants</button>
 
@@ -62,12 +67,12 @@
 
                     </td>
                     <td>
-                        {% if product.is_available %}
-                        <a href="{% url 'delete_product' product_id=product.id %}">
+                        {% if variant.is_available %}
+                        <a href="{% url 'delete_variant' variant_id=variant.id %}">
                             <button class="btn btn-danger toggle-btn">Deactivate</button>
                         </a>
                         {% else %}
-                        <a href="{% url 'delete_product' product_id=product.id %}">
+                        <a href="{% url 'delete_variant' variant_id=variant.id %}">
                             <button class="btn btn-success toggle-btn">Activate</button>
                         </a>
                         {% endif %}
@@ -113,40 +118,40 @@
                                         <option value="black">Black</option>
                                     </select>
                                 </div>
-                                
+
                                 <!-- Variant stock  Field -->
                                 <div class="form-group col-md-6">
                                     <label for="VariantStock">Stock</label>
-                                    <input type="number" class="form-control" id="stock" name="stock" value="{{variant.stock}}"
-                                    required>
+                                    <input type="number" class="form-control" id="stock" name="stock"
+                                        value="{{variant.stock}}" required>
                                 </div>
                             </div>
                         </div>
-                            <!-- Variant Actual Price Field -->
-                            <div class="form-group col">
-                                <label for="VariantActualPrice">Actual Price</label>
-                                <input type="number" class="form-control" id="ActualPrice" name="ActualPrice" value="{{variant.actual_price}}"
-                                required>
-                            </div>
-                            <div class="form-group col">
-                                <label for="VariantSellingPrice">Selling Price</label>
-                                <input type="number" class="form-control" id="SellingPrice" name="SellingPrice" value="{{variant.selling_price}}"
-                                required>
-                            </div>
+                        <!-- Variant Actual Price Field -->
+                        <div class="form-group col">
+                            <label for="VariantActualPrice">Actual Price</label>
+                            <input type="number" class="form-control" id="ActualPrice" name="ActualPrice"
+                                value="{{variant.actual_price}}" required>
+                        </div>
+                        <div class="form-group col">
+                            <label for="VariantSellingPrice">Selling Price</label>
+                            <input type="number" class="form-control" id="SellingPrice" name="SellingPrice"
+                                value="{{variant.selling_price}}" required>
+                        </div>
                         <div class="form-group col">
                             <label for="imageUpload">Variant Image</label>
                             <input type="file" class="form-control" id="imageUpload" name="VariantImage" multiple>
-                        </div> 
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success" id="submitCategory">Submit</button>
-                            </div>
                         </div>
-                    </form>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" id="submitCategory">Submit</button>
+                        </div>
                 </div>
+                </form>
             </div>
         </div>
+    </div>
     </div>
     {% endfor %}
 
@@ -161,7 +166,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="POST" action="{% url 'add_variant' product_id=product.id %}" enctype="multipart/form-data">
+                <form method="POST" action="{% url 'add_variant' product_id=product.id %}"
+                    enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
                         <div class="form-row">
@@ -181,31 +187,28 @@
                                     <option value="black">Black</option>
                                 </select>
                             </div>
-                            
+
                             <!-- Variant stock  Field -->
                             <div class="form-group col-md-6">
                                 <label for="VariantStock">Stock</label>
-                                <input type="number" class="form-control" id="stock" name="stock"
-                                required>
+                                <input type="number" class="form-control" id="stock" name="stock" required>
                             </div>
                         </div>
                     </div>
-                        <!-- Variant Actual Price Field -->
-                        <div class="form-group col">
-                            <label for="VariantActualPrice">Actual Price</label>
-                            <input type="number" class="form-control" id="ActualPrice" name="ActualPrice"
-                            required>
-                        </div>
-                        <div class="form-group col">
-                            <label for="VariantSellingPrice">Selling Price</label>
-                            <input type="number" class="form-control" id="SellingPrice" name="SellingPrice"
-                            required>
-                        </div>
+                    <!-- Variant Actual Price Field -->
+                    <div class="form-group col">
+                        <label for="VariantActualPrice">Actual Price</label>
+                        <input type="number" class="form-control" id="ActualPrice" name="ActualPrice" required>
+                    </div>
+                    <div class="form-group col">
+                        <label for="VariantSellingPrice">Selling Price</label>
+                        <input type="number" class="form-control" id="SellingPrice" name="SellingPrice" required>
+                    </div>
                     <div class="form-group col">
                         <label for="imageUpload">Variant Image</label>
                         <input type="file" class="form-control" id="imageUpload" name="VariantImage" required multiple>
-                    </div>  
-                    
+                    </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-success" id="submitCategory">Submit</button>
@@ -222,7 +225,7 @@
 {% endblock%}
 
 {% block script%}
- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
     </script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
@@ -230,7 +233,7 @@
     </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-    </script> 
+    </script>
 <script>
     $(document).ready(function () {
         $('#example').DataTable();
@@ -241,5 +244,5 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-    
+
 {% endblock %}

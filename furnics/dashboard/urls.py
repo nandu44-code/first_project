@@ -27,6 +27,7 @@ urlpatterns = [
        path('order-status',views.order_status,name="order_status"),
 
        path('get-sales-revenue/', views.get_sales_revenue,name='get_sales_revenue'),
+       # path('sales-report-selected-date',views.sales_report_selected_date,name='sales_report_selected_date'),
 
        path('coupon',views.coupon,name='coupon'),
        path('add-coupon',views.add_coupon,name="add_coupon"),

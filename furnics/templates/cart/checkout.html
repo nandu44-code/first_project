@@ -23,20 +23,24 @@
     </div>
 
     {% for coupon in coupons%}
-    <div class=" text-dark col-lg-3 px-5 mx-5"
-        style="background-color: #d8cbbe; border:10px solid #f4f4f4;border-radius:10%;">
-        <h6 style="font-weight:bolder;color:rgb(1, 57, 27)">coupon-{{ forloop.counter }}</h6>
+    <h6 style="font-weight:bolder;color:rgb(1, 57, 27)" class="mx-5">coupon-{{ forloop.counter }}</h6>
+    <div class=" text-dark col-lg-3 px-5 mx-5 mb-3"
+        style="background-color: #cccbcb; border:3px solid rgb(106, 106, 106);border-radius:10%;">
+        
         <h5 class=""> Coupon Name: {{ coupon.coupon_name }}</h5>
 
         <h6 class="col-lg-6 mt-3">Coupon Code:</h6>
-        <input class="col-lg-6 mt-1" type="text" id="Code" value="{{ coupon.code }}">
 
+        <input class="col-lg-6 mt-1 coupon-code" type="text" value="{{ coupon.code }}">
+        <button type="button" onclick="copyText(this)">Copy</button>
 
-        <button type="button" onclick="copyText()" style="background-color: #09f4b1;">Copy</button>
-        <h6 class="mt-3" style="color: #0055ff;">"Enjoy a discount of Rs.{{ coupon.discount }} on your next purchase!"
+        <div class="alert alert-success mt-2" role="alert" style="display: none;">
+            Coupon code copied!
+        </div>
+
+        <h6 class="mt-3" style="color: #04090a;">"Enjoy a discount of Rs.{{ coupon.discount }} on your next purchase!"
         </h6>
-        <p class="text-danger mt-3 pb-3">nb: This coupon is only available from {{ coupon.valid_from }} &nbspto&nbsp {{
-            coupon.valid_to }}</p>
+        <p class="text-danger mt-3 pb-3">nb: This coupon is only available from {{ coupon.valid_from }} &nbspto&nbsp {{ coupon.valid_to }}</p>
     </div>
 
     {% endfor %}
@@ -140,11 +144,22 @@
                         Pay With Wallet
                     </button>
                 </div>
+            <!-- {%else%} -->
+            
+            <!-- <input type="checkbox" placeholder="apply wallet"> -->
             {% endif %}
     </div>
     </div>
 </form>
-
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div>
+        Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
+      </div>
 {%endblock content%}
 
 {% block script%}
@@ -166,14 +181,29 @@
     }
 </script>
 <script>
-    function copyText() {
-        var input = document.getElementById("Code");
-        input.select();
-        input.setSelectionRange(0, 99999); // For mobile devices
-        document.execCommand("copy");
+   function copyText(button) {
+    // Find the input element related to the clicked button
+    var couponCodeInput = button.parentElement.querySelector('.coupon-code');
 
+    // Select the text inside the input
+    couponCodeInput.select();
+    couponCodeInput.setSelectionRange(0, 99999); // For mobile devices
 
-    }
+    // Copy the text to clipboard
+    document.execCommand('copy');
+
+    // Optionally, provide some feedback to the user
+    //alert('Copied the coupon code: ' + couponCodeInput.value);
+    // Show the alert message when the code is copied
+    var alertMessage = button.parentElement.querySelector('.alert');
+    alertMessage.style.display = 'block';
+
+    // Hide the alert after a certain time (e.g., 3 seconds)
+    setTimeout(function() {
+        alertMessage.style.display = 'none';
+    }, 3000);
+}
+
 </script>
 <script>
     document.getElementById('ApplyCoupon').addEventListener('click', function () {

@@ -1,4 +1,4 @@
- 
+from datetime import datetime
 from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render,redirect
@@ -40,11 +40,20 @@ def admin_login(request):
 def adminhome(request):
     total_sales = 0
     if request.method == 'POST':
-        users=CustomUser.objects.filter(is_activate=True)
+        users=CustomUser.objects.filter(is_active=True).count()
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
+        print(start_date)
+        request.session['start_date'] = start_date
+        request.session['end_date'] = end_date
 
-    
+        # date_obj = datetime.strptime(start_date, '%d-%m-%Y')
+        # date_obj2 = datetime.strptime(end_date, '%d-%m-%Y')
+
+        # Convert the datetime object to a string in yyyy-mm-dd format
+        # start_date = date_obj.strftime('%Y-%m-%d')
+        # end_date = date_obj2.strftime('%Y-%m-%d')
+
         if start_date == end_date:
             print(start_date)
             orders = Order.objects.filter(created_at__date=start_date)
@@ -57,9 +66,28 @@ def adminhome(request):
         Delivered = Order.objects.filter(created_at__range=(start_date, end_date),status='Delivered').count()
         cancelled = Order.objects.filter(created_at__range=(start_date, end_date),status='Cancelled').count()
         Return = Order.objects.filter(created_at__range=(start_date, end_date),status='Returned').count()
+
         for order in orders:
             total_sales = total_sales + order.total_price
-
+            
+        context = {
+                "users":users,
+                # 'total':total,
+                'orders': orders,
+                'total_sales': total_sales,
+                'total_order': total_order,
+                'Pending': Pending,
+                'Processing': Processing,
+                'Shipped': Shipped,
+                "Delivered": Delivered,
+                'cancelled': cancelled,
+                'Return': Return,
+                "sales":Delivered,
+                "cancelled":cancelled,
+                # "returned":returned,
+                # 'monthly_sales_data': monthly_sales_data
+            }
+        return render(request, 'dashboard/adminhome.html', context)
 
     else:
 
@@ -182,6 +210,7 @@ def adminlogout(request):
     if 'adminemail' in request.session:
 
         logout(request)
+        request.session.flush()
         return redirect('admin_login')
     else:
         return redirect('admin_login')
@@ -209,7 +238,8 @@ def block_user(request,user_id):
     if user.is_active:
         user.is_active=False
         user.save()
-
+        if request.session['useremail']:
+            del request.session['useremail']
         users=CustomUser.objects.filter(is_superuser=False).order_by('id')
     
         context={
@@ -501,7 +531,18 @@ def render_to_pdf(template_path, context_dict):
 
 
 def sales_report_pdf_download(request):
-    order = Order.objects.all()
+    if 'start_date' and 'end_date' in request.session:
+         start_date = request.session['start_date']
+         end_date = request.session['end_date']
+         try:
+             order = Order.objects.filter(created_at__range=(start_date, end_date))
+             del request.session['start_date']
+             del request.session['end_date']
+         except:
+             order=None
+    else:
+
+        order = Order.objects.all()
     cont = {
         'orders': order,
     }

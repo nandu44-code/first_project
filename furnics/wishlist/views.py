@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-
+from django.contrib.auth.decorators import login_required
 from accounts.models import CustomUser
 from store.models import Variation
 from .models import WishlistItem
@@ -18,6 +18,8 @@ def wishlist(request):
 
 
     return render(request,'userprofile/wishlist.html',context)
+
+@login_required(login_url='user_login')
 def add_to_wishlist(request,product_id):
 
     variant = Variation.objects.get(id=product_id)

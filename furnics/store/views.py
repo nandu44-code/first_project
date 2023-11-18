@@ -64,8 +64,13 @@ def delete_product(request,product_id):
      if product.is_activate:
         product.is_activate=False
         product.save()
-
-       
+        try:
+            variants=Variation.objects.filter(product=product)
+            for i in variants:
+                i.is_activate=False
+                i.save()
+        except:
+            pass
         
         products = Product.objects.all()
         categories = Category.objects.filter(is_activate=True)
@@ -181,4 +186,20 @@ def edit_variants(request, variant_id):
             variant.save()
             return redirect('variant_view', product_id)
 
-    
+def delete_variant(request,variant_id):
+    variant=Variation.objects.get(pk=variant_id)
+    product_id=variant.product.id
+    if variant.is_available:
+        variant.is_available=False
+        variant.save()
+
+    else:
+        variant.is_available=True
+        variant.save()
+
+    return redirect('variant_view',product_id)
+        
+
+def variant_image_edit(request):
+
+    pass

@@ -167,8 +167,10 @@ def my_orders(request):
         print(useremail)
         user=CustomUser.objects.get(email=useremail)
         try:
-            order=Order.objects.filter(user=user)
-            order_items = OrderItem.objects.order_by('order').distinct('order')
+            order=Order.objects.filter(user=user.id)
+            
+            # order_item=OrderItem.objects.filter(order=order)
+            order_items = OrderItem.objects.filter(order__user=user.id)
         except:
             order=None
             order_items=None

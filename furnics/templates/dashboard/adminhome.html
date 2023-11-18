@@ -9,6 +9,11 @@
     <title>adminhome</title>
 </head>
  <body> -->
+    {% block bootstraplink%}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+    {% endblock %}
 {% block content %}
 <div class="container col-lg-8 mt-5 justify-content-evenly">
     <div class="row">
@@ -103,7 +108,7 @@
             <a class="btn btn-warning" href="{% url 'sales_report_pdf' %}">Download Sales Report</a>
         </div>
         <div class="table-responsive">
-            <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <table class="table text-start align-middle table-bordered table-hover mb-0" id="example">
                 <thead>
                 <tr class="text-dark">
                     <th scope="col">Order Id</th>
@@ -133,7 +138,15 @@
 {% block script %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+</script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 <script>
     console.log({{ sales }});
     var xValues = ["delivered", "cancelled", "returned"];
@@ -224,6 +237,7 @@ const monthsArray = ["January", "February", "March", "April", "May", "June", "Ju
     });
 
 </script>
+
 <script>
     
 </script>

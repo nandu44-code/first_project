@@ -49,6 +49,8 @@ class CustomUser(AbstractUser):
    
 
     wallet  = models.PositiveIntegerField(default=0)
+    otp = models.IntegerField(default=0)
+    is_verified = models.BooleanField(default=False)
     groups = models.ManyToManyField(
         AuthGroup,
         verbose_name='groups',
