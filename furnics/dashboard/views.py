@@ -12,7 +12,7 @@ from django.db.models import Sum
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from dashboard.models import Banner
-from store.models import Coupon
+from store.models import Coupon, Product, Variation
 # Create your views here.
 # view function for admin login
 def admin_login(request):
@@ -318,7 +318,26 @@ def delete_categories(request,category_id):
     if category.is_activate:
         category.is_activate=False
         category.save()
-
+        try:
+            sub=Sub_Category.objects.filter(category=category)
+            for item in sub:
+                item.is_activate=False
+                item.save()
+                try:
+                    products=Product.objects.filter(sub_category=item)
+                    for product in products:
+                        product.is_activate=False
+                        print('hihterehhtereerereerererere')
+                        try:
+                            variant=Variation.objects.filter(product=product)
+                            for variant in variant:
+                                variant.is_available=False
+                        except:
+                            pass
+                except:
+                    pass
+        except:
+            pass
        
     
         category=Category.objects.all().order_by('id')
@@ -330,6 +349,25 @@ def delete_categories(request,category_id):
         category.is_activate=True
         category.save()
         # categories=Category.objects.all
+        try:
+            sub=Sub_Category.objects.filter(category=category)
+            for item in sub:
+                item.is_activate=True
+                item.save()
+                try:
+                    products=Product.objects.filter(sub_category=item)
+                    for product in products:
+                        product.is_activate=True
+                        try:
+                            variant=Variation.objects.filter(product=product)
+                            for variant in variant:
+                                variant.is_available=True
+                        except:
+                            pass
+                except:
+                    pass
+        except:
+            pass
 
         category=Category.objects.all().order_by('id')
         context={

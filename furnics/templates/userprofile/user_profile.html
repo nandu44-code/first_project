@@ -265,7 +265,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Address Edit Form -->
-                        <form method="POST" action="{% url 'edit_address' address_id=address.id%}">
+                        <form method="POST" action="{% url 'edit_address' address_id=address.id%}" id="editAddressForm">
                             {% csrf_token %}
 
 
@@ -459,6 +459,132 @@
         document.getElementById('alert_tags');
 
         $("#UserAddressForm").submit(function (event) {
+            // Prevent the form from submitting
+            event.preventDefault();
+    
+            // Perform your validation here
+            if (validateForm()) {
+                // If the form is valid, you can submit it
+                console.log("Form is valid. Submitting...");
+
+
+                $(this).unbind('submit').submit();
+            } else {
+                console.log("Form is not valid. Please check your inputs.");
+            }
+        });
+    
+        function validateForm() {
+            // Implement your validation logic here
+            var RecipientName = $("#RecipientName").val();
+            var house_no = $("#house_no").val();
+            var street_name = $("#street_name").val();
+            var Village = $("#Village").val();
+            var postal_code = $("#postal_code").val(); 
+            var district = $("#district").val(); 
+            var state = $("#state").val(); 
+            var country = $("#country").val(); 
+             // Match the ID here
+    
+            // Example validation - You should customize this based on your requirements
+            if (RecipientName.length < 5) {
+                console.log("username");
+                document.getElementById('alert_tags').innerHTML="Recipient name must be at least 5 characters long."
+                //alert("Username must be at least 3 characters long.");
+                return false;
+            }
+            if (!isValidname(RecipientName)) {
+                document.getElementById('alert_tags').innerHTML="Invalid name"
+                return false;
+            }
+            if (!isValidHouseno(house_no)) {
+                document.getElementById('alert_tags').innerHTML="Invalid house no"
+                return false;
+            }
+            if (!isValidstreet_name(street_name)) {
+                document.getElementById('alert_tags').innerHTML="Invalid street name"
+                return false;
+            }
+            if (!isValidVillage(Village)) {
+                document.getElementById('alert_tags').innerHTML="Invalid Village name"
+                return false;
+            }
+
+            if (!isValidpostal_code(postal_code)) {
+                document.getElementById('alert_tags').innerHTML="Invalid Postal Code"
+                return false;
+            }
+            if (!isValiddistrict(district)) {
+                document.getElementById('alert_tags').innerHTML="Invalid district."
+                return false;
+            }
+           
+            if (!isValidstate(state)) {
+                document.getElementById('alert_tags').innerHTML="Invalid State"
+                return false;
+            }
+            if (!isValidcountry(country)) {
+                document.getElementById('alert_tags').innerHTML="Invalid Country"
+                return false;
+            }
+
+            console.log('hihihihiji')
+    
+            return true;
+        }
+        function isValidname(RecipientName){
+            //Basic username validation using a regular expression
+            var usernameregex=/^[A-Za-z]+\S*$/
+            return usernameregex.test(RecipientName);
+        }
+        function isValidstreet_name(street_name){
+            //Basic username validation using a regular expression
+            var usernameregex=/^[A-Za-z]+\S*$/
+            return usernameregex.test(street_name);
+        }
+        function isValidVillage(Village){
+            //Basic username validation using a regular expression
+            var usernameregex=/^[A-Za-z]+\S*$/
+            return usernameregex.test(Village);
+        }
+        function isValidpostal_code(postal_code){
+            //Basic username validation using a regular expression
+            var usernameregex=/^[0-9]{6}\S*$/
+            return usernameregex.test(postal_code);
+        }
+
+        function isValiddistrict(district){
+            //Basic username validation using a regular expression
+            var usernameregex=/^[A-Za-z]+\S*$/
+            return usernameregex.test(district);
+        }
+        function isValidstate(state){
+            //Basic username validation using a regular expression
+            var usernameregex=/^[A-Za-z]+\S*$/
+            return usernameregex.test(state);
+        }
+        function isValidcountry(country){
+            //Basic username validation using a regular expression
+            var usernameregex=/^[A-Za-z]+\S*$/            
+            return usernameregex.test(country);
+        }
+    
+    
+        function isValidHouseno(house_no) {
+            // Basic phone number validation using a regular expression
+            var house_noregex = /^[0-9]\S*$/;
+            return house_noregex.test(house_no);
+        }
+ 
+    
+    });
+    
+</script>
+<script>
+    $(document).ready(function () {
+        document.getElementById('alert_tags');
+
+        $("#editAddressForm").submit(function (event) {
             // Prevent the form from submitting
             event.preventDefault();
     

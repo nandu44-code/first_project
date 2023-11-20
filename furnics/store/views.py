@@ -67,7 +67,7 @@ def delete_product(request,product_id):
         try:
             variants=Variation.objects.filter(product=product)
             for i in variants:
-                i.is_activate=False
+                i.is_available=False
                 i.save()
         except:
             pass
@@ -86,7 +86,15 @@ def delete_product(request,product_id):
      else:
         product.is_activate=True
         product.save()
-        
+       
+        try:
+            variants=Variation.objects.filter(product=product)
+            for i in variants:
+                i.is_available=True
+                i.save()
+        except:
+            pass
+          
         products = Product.objects.all()
         categories = Category.objects.filter(is_activate=True)
         sub_categories = Sub_Category.objects.filter(is_activate=True)
@@ -200,6 +208,35 @@ def delete_variant(request,variant_id):
     return redirect('variant_view',product_id)
         
 
-def variant_image_edit(request):
+def variant_image_view(request,variant_id):
 
+    variant=Variation.objects.get(id=variant_id)
+    # request.session['variandid']=variant.id
+    context={
+        'variant':variant
+    }
+
+    return render(request,'dashboard/variant_image.html',context)
+def variant_image_delete(request,q):
+
+    if 'variantid' in request.session:
+        variant_id=request.session['variantid']
+
+        variant=Variation.objects.get(id=variant_id)
+        if q=='image1':
+            variant.image1=None
+            variant.save()
+        elif q=='image2':
+            variant.image2=None
+            variant.save()
+        elif q=='image3':
+            variant.image3=None
+            variant.save()
+        elif q=='image4':
+            variant.image4=None
+            variant.save()
+        # print('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+        return redirect('variant_image_view',variant_id=variant_id)
+
+def variant_image_edit(request,q):
     pass

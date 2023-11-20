@@ -86,11 +86,12 @@
 		<div class="container">
 			<div class="row">
 				<!-- Start Column 1 -->
+				{% if variants %}
 				{% for variant in variants %}
 				<div class="col-lg-3 mb-5 mt-5">
 					<div class="mx-1">
 						<div class="mx-2 mt-2 mb-2"
-							style="background-color:rgb(214, 214, 214); border: 5px solid rgba(239, 239, 239, 0.968); border-radius:30px;">
+							style="background-color:rgb(205, 210, 206); border: 5px solid rgba(239, 239, 239, 0.968); border-radius:30px;">
 							<a class="product-item" href="{% url 'product_details' variant_id=variant.id %}">
 								<img src="/media/{{variant.image1}}" class="img-fluid product-thumbnail mt-4"
 									width="60%" height="60%">
@@ -114,6 +115,11 @@
 					</div>
 				</div>
 				{% endfor %}
+				{% else %}
+					<div class="d-flex justify-content-center">
+						<h2 class="text-danger">( No products with the data you have given. )</h2>
+					</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>
