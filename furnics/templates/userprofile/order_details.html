@@ -61,19 +61,6 @@
                     MY ORDERS</h2>
             </div>
             <div class="col-lg-10 mt-5">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <h5 style="color: black;"> Item</h4>
-                    </div>
-                    <div class="col-lg-3">
-                        <h5 style="color: black;">Order Status</h4>
-                    </div>
-                    <div class="col-lg-3">
-                        <h5 style="color: black;">Total Amount</h4>
-                    </div>
-
-                </div>
-
                 {% for orderitem in order_items %}
                 <form method="POST" action="{% url 'order_details' order_id=orderitem.order.id%}">
                     {% csrf_token %}
@@ -82,9 +69,13 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <h6 style="color: rgb(0, 0, 0); font-family: Verdana, Geneva, Tahoma, sans-serif">
-                                        {{orderitem.product.product_name}}&nbsp&nbsp&nbsp&nbsp X{{ orderitem.quantity }}</h6>
-                                    <img src="/media/{{orderitem.variant.image1}}" width="30%">
+                                    <a href="{% url 'product_details' variant_id=orderitem.variant.id %}" style="text-decoration:none">
+                                        <h6
+                                            style="color: rgb(0, 0, 0); font-family: Verdana, Geneva, Tahoma, sans-serif">
+                                            {{orderitem.product.product_name}}&nbsp&nbsp&nbsp&nbsp X{{orderitem.quantity }}
+                                        </h6>
+                                        <img src="/media/{{orderitem.variant.image1}}" width="30%">
+                                    </a>
                                 </div>
                                 <div class="col-lg-3">
                                     <p
@@ -95,16 +86,102 @@
                                     <h6 style="color: rgb(250, 1, 1); font-family: Verdana, Geneva, Tahoma, sans-serif">
                                         Rs.{{orderitem.order.total_price}}</h6>
                                 </div>
-
-
                             </div>
-
-
                         </div>
                     </div>
                 </form>
 
                 {% endfor %}
+                <div class="flex-row">
+                    <div class="box col-lg-12 d-flex justify-content-center mt-3 border border-2"
+                        style="background: #c1bebe;">
+                        <!-- Content for the first div -->
+                        <h2 class="head-main mx:5">ORDER ADDRESS &nbsp&nbsp&nbsp</h2>
+                        <div class="inner-box">
+                            <table>
+                                <tr>
+                                    <td>Username</td>
+                                    <td>: {{order.user.username}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Phone Number</td>
+                                    <td>: {{order.user.phone}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td>: {{order.user.email}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td>: {{order.address.house_no}} {{order.address.village_name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>City</td>
+                                    <td>: {{order.address.village_name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Country</td>
+                                    <td>: {{order.address.country}}</td>
+                                </tr>
+                                <tr>
+                                    <td>State</td>
+                                    <td>: {{order.address.state}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Pin Code</td>
+                                    <td>: {{order.address.postal_code}}</td>
+                                </tr>
+                                <!-- <tr>
+                                <td>Order Note</td>
+                                <td>: {{order.message}}</td>
+                            </tr> -->
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box col-lg-12 d-flex justify-content-center mt-5 mb-4"
+                        style="background-color: rgb(202, 202, 202);">
+                        <!-- Content for the second div -->
+                        <h2>ORDER DETAILS &nbsp&nbsp&nbsp</h2>
+                        <div class="inner-box">
+                            <table>
+                                <tr>
+                                    <td>Order id</td>
+                                    <td>: {{order.id}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Username</td>
+                                    <td>:{{order.user.username}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Price</td>
+                                    <td>: {{order.total_price}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Payment Methode</td>
+                                    <td>: {{order.payment_mode}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Payment Id</td>
+                                    <td>: {{order.payment_id}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tracking No</td>
+                                    <td>: {{order.tracking_no}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Ordered Date</td>
+                                    <td>: {{order.created_at}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Order Status</td>
+                                    <td>: {{order.status}}</td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
                 {% if status == 'Delivered' %}
                 <div class="d-flex justify-content-center mt-5 mb-3">
 
@@ -113,7 +190,8 @@
                         Return the products
                     </button>
                     <div class="d-flex justify-content-center">
-                        <a href="{% url 'pdf_download' id=order.id %}"><button class="btn btn-primary">Download Invoice</button></a>
+                        <a href="{% url 'pdf_download' id=order.id %}"><button class="btn btn-primary">Download
+                                Invoice</button></a>
                     </div>
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -142,7 +220,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Close</button>
-                                    <a href="{% url 'order_return' order_id=order.id %}" >
+                                    <a href="{% url 'order_return' order_id=order.id %}">
                                         <button type="button" class="btn btn-primary">Save changes</button>
                                     </a>
                                 </div>
@@ -152,10 +230,11 @@
 
 
                 </div>
-                <div class="d-flex justify-content-center mt-5">
-                    <p>Feel free to return the products if you are not stastisfied with the product</p>
-                </div>
+
                 {% endif %}
+            </div>
+            <div class="container">
+
             </div>
         </div>
     </div>

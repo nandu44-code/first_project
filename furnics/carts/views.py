@@ -278,14 +278,15 @@ def address_checkout(request):
             'address':address,
             'default_address': default_address
         }
+        print('checking recipient name is working or not')
         return render(request,'cart/address_selection.html',context)
     
-def add_address_checkout(request,user_id):
+def add_address_checkout(request):
 
     if request.method=='POST':
-        user=CustomUser.objects.get(pk=user_id)
-        user_id=user
-        
+        if request.user:
+            customer=request.user
+    
         house_no = request.POST.get('house_no')
         recipient_name = request.POST.get('RecipientName')
         street_name = request.POST.get('street_name')
@@ -294,9 +295,17 @@ def add_address_checkout(request,user_id):
         district =  request.POST.get('district')
         state =  request.POST.get('state')
         country =  request.POST.get('country')
+        try:
+            recipient_name_checking = Address.objects.get(recipient_name=recipient_name)
+        except:
+            recipient_name_checking=None
+        if recipient_name_checking:
+            print('recipient name checking is working and its fine')
+            messages.error(request,'An address with this recipient name already exists.')
+            return redirect('address_checkout')
 
         address = Address(    
-            user_id = user_id,
+            user_id = customer,
             house_no = house_no,
             recipient_name = recipient_name,
             street_name = street_name,
@@ -306,18 +315,18 @@ def add_address_checkout(request,user_id):
             state = state,
             country = country
             )
-        exists = Address.objects.filter(user=user).exists()
-        print(exists)
-        if exists is None:
+        address_exists = Address.objects.filter(user_id=customer).exists()
+        
+        if address_exists is None:
             address.is_default=True
 
         address.save()
         return redirect('address_checkout')
     
 def place_order(request):
-    print("ffffffffffffffff")
+    
     if request.method == 'POST':
-        print("hdskjhkhjjkkhkhhhjkjhjhjhjjj")
+        # print("hdskjhkhjjkkhkhhhjkjhjhjhjjj")
         email = request.session['useremail']
         user = CustomUser.objects.get(email=email)
        
@@ -332,7 +341,7 @@ def place_order(request):
         order.user = user
         order.address = address
         print(address.id)
-        print(",,.,.><><><><><><><><><><><><><><><><><><><><><.")
+        # print(",,.,.><><><><><><><><><><><><><><><><><><><><><.")
         cart = Cart.objects.get(user=user)
         try:
             cart_item = CartItem.objects.filter(cart=cart, is_active=True)
@@ -358,7 +367,7 @@ def place_order(request):
 
         payment_mode = request.POST.get('payment_mode')
         # if payment_mode == 'cod':
-        print("payment>>>>>>>>>>>>>>>>>>")
+        # print("payment>>>>>>>>>>>>>>>>>>")
         if payment_mode == 'Paid by Razorpay':
             order.payment_mode = request.POST.get('payment_mode')
             order.payment_id = request.POST.get('payment_id')
@@ -366,18 +375,18 @@ def place_order(request):
             print("welcom to wallet")
             try:
                 if request.session['grand_total']:
-                    print('checkinggggggggggggggg....')
+                    # print('checkinggggggggggggggg....')
                     grand_total=float(request.session['grand_total'])
                     order.total_price = float(request.session['grand_total'])
                     del request.session['grand_total']
-                    print('tryif...............')
+                    # print('tryif...............')
                 else:
                     grand_total = cart_total_price + tax
-                    print('tryelse..............>>>>>>>.')
+                    # print('tryelse..............>>>>>>>.')
             except:
                 print(tax)
                 grand_total = cart_total_price + tax
-                print('except>>>>>>>>>>>>>>>>>>>>>>>>>...............')
+                # print('except>>>>>>>>>>>>>>>>>>>>>>>>>...............')
             userwallet=UserWallet(user=user,
             amount=grand_total,
             transaction='debited')
@@ -387,7 +396,7 @@ def place_order(request):
             user.save()
             order.payment_mode = request.POST.get('payment_mode')
             order.payment_id = request.POST.get('payment_id')
-            print("bye  wallet")
+            # print("bye  wallet")
         else:
             order.payment_mode = 'cod'
             order.payment_id = ' '

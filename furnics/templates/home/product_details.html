@@ -94,7 +94,7 @@
 
                 <h4><strong>Rs.</strong></h3>
 
-                    <h4 class="mr-2" id="price" style="color:red" mb-3 !important">{{variant.selling_price}}</h4>
+                    <h4 class="mr-2" id="price" style="color:rgb(255, 0, 0)" mb-3 !important">{{variant.selling_price}}</h4>
                     <h6><del style="color:rgb(159, 159, 159)">{{variant.actual_price}}</del></h6>
             </div>
 
@@ -109,7 +109,7 @@
                 <p class="sorry_msg mx-4 mt-2">Sorry, for this inconvinence</p>
                 {%else%}
                 <h5 style="color:black" id="stock">{{variant.stock}}</h5>
-                <h5 style="padding-left:10px; padding-right:6px;"> Items In <span style="color:blue">Stock</span></h5>
+                <h5 style="padding-left:10px; padding-right:6px;"> Items In <span style="color:rgb(11, 11, 86)">Stock</span></h5>
                 {% endif %}
             </div>
 
@@ -124,7 +124,7 @@
                 <div class="d-flex mr-5 mb-5 mt-1 ">
                     <button type="button" class="btn variant-button" id="variant-selector-{{ variants.id }}"
                         data-variant-id="{{ variants.id }}"
-                        style=" background: {{ variants.color }} ; margin-right:5px; width: 10px; height: 10px;">
+                        style=" background: {{ variants.color }} ; margin-right:5px; width: 35px; height: 35px;border-radius:50%;">
 
                     </button>
                 </div>
@@ -133,7 +133,7 @@
 
             <!-- Buttons -->
             <div class="mt-3">
-
+                <input type="hidden" vlaue="variant.id">
                 <a href="{% url 'add_cart' product_id=variant.id %}">
                     <button class="btn btn-sm button-addtocart">Add to Cart</button>
                 </a>
@@ -163,11 +163,11 @@
             <label>Easy to shop</label>
         </div>
         <div class="col-lg-3">
-            <img src="{% static 'images/support.svg' %}" alt="Image" class="imf-fluid">
+            <img src="{% static 'images/support.svg' %}" alt="Image" class="img-fluid">
             <label>24/7 support</label>
         </div>
         <div class="col-lg-3">
-            <img src="{% static 'images/return.svg' %}" alt="Image" class="imf-fluid">
+            <img src="{% static 'images/return.svg' %}" alt="Image" class="img-fluid">
             <label>Hassle free returns</label>
         </div>
     </div>
@@ -266,7 +266,6 @@
                     $('#image_4').attr("src", response.variant_image4);
 
                     console.log(response);
-
 
                 },
                 error: function () {
