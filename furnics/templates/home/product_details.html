@@ -122,20 +122,22 @@
                 {% for variants in available_variants %}
 
                 <div class="d-flex mr-5 mb-5 mt-1 ">
+                    <a href="{% url 'variant_select' variant_id=variants.id %}">
                     <button type="button" class="btn variant-button" id="variant-selector-{{ variants.id }}"
                         data-variant-id="{{ variants.id }}"
-                        style=" background: {{ variants.color }} ; margin-right:5px; width: 35px; height: 35px;border-radius:50%;">
+                        style=" background: {{ variants.color }} ; margin-right:5px; width: 35px; height: 2px;border-radius:50%;">
 
                     </button>
+                    </a>
                 </div>
                 {% endfor %}
             </div>
 
             <!-- Buttons -->
             <div class="mt-3">
-                <input type="hidden" vlaue="variant.id">
+                <input id="variantID" type="hidden" value="{{ variant.id }}">
                 <a href="{% url 'add_cart' product_id=variant.id %}">
-                    <button class="btn btn-sm button-addtocart">Add to Cart</button>
+                    <button class="btn btn-sm addtocart">Add to Cart</button>
                 </a>
 
                 <a href="{% url 'add_to_wishlist' product_id=variant.id %}">
@@ -264,7 +266,7 @@
                     $('#image_2').attr("src", response.variant_image2);
                     $('#image_3').attr("src", response.variant_image3);
                     $('#image_4').attr("src", response.variant_image4);
-
+                    $('#variantID').text(response.variant_id);
                     console.log(response);
 
                 },
@@ -277,6 +279,24 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+        $(".addtocart").click(function () {
+            //var variantId = $(this).data("variant-id");
+            var variantId = document.getElementById('variantID').value
+            console.log(variantId)
+            console.log(".......................................");
+            $.ajax({
+                //type: "POST", 
+                url: "/home/add-cart/" + variantId + "/", 
+
+            });
+
+        });
+    });
+</script>
+
 <script>
     function swapMainWithSubImage(subImage) {
         // Get the current main image and sub-image sources

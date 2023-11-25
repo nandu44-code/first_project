@@ -73,8 +73,8 @@
 											aria-label="Example text with button addon"
 											aria-describedby="button-addon1">
 										<div class="input-group-append">
-											<a href="{% url 'add_cart' product_id=cart_item.product.id %}">
-												<button class="btn btn-outline-black increase"
+											<a href="{% url 'increment_cartitem' product_id=cart_item.product.id %}">
+												<button class="btn btn-outline-black increase" data-id="{{ cart_item.product.id }}" id="increase"
 													type="button">&plus;</button>
 											</a>
 
@@ -177,3 +177,26 @@
 
 {% endblock %}
 <!-- Start Footer Section -->
+
+{% block scripts %}
+
+<script>
+	$(document).ready(function() {
+		$("#increase").on("click", function() {
+			var variant_id = $(this).data("id");
+			$.ajax({
+				url: "cart/increment_cart/",  // Replace this with your Django endpoint URL
+				method: "GET",  // Use GET or POST based on your backend logic
+				success: function(data) {
+					// Assuming the response contains HTML for the frame
+					$("#frameContainer").html(data);
+				},
+				error: function(xhr, status, error) {
+					console.error("Error occurred: ", error);
+				}
+			});
+		});
+	});
+</script>
+
+{% endblock %}

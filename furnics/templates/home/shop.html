@@ -14,7 +14,7 @@
 				<div class="input-group mb-3">
 					<input type="text" class="form-control" class="fas fa-search"
 						placeholder="Search for Products here..." aria-label="Search" aria-describedby="search-button"
-						name="q">
+						name="search">
 					<div class="input-group-append d-flex justify-content-center">
 						<button style="background-color:rgb(61, 128, 82); width:50px;" class="fas fa-search"
 							type="submit" id="search-button"></button>
@@ -23,6 +23,7 @@
 			</div>
 		</div>
 	</form>
+	
 </div>
 
 
@@ -58,8 +59,8 @@
 	<div class="d-flex flex-coloum justify-content-center mt-5 align-items-center">
 		
 		{% for i in color %}
-		<form method="GET" action="{% url 'product_color_filter' %}">
-			<input type="hidden" value="{{i.color}}" name="q">
+		<form method="GET" action="{% url 'product_search' %}">
+			<input type="hidden" value="{{ i.color }}" name="color">
 
 			<button style="background-color: {{ i.color }}; height: 40px; width: 40px; border-radius: 50%; border:none;"
 				type="submit" class="mx-2">
@@ -69,15 +70,16 @@
 		{% endfor %}
 	</div>
 	<div class=" d-flex justify-content-center mt-5">
-		<form method="GET" action="{% url 'product_sort' %}">
+		<form method="GET" action="{% url 'product_search'%}">
 			
 			<select name="sort" style="border-radius:10px;">
 				<option disabled>Sort the price</option>
-				<option value="0">price: Low To High</option>
+				<option value="0">price: Low to High</option>
 				<option value="1">price: High to Low</option>
 			</select>
 			<button class="btn btn-secondary" type="submit" >apply</button>
 		</form>
+	
 	</div>
 
 

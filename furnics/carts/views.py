@@ -67,7 +67,7 @@ def add_cart(request,product_id):
     print(variant.stock)
     if variant.stock == 0:
         print(variant.stock)
-        messages.error(request,'out of stock')
+        messages.error(request,'sorry the product is out of stock')
         return redirect('product_details',variant_id=variant.id)
     # if product.stock is None:
     #     return redirect('view_shop')
@@ -113,6 +113,23 @@ def add_cart(request,product_id):
             )
             cart_item.save()
         return redirect('cart_page')
+
+def increment_cartitem(request,product_id):
+
+    if request.user:
+        print('hi this is working perfectly')
+        user=request.user
+    try:
+        cart=Cart.objects.get(user=user)
+        print('this is also working perfectly')
+    except:
+        print('this is not working perfectly')
+    product = get_object_or_404(Variation,id=product_id)
+    cart_item = CartItem.objects.get(product=product,cart=cart)
+    if cart_item.quantity>=1:
+        cart_item.quantity = cart_item.quantity+1
+        cart_item.save()
+    return redirect('cart_page')
 
 
 def decrement_cartitem(request,product_id):

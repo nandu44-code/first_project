@@ -97,55 +97,91 @@ def variant_select(request,variant_id):
     variants = Variation.objects.get(pk=variant_id)
     product_id = variants.product
 
-    available_variants =Variation.objects.filter(product=product_id,is_available=True)
+    return redirect('product_details',variant_id)
+    # available_variants =Variation.objects.filter(product=product_id,is_available=True)
     
-    variant_price = variants.selling_price
-    variant_stock = variants.stock
-    variant_image1 = variants.image1.url
-    variant_image2 = variants.image2.url
-    variant_image3 = variants.image3.url
-    variant_image4 = variants.image4.url
-
+    # variant_id=variants.id
+    # variant_price = variants.selling_price
+    # variant_stock = variants.stock
+    # variant_image1 = variants.image1.url
+    # variant_image2 = variants.image2.url
+    # variant_image3 = variants.image3.url
+    # variant_image4 = variants.image4.url
+    # variant_id = variants.id
         # 'available_vatiants':available_variants
     
 
-    return JsonResponse({'variant':variant_price,
-                         'variant_stock':variant_stock,
-                         'variant_image1':variant_image1,
-                         'variant_image2':variant_image2,
-                         'variant_image3':variant_image3,
-                         'variant_image4':variant_image4
-                         })
+    # return JsonResponse({'variant':variant_price,
+    #                      'variant_stock':variant_stock,
+    #                      'variant_image1':variant_image1,
+    #                      'variant_image2':variant_image2,
+    #                      'variant_image3':variant_image3,
+    #                      'variant_image4':variant_image4,
+    #                      'variant_id':variant_id
+    #                      })
 
 
-def product_search(request):
+# def product_search(request):
 
-    query=request.GET.get('q')
-    modified_string = query.replace(" ", "")
-    variants=None
+#     query=request.GET.get('q')
+#     modified_string = query.replace(" ", "")
+#     variants=None
     
-    categories=Category.objects.filter(is_activate=True)
-    products=Product.objects.filter(is_activate=True)
-    available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
-    if modified_string == "":
+#     categories=Category.objects.filter(is_activate=True)
+#     products=Product.objects.filter(is_activate=True)
+#     available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
+#     if modified_string == "":
         
-        return redirect('shop_page')
+#         return redirect('shop_page')
     
-    else:
+#     else:
 
-        product=Product.objects.filter(product_name__icontains=query)
-        for product in product:
+#         product=Product.objects.filter(product_name__icontains=query)
+#         for product in product:
             
 
-            variants=Variation.objects.filter(product=product,is_available=True)
-        print(variants)
-        context={
-        'category':categories,
-        'product':products,
-        'variants':variants,
-        "color":available_colors,
+#             variants=Variation.objects.filter(product=product,is_available=True)
+#         print(variants)
+#         context={
+#         'category':categories,
+#         'product':products,
+#         'variants':variants,
+#         "color":available_colors,
+#     }
+#         return render(request,'home/shop.html',context)
+
+def product_search(request):
+    query = request.GET.get('search')
+    print(query,'fghjgfghfghfghfdfgfgdf')
+    color_filter = request.GET.get('color')
+    print(color_filter)
+    sort = request.GET.get('sort')
+    print(sort)
+
+    categories = Category.objects.filter(is_activate=True)
+    products = Product.objects.filter(is_activate=True)
+    available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
+    variants = Variation.objects.filter(is_available=True)
+
+    if query:
+        variants = variants.filter(product__product_name__icontains=query)
+
+    if color_filter:
+        variants = variants.filter(color=color_filter)
+
+    if sort == '1':
+        variants = variants.order_by('-selling_price')
+    else:
+        variants = variants.order_by('selling_price')
+
+    context = {
+        'category': categories,
+        'product': products,
+        'variants': variants,
+        'color': available_colors,
     }
-        return render(request,'home/shop.html',context)
+
+    return render(request, 'home/shop.html', context)
     
 def product_color_filter(request):
     
