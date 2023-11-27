@@ -12,11 +12,14 @@ from store.models import Coupon, Product, Variation
 from carts.models import Cart,CartItem, Order, OrderItem
 from django.utils import timezone
 # Create your views here.
-def cart_page(request,total=0,quantity=0,cart_items=None):
+def cart_page(request):
     if 'useremail' not in request.session:
         return redirect('user_login')
     tax=0
     grand_total=0
+    total=0
+    quantity=0
+    cart_items=None
     
     if 'useremail' in request.session:
         email = request.session['useremail']
@@ -66,6 +69,7 @@ def add_cart(request,product_id):
     variant = Variation.objects.get(id=product_id) #get the product variation
     print(variant.stock)
     if variant.stock == 0:
+        
         print(variant.stock)
         messages.error(request,'sorry the product is out of stock')
         return redirect('product_details',variant_id=variant.id)
@@ -115,7 +119,6 @@ def add_cart(request,product_id):
         return redirect('cart_page')
 
 def increment_cartitem(request,product_id):
-
     if request.user:
         print('hi this is working perfectly')
         user=request.user
@@ -126,10 +129,68 @@ def increment_cartitem(request,product_id):
         print('this is not working perfectly')
     product = get_object_or_404(Variation,id=product_id)
     cart_item = CartItem.objects.get(product=product,cart=cart)
-    if cart_item.quantity>=1:
+    
+    if cart_item.quantity<product.stock:
         cart_item.quantity = cart_item.quantity+1
+        quantity=cart_item.quantity
+        cart_item_total = product.selling_price*quantity
         cart_item.save()
-    return redirect('cart_page')
+
+        total=0
+        try:
+        
+            cart = Cart.objects.get(user=user)
+            cart_items = CartItem.objects.filter(cart=cart,is_active=True).order_by('id')
+            for cart_item in cart_items:
+                total += (cart_item.product.selling_price * cart_item.quantity)
+                # quantity += cart_item.quantity
+            tax = (2*total)/100
+            grand_total = total + tax
+        except ObjectDoesNotExist:
+            
+            pass
+        return JsonResponse(
+
+            {
+                'quantity': quantity,
+                'cart_item_total':cart_item_total,
+                'total':total,
+                'tax':tax,
+                'grand_total':grand_total,
+                'messages':'success'
+            }
+        )
+
+    else:
+        quantity=cart_item.quantity
+        cart_item_total = product.selling_price*quantity
+        cart_item.save()
+
+        total=0
+        try:
+        
+            cart = Cart.objects.get(user=user)
+            cart_items = CartItem.objects.filter(cart=cart,is_active=True).order_by('id')
+            for cart_item in cart_items:
+                total += (cart_item.product.selling_price * cart_item.quantity)
+                # quantity += cart_item.quantity
+            tax = (2*total)/100
+            grand_total = total + tax
+        except ObjectDoesNotExist:
+            
+            pass
+        return JsonResponse(
+
+            {
+                'quantity': quantity,
+                'cart_item_total':cart_item_total,
+                'total':total,
+                'tax':tax,
+                'grand_total':grand_total,
+                'messages':'error'
+            }
+        )
+
 
 
 def decrement_cartitem(request,product_id):
@@ -145,11 +206,63 @@ def decrement_cartitem(request,product_id):
 
     if cart_item.quantity > 1:
         cart_item.quantity -=1
+        quantity = cart_item.quantity
+        cart_item_total = product.selling_price*quantity
         cart_item.save()
-    else:
-        cart_item.delete()
+        total=0
+        try:
+            cart = Cart.objects.get(user=user)
+            cart_items = CartItem.objects.filter(cart=cart,is_active=True).order_by('id')
+            for cart_item in cart_items:
+                total += (cart_item.product.selling_price * cart_item.quantity)
+                # quantity += cart_item.quantity
+            tax = (2*total)/100
+            grand_total = total + tax
+        except ObjectDoesNotExist:
+            
+            pass
+        return JsonResponse(
 
-    return redirect('cart_page')
+            {
+                'quantity': quantity,
+                'cart_item_total':cart_item_total,
+                'total':total,
+                'tax':tax,
+                'grand_total':grand_total,
+                'status':'success'
+            }
+        )
+
+    else:
+        quantity = cart_item.quantity
+        cart_item_total = product.selling_price*quantity
+        cart_item.delete()
+        total=0
+        try:
+            cart = Cart.objects.get(user=user)
+            cart_items = CartItem.objects.filter(cart=cart,is_active=True).order_by('id')
+            for cart_item in cart_items:
+                total += (cart_item.product.selling_price * cart_item.quantity)
+                # quantity += cart_item.quantity
+            tax = (2*total)/100
+            grand_total = total + tax
+        except ObjectDoesNotExist:
+            
+            pass
+        return JsonResponse(
+
+            {
+                'quantity': quantity,
+                'cart_item_total':cart_item_total,
+                'total':total,
+                'tax':tax,
+                'grand_total':grand_total,
+                'status':'error'
+            }
+        )
+        # cart_item.delete()
+
+    # return redirect('cart_page')
 
 def remove_cart_item(request,product_id):
 
@@ -281,12 +394,18 @@ def checkout_page(request):
     #     return redirect('user_login')
 
 def address_checkout(request):
+    
     if 'useremail' in request.session:
         email=request.session['useremail']
         # getting the user associated with this username
         user = CustomUser.objects.get(email=email)
         address = Address.objects.filter(user_id=user.id,is_default=False)
-
+        cart = Cart.objects.get(user=user)
+        cart_items = CartItem.objects.filter(cart=cart,is_active=True).order_by('id')
+        for cartitem in cart_items:
+            if cartitem.quantity>cartitem.product.stock:
+                messages.error(request,'one of the product is out of stock ')
+                return redirect('cart_page')
         for i in address:
             print(i.recipient_name)
         default_address =Address.objects.get(is_default=True)  
