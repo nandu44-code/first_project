@@ -17,7 +17,10 @@ def user_profile(request):
         email=request.session['useremail']
         user=CustomUser.objects.get(email=email)
         user_id=user.id
-        address=Address.objects.filter(user_id=user_id)
+        try:
+            address=Address.objects.filter(user_id=user_id)
+        except:
+            address=None
         context={
                 'users':user,
                 'address':address
