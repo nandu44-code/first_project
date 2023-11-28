@@ -84,7 +84,7 @@
 									</div>
 
 								</td>
-								<td id="cart_item_total">{{ cart_item.sub_total }}</td>
+								<td id="cart_item_total-{{cart_item.product.id}}">{{ cart_item.sub_total }}</td>
 								<td><a href="{% url 'remove_cartitem' product_id=cart_item.product.id %}"
 										class="btn btn-black btn-sm">X</a></td>
 							</tr>
@@ -207,12 +207,13 @@
 					}
 					// Assuming the response contains HTML for the frame
 					document.getElementById('quantity-' + variant_id).value = data.quantity
+					
 					document.getElementById('tax').innerHTML = data.tax
 					document.getElementById('total').innerHTML = data.total
 					document.getElementById('grand_total').innerHTML = data.grand_total
 					console.log(data.grand_total)
 					console.log(typeof data.grand_total)
-					document.getElementById('cart_item_total').innerHTML = data.cart_item_total
+					document.getElementById('cart_item_total-' + variant_id).innerHTML = data.cart_item_total
 
 				},
 				error: function (xhr, status, error) {
@@ -256,7 +257,7 @@
 					document.getElementById('grand_total').innerHTML = data.grand_total
 					console.log(data.grand_total)
 					console.log(typeof data.grand_total)
-					document.getElementById('cart_item_total').innerHTML = data.cart_item_total
+					document.getElementById('cart_item_total-' + variant_id).innerHTML = data.cart_item_total
 					}
 					// Assuming the response contains HTML for the frame
 					

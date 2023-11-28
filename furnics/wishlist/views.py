@@ -37,8 +37,7 @@ def add_to_wishlist(request,product_id):
             # Wishlist item does not exist, add it
             wishlist = WishlistItem(user=user, product_name=variant)
             wishlist.save()
-            messages.success(request, 'Product added to wishlist.')
-
+            # messages.success(request, 'Product added to wishlist.')
             return redirect('wishlist_view')
 
     except Exception as e:

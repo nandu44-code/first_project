@@ -169,7 +169,8 @@ def edit_variants(request, variant_id):
         variant.actual_price = request.POST.get('ActualPrice')
         variant.selling_price = request.POST.get('SellingPrice')
 
-        if Variation.objects.filter(color=color,product=product).exists():
+        if Variation.objects.filter(color=color, product=product).exclude(id=variant_id).exists():
+
             messages.error(request,"color is already selected")
             return redirect('variant_view',product_id=product_id)
         else:

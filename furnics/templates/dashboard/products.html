@@ -111,7 +111,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="categoryName">Product Name:</label>
                                     <input type="text" class="form-control" id="product_name" name="product_name"
-                                        value="{{product.product_name}}" required>
+                                        value="{{product.product_name}}" pattern="/^[A-Za-z]+\S*$/" required>
                                 </div>
                             </div>
                             <!-- Description Field (Alone in its Row) -->
@@ -119,7 +119,7 @@
                                 <div class="form-group col-md-12">
                                     <label for="productDescription">Description:</label>
                                     <textarea class="form-control" id="productDescription" name="product_description"
-                                        rows="4" required>{{product.description}}</textarea>
+                                        rows="4" pattern="/^[A-Za-z]+\S*$/" required>{{product.description}}</textarea>
                                 </div>
                             </div>
 
@@ -146,7 +146,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="POST" action="{% url 'add_product' %}" enctype="multipart/form-data">
+                <p id="alert_tags"></p>
+                <form method="POST" action="{% url 'add_product' %}" enctype="multipart/form-data" id="addproduct">
                     {% csrf_token %}
                     <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
                         <div class="form-row">
@@ -163,13 +164,13 @@
                             <div class="form-group col-md-6">
                                 <label for="categoryName">Product Name:</label>
                                 <input type="text" class="form-control" id="product_name" name="product_name"
-                                    value="{{category.category_name}}" required>
+                                    value="{{category.category_name}}" pattern="/^[A-Za-z]+\S*$/" required>
                             </div>
                         </div>
                         <!-- Product Description Field -->
                         <div class="form-group">
                             <label for="productDescription"> Description:</label>
-                            <textarea class="form-control" id="productDescription" name="product_description" rows="4"
+                            <textarea class="form-control" id="productDescription" name="product_description" rows="4" pattern="/^[A-Za-z]+\S*$/"
                                 required></textarea>
                         </div>
                         <!-- Button to Add Variants -->
@@ -201,6 +202,62 @@
     </script>
     <script>
         $(document).ready(function () {
+            //document.getElementById('alert_tag');
+            console.log('hi qoekng')
+            $("#addproduct").submit(function (event) {
+                // Prevent the form from submitting
+                event.preventDefault();
+    
+                // Perform your validation here
+                if (validateForm()) {
+                    // If the form is valid, you can submit it
+                    console.log("Form is valid. Submitting...");
+    
+    
+                    $(this).unbind('submit').submit();
+                } else {
+                    console.log("Form is not valid. Please check your inputs.");
+                }
+            });
+    
+            function validateForm() {
+                // Implement your validation logic here
+                
+                var product_name = $("#product_name").val();
+                var productDescription = $("#productDescription").val();
+
+                // Match the ID here
+                console.log(product_name+'hi')
+    
+                // Example validation - You should customize this based on your requirements
+ 
+                if (!isValidname(product_name)) {
+                    document.getElementById('alert_tags').innerHTML = "Invalid product name"
+                    return false;
+                }
+
+                if (!isValidname(productDescription)) {
+                    document.getElementById('alert_tags').innerHTML = "Invalid product description"
+                    return false;
+                }
+               
+    
+                console.log('hihihihiji')
+    
+                return true;
+            }
+            function isValidname(name) {
+                //Basic username validation using a regular expression
+                var usernameregex = /^[A-Za-z]+\S*$/
+                return usernameregex.test(name);
+            }
+    
+    
+        });
+    
+    </script>
+    <script>
+        $(document).ready(function () {
             $('#example').DataTable();
         });
     </script>
@@ -208,4 +265,5 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    
 {% endblock %}

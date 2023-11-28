@@ -123,7 +123,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="VariantStock">Stock</label>
                                     <input type="number" class="form-control" id="stock" name="stock"
-                                        value="{{variant.stock}}" required>
+                                        value="{{variant.stock}}" pattern='/^[0-9]\S*$/' required>
                                 </div>
                             </div>
                         </div>
@@ -131,12 +131,12 @@
                         <div class="form-group col">
                             <label for="VariantActualPrice">Actual Price</label>
                             <input type="number" class="form-control" id="ActualPrice" name="ActualPrice"
-                                value="{{variant.actual_price}}" required>
+                                value="{{variant.actual_price}}" pattern='/^[0-9]\S*$/' required>
                         </div>
                         <div class="form-group col">
                             <label for="VariantSellingPrice">Selling Price</label>
                             <input type="number" class="form-control" id="SellingPrice" name="SellingPrice"
-                                value="{{variant.selling_price}}" required>
+                                value="{{variant.selling_price}}" pattern='/^[0-9]\S*$/' required>
                         </div>
                         <div class="form-group col">
                             <label for="imageUpload">Variant Image</label>

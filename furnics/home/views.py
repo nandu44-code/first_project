@@ -30,7 +30,7 @@ def view_shop(request):
     categories=Category.objects.filter(is_activate=True)
     products=Product.objects.filter(is_activate=True)
     variants = Variation.objects.filter(is_available=True).order_by('product').distinct('product')
-
+    sub_categories = None
 
     available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
     context={
@@ -38,6 +38,7 @@ def view_shop(request):
         'product':products,
         'variants':variants,
         "color":available_colors,
+        'sub_categories':sub_categories
     }
 
 
@@ -164,7 +165,7 @@ def product_search(request):
     variants = Variation.objects.filter(is_available=True)
 
     if query:
-        variants = variants.filter(product__product_name__icontains=query)
+        variants = Variation.filter(product__product_name__icontains=query)
 
     if color_filter:
         variants = variants.filter(color=color_filter)
@@ -182,6 +183,60 @@ def product_search(request):
     }
 
     return render(request, 'home/shop.html', context)
+
+def variant_within_category(request,category_id):
+
+
+    category=Category.objects.get(id=category_id)
+    print(category_id)
+    categories = Category.objects.filter(is_activate=True)
+    
+    products = Product.objects.filter(is_activate=True)
+    sub_categories = Sub_Category.objects.filter(category=category)
+    available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
+
+    try:
+        # product=Product.objects.filter(category=category)
+        variants =  Variation.objects.filter(product__category_id=category_id)
+    except:
+        variants=None
+    context={
+        'category':categories,
+        'product':products,
+        'variants':variants,
+        "color":available_colors,
+        'sub_categories':sub_categories,
+        'category_id':category_id
+    }
+
+    return render(request,'home/shop.html',context)
+
+def variant_within_subcategory(request,sub_category_id):
+
+
+    # category=Category.objects.get(id=category_id)
+
+    categories = Category.objects.filter(is_activate=True)
+    
+    products = Product.objects.filter(is_activate=True)
+    
+    available_colors = Variation.objects.filter(is_available=True).values('color').distinct()
+
+    sub_categories = Sub_Category.objects.filter(id=sub_category_id)
+    try:
+        # product=Product.objects.filter(category=category)
+        variants =  Variation.objects.filter(product__sub_category_id=sub_category_id)
+    except:
+        variants=None
+    context={
+        'category':categories,
+        'product':products,
+        'variants':variants,
+        "color":available_colors,
+        # 'sub_categories':sub_categories.
+    }
+
+    return render(request,'home/shop.html',context)
     
 def product_color_filter(request):
     

@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from django.contrib import messages
+from django.db.models import Prefetch
 from django.http import Http404, HttpResponse, JsonResponse
 from accounts.models import CustomUser, UserWallet
 from carts.models import Order, OrderItem
@@ -170,10 +171,10 @@ def my_orders(request):
         print(useremail)
         user=CustomUser.objects.get(email=useremail)
         try:
-            order=Order.objects.filter(user=user.id)
+            order=Order.objects.filter(user=user.id).distinct()
             
             # order_item=OrderItem.objects.filter(order=order)
-            order_items = OrderItem.objects.filter(order__user=user.id)
+            order_items = OrderItem.objects.filter(order__user=user.id).distinct().prefetch_related( Prefetch('order', queryset=order)).order_by('-order', 'id').distinct('order')
         except:
             order=None
             order_items=None
@@ -189,6 +190,7 @@ def order_details(request,order_id):
     order=Order.objects.get(id=order_id)
     order_items=OrderItem.objects.filter(order=order)
     status=order.status
+    
     context={
         "order_items":order_items,
         "order":order,
@@ -240,9 +242,19 @@ def render_to_pdf(template_src, context_dict={}):
 def pdf_download(request,id):
     order=Order.objects.get(id=id)
     neworderitems=OrderItem.objects.filter(order=order)
+    #    cart_items = CartItem.objects.filter(cart=cart,is_active=True).order_by('id')
+    total,quantity,tax,discount=0,0,0,0
+    for cart_item in neworderitems:
+        total += (cart_item.variant.selling_price * cart_item.quantity)
+        quantity += cart_item.quantity
+    tax = (2*total)/100
+    discount =abs(float(total)+float(tax)-order.total_price)
     cont = {
         'order': order,
-        'cart_items': neworderitems
+        'cart_items': neworderitems,
+        'total':total,
+        'tax':tax,
+        'discount':discount
     }
     pdf = render_to_pdf('userprofile/order_invoice.html', cont)
     if pdf:

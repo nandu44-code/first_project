@@ -213,8 +213,11 @@ def otp_verification(request):
 # view function for resending the otp  
 def otp_resend(request):
     # deleting the session of existing one time password
-    del request.session['otp_secret_key']
-    del request.session['otp_valid_date']
+    try:
+        del request.session['otp_secret_key']
+        del request.session['otp_valid_date']
+    except:
+        pass
     return redirect('send_otp')
     
 

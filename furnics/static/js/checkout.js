@@ -23,6 +23,7 @@ $(document).ready(function () {
                 success: function (data) {
                     console.log(data);
                     // Callback function to handle the successful response
+                    alert(data.total_price)
                     var options = {
                         "key": "rzp_test_WZWzLttJ8QsnYY",
                         "amount": data.total_price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise

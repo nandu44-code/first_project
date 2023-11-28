@@ -118,6 +118,7 @@
                     </tr>
                     <tr>
                         <td><strong class="mx-2">Grand Total</strong></td>
+                        <td id="offer_td" hidden><div class="d-flex"><del><p id="after_apply_coupan" hidden class="text-danger mx-4"></p></del><p id="after_apply_total" hidden></p></div></td>
                         <td id="total_value">₹ {{ grand_total }}</td>
                         <input type="hidden" value="{{grand_total}}" id="grand_total">
                     </tr>
@@ -223,8 +224,24 @@
             data: dataToSend,
             success: function (response) {
                 // Handle the response from the server
-                console.log(response.total);
+                is_visible=response.is_visible
+                console.log(typeof is_visible);
+                if(is_visible=='True'){
+                    var value1 =document.getElementById('after_apply_coupan');
+                    var value2 =document.getElementById('offer_td');
+                    var total_price =document.getElementById('after_apply_total');
+
+                    
+                    value1.hidden = false;
+                    value2.hidden = false;
+                    total_price.hidden = false;
+                    value1.innerHTML="₹" + " " +response.grand_totals;
+                    total_price.innerHTML="₹" + " " + response.total;
+                    var hide_previous_price=document.getElementById('total_value')
+                    hide_previous_price.hidden = true;
+                }
                 document.getElementById('total_value').innerText = "₹" + " " + response.total;
+                
 
                 document.getElementById('grand_total').innerText = response.total;
             },

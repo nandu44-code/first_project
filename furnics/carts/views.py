@@ -60,7 +60,7 @@ def _cart_id(request):
     return cart
 @login_required(login_url='user_login')
 def add_cart(request,product_id):
-
+    print('add cart from wishlist is working')
     if 'useremail' in request.session:
         email = request.session['useremail']
         user=CustomUser.objects.get(email=email)
@@ -80,43 +80,45 @@ def add_cart(request,product_id):
     if is_exist:
         wishlist_item = WishlistItem.objects.get(user = user, product_name=variant)
         wishlist_item.delete()
-        return redirect('shop_page')
+        # return redirect('shop_page')
     else:
-        cart_id = _cart_id(request)
+        pass
+    
+    cart_id = _cart_id(request)
+    
+    try:
+        cart = Cart.objects.get(user = user) #get the cart using cart_id present in the session
         
-        try:
-            cart = Cart.objects.get(user = user) #get the cart using cart_id present in the session
-            
-        except Cart.DoesNotExist:
-            if 'useremail' in request.session:
-                email = request.session['useremail']
-            user=CustomUser.objects.get(email=email)
-            if user is not None:
+    except Cart.DoesNotExist:
+        if 'useremail' in request.session:
+            email = request.session['useremail']
+        user=CustomUser.objects.get(email=email)
+        if user is not None:
 
-                cart = Cart.objects.create(
-                    cart_id = _cart_id(request),
-                    user = user
-                )
-                cart.save()
-        
-        try:
-            cart_item = CartItem.objects.get(product=variant,cart=cart)
-            if variant.stock<=cart_item.quantity:
-                messages.error(request,'stock limit of the product reached')
-                return redirect('cart_page')
-            else:
-                cart_item.quantity += 1
-                cart_item.save()
-        except CartItem.DoesNotExist:
-
-            cart_item =CartItem.objects.create(
-
-                product = variant,
-                quantity = 1,
-                cart = cart,
+            cart = Cart.objects.create(
+                cart_id = _cart_id(request),
+                user = user
             )
+            cart.save()
+    
+    try:
+        cart_item = CartItem.objects.get(product=variant,cart=cart)
+        if variant.stock<=cart_item.quantity:
+            messages.error(request,'stock limit of the product reached')
+            return redirect('cart_page')
+        else:
+            cart_item.quantity += 1
             cart_item.save()
-        return redirect('cart_page')
+    except CartItem.DoesNotExist:
+
+        cart_item =CartItem.objects.create(
+
+            product = variant,
+            quantity = 1,
+            cart = cart,
+        )
+        cart_item.save()
+    return redirect('cart_page')
 
 def increment_cartitem(request,product_id):
     if request.user:
@@ -491,9 +493,6 @@ def place_order(request):
        
         address = Address.objects.get(id=selected_address_id)
         
-        
-                
-
         order = Order()
         order.user = user
         order.address = address
@@ -575,7 +574,11 @@ def place_order(request):
             orderproduct.save()
         Cart.objects.filter(cart_id=item.cart.cart_id).delete()
         # messages.success(request, "Your order has been placed successfully")
-        
+        try:
+            if request.session['grand_total']:
+                del request.session['grand_total']
+        except:
+            pass
         payMode = request.POST.get('payment')
         if payMode == 'Paid by Razorpay':
             return JsonResponse({'status': 'Your order has been placed successfully'})
@@ -623,7 +626,7 @@ def razorpay_check(request):
             coupon = 0
             total_price = float(total_price) + float(tax)
         
-
+        print(total_price)
         return JsonResponse({
             'total_price': total_price,
             
@@ -650,7 +653,12 @@ def apply_coupon(request):
             print("hjhhkhjkkj")
         discount_amount=coupon.discount
         total=grand_totals-discount_amount
+        is_visible=True
         request.session['grand_total'] = total
 
-        return JsonResponse({"total":f"{total}"})
+        return JsonResponse({
+                            "total":f"{total}",
+                            "grand_totals":f"{grand_totals}",
+                            "is_visible":f'{is_visible}'
+                             })
         
