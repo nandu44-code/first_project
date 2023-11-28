@@ -20,11 +20,12 @@
     {% if messages %}
         {% for message in messages %}
         <div class="alert alert-danger d-flex justify-content-center mt-5 mx-5" id="messageBox"  role="alert">
-            {{messages}}
+            {{message}}
         </div>
         {% endfor %}
    
     {% endif %}
+    {% if address or default_address %}
     <form id="addressSelectionForm" action="{% url 'checkout_page' %}" method="post">
         {% csrf_token %}
         <div class="row mt-5 mx-5 my-5 mb-5">
@@ -51,6 +52,9 @@
             </button>    
         </div>
     </form>
+    
+
+    {% endif %}
 
  
     <h1 class="d-flex justify-content-center">OR</h1>

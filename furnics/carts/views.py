@@ -399,7 +399,10 @@ def address_checkout(request):
         email=request.session['useremail']
         # getting the user associated with this username
         user = CustomUser.objects.get(email=email)
-        address = Address.objects.filter(user_id=user.id,is_default=False)
+        try:
+            address = Address.objects.filter(user_id=user.id,is_default=False)
+        except:
+            address=None
         cart = Cart.objects.get(user=user)
         cart_items = CartItem.objects.filter(cart=cart,is_active=True).order_by('id')
         for cartitem in cart_items:
@@ -408,8 +411,10 @@ def address_checkout(request):
                 return redirect('cart_page')
         for i in address:
             print(i.recipient_name)
-        default_address =Address.objects.get(is_default=True)  
-
+        try:
+            default_address =Address.objects.get(is_default=True)  
+        except:
+            default_address=None
         context={
             'address':address,
             'default_address': default_address
@@ -440,21 +445,37 @@ def add_address_checkout(request):
             messages.error(request,'An address with this recipient name already exists.')
             return redirect('address_checkout')
 
-        address = Address(    
-            user_id = customer,
-            house_no = house_no,
-            recipient_name = recipient_name,
-            street_name = street_name,
-            village_name = village_name,
-            postal_code = postal_code,
-            district = district,
-            state = state,
-            country = country
-            )
-        address_exists = Address.objects.filter(user_id=customer).exists()
+        exists = Address.objects.filter(user_id=customer).exists()
+        print(exists)
+        if exists == False:
         
-        if address_exists is None:
-            address.is_default=True
+            address=Address(    
+                            user_id = customer,
+                            house_no = house_no,
+                            recipient_name = recipient_name,
+                            street_name = street_name,
+                            village_name =  village_name,
+                            postal_code = postal_code,
+                            district =  district,
+                            state =  state,
+                            country =  country,
+                            is_default = True
+                        )
+
+        else:
+             address=Address(
+                            user_id = customer,
+                            house_no = house_no,
+                            recipient_name = recipient_name,
+                            street_name = street_name,
+                            village_name =  village_name,
+                            postal_code = postal_code,
+                            district =  district,
+                            state =  state,
+                            country =  country,
+                            
+                        )
+
 
         address.save()
         return redirect('address_checkout')

@@ -274,23 +274,24 @@
                     </div>
                     <div class="modal-body">
                         <!-- Address Edit Form -->
+                        <p class="text-danger" id="alert_message-{{address.id}}"></p>
                         <form method="POST" action="{% url 'edit_address' address_id=address.id%}" id="editAddressForm">
                             {% csrf_token %}
 
-
+                                
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="RecipientName" class="form-label">Recipient
                                             Name:</label>
-                                        <input type="text" class="form-control" id="RecipientName" name="RecipientName"
+                                        <input type="text" class="form-control" id="RecipientName-{{ address.id }}" name="RecipientName"
                                             value="{{ address.recipient_name }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="house_no" class="form-label">House No:</label>
-                                        <input type="text" class="form-control" id="house_no" name="house_no"
+                                        <input type="text" class="form-control" id="house_no-{{ address.id }}" name="house_no"
                                             value="{{ address.house_no }}" required>
                                     </div>
                                 </div>
@@ -300,14 +301,14 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="street_name" class="form-label">Street Name:</label>
-                                        <input type="text" class="form-control" id="street_name" name="street_name"
+                                        <input type="text" class="form-control" id="street_name-{{ address.id }}" name="street_name"
                                             value="{{ address.street_name }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="Village" class="form-label">Village/City:</label>
-                                        <input type="text" class="form-control" id="Village" name="Village"
+                                        <input type="text" class="form-control" id="Village-{{ address.id }}" name="Village"
                                             value="{{ address.village_name }}" required>
                                     </div>
                                 </div>
@@ -317,14 +318,14 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="postal_code" class="form-label">Postal Code:</label>
-                                        <input type="text" class="form-control" id="postal_code" name="postal_code"
+                                        <input type="text" class="form-control" id="postal_code-{{ address.id }}" name="postal_code"
                                             value="{{ address.postal_code }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="district" class="form-label">District:</label>
-                                        <input type="text" class="form-control" id="district" name="district"
+                                        <input type="text" class="form-control" id="district-{{ address.id }}" name="district"
                                             value="{{ address.district }}" required>
                                     </div>
                                 </div>
@@ -334,20 +335,20 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="state" class="form-label">State:</label>
-                                        <input type="text" class="form-control" id="state" name="state"
+                                        <input type="text" class="form-control" id="state-{{ address.id }}" name="state"
                                             value="{{ address.state }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="country" class="form-label">Country:</label>
-                                        <input type="text" class="form-control" id="country" name="country"
+                                        <input type="text" class="form-control" id="country-{{ address.id }}" name="country"
                                             value="{{ address.country }}" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-center mt-2">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" data-id="{{address.id}}">
                                     Save Changes
                                 </button>
                             </div>
@@ -379,7 +380,7 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-
+                <
                 <form method="POST" action="{% url 'default_address'%}">
                     {% csrf_token %}
                     <div class="mt-2">
@@ -466,7 +467,7 @@
 
 <script>
     $(document).ready(function () {
-        document.getElementById('alert_tags');
+        document.getElementById('alert_tag');
 
         $("#UserAddressForm").submit(function (event) {
             // Prevent the form from submitting
@@ -592,14 +593,20 @@
 </script>
 <script>
     $(document).ready(function () {
-        document.getElementById('alert_tags');
-
-        $("#editAddressForm").submit(function (event) {
+        document.getElementById('alert_message');
+        console.log('hii')
+        $('form[id^="editAddressForm"]').submit(function (event) {
+            var form = $(this);
+            var address_id = form.find("button[type='submit']").data("id");
+        /*$("#editAddressForm").submit(function (event) {
             // Prevent the form from submitting
+            var address_id = $(this).find("button[type='submit']").data("id");*/
+            console.log(address_id)
             event.preventDefault();
-
+            
+            
             // Perform your validation here
-            if (validateForm()) {
+            if (validateForm(form,address_id)) {
                 // If the form is valid, you can submit it
                 console.log("Form is valid. Submitting...");
 
@@ -609,58 +616,70 @@
                 console.log("Form is not valid. Please check your inputs.");
             }
         });
+    
 
-        function validateForm() {
+        function validateForm(form,address_id) {
             // Implement your validation logic here
-            var RecipientName = $("#RecipientName").val();
-            var house_no = $("#house_no").val();
-            var street_name = $("#street_name").val();
-            var Village = $("#Village").val();
-            var postal_code = $("#postal_code").val();
-            var district = $("#district").val();
-            var state = $("#state").val();
-            var country = $("#country").val();
+            
+
+            //var RecipientName = $("#RecipientName-"+address_id).val();
+            var RecipientName = form.find("#RecipientName-" + address_id).val()
+            var house_no = form.find("#house_no-" + address_id).val()
+            var street_name = form.find("#street_name-" + address_id).val()
+            var Village = form.find("#Village-" + address_id).val()
+            var postal_code = form.find("#postal_code-" + address_id).val()
+            var district = form.find("#district-" + address_id).val()
+            var state = form.find("#state-" + address_id).val()
+            var country = form.find("#country-" + address_id).val()
+            /*var house_no = $("#house_no-"+address_id).val();
+            var street_name = $("#street_name-"+address_id).val();
+            var Village = $("#Village-"+address_id).val();
+            var postal_code = $("#postal_code-"+address_id).val();
+            var district = $("#district-"+address_id).val();
+            var state = $("#state-"+address_id).val();
+            var country = $("#country-"+address_id).val();*/
+            console.log(country)
             // Match the ID here
 
             // Example validation - You should customize this based on your requirements
             if (RecipientName.length < 5) {
                 console.log("username");
-                document.getElementById('alert_tags').innerHTML = "Recipient name must be at least 5 characters long."
+                document.getElementById('alert_message-'+address_id).innerHTML = "Recipient name must be at least 5 characters long."
                 //alert("Username must be at least 3 characters long.");
                 return false;
             }
             if (!isValidname(RecipientName)) {
-                document.getElementById('alert_tags').innerHTML = "Invalid name"
+                document.getElementById('alert_message-'+address_id).innerHTML = "Invalid name"
                 return false;
             }
             if (!isValidHouseno(house_no)) {
-                document.getElementById('alert_tags').innerHTML = "Invalid house no"
+                document.getElementById('alert_message-'+address_id).innerHTML = "Invalid house no"
                 return false;
             }
             if (!isValidstreet_name(street_name)) {
-                document.getElementById('alert_tags').innerHTML = "Invalid street name"
+                document.getElementById('alert_message-'+address_id).innerHTML = "Invalid street name"
                 return false;
             }
             if (!isValidVillage(Village)) {
-                document.getElementById('alert_tags').innerHTML = "Invalid Village name"
+                document.getElementById('alert_message-'+address_id).innerHTML = "Invalid Village name"
                 return false;
             }
 
             if (!isValidpostal_code(postal_code)) {
-                document.getElementById('alert_tags').innerHTML = "Invalid Postal Code"
+                document.getElementById('alert_message-'+address_id).innerHTML = "Invalid Postal Code"
                 return false;
             }
             if (!isValiddistrict(district)) {
-                document.getElementById('alert_tags').innerHTML = "Invalid district."
+                document.getElementById('alert_message-'+address_id).innerHTML = "Invalid district."
                 return false;
             }
 
             if (!isValidstate(state)) {
-                document.getElementById('alert_tags').innerHTML = "Invalid State"
+                document.getElementById('alert_message-'+address_id).innerHTML = "Invalid State"
                 return false;
             }
             if (!isValidcountry(country)) {
-                document.getElementById('alert_tags').innerHTML = "Invalid Country"
+                document.getElementById('alert_message-'+address_id).innerHTML = "Invalid Country"
                 return false;
             }
 
